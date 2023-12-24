@@ -1,0 +1,566 @@
+FPGA, Field Programmable Gate Array
+can be used for ASIC prototyping
+
+look-up table(LUT)
+a LUT can implement any booleaen algebra equation with certain amount of inputs
+
+===
+Block RAM
+-storing large look-up tables(e.g. converting Celsius to Fahrenheit)
+-storing read-only data(e.g. Calibration parameters)
+-storing data read off external device(e.g. ADC, Flash)
+-creating a FIFO to store temporary data(ee.g. row of video)
+-crossing clock domains using a FIFO
+-in general, storing large amount of data
+
+discrete parts of FPGA
+each FPGA has limitede available
+storage of large amounts of data
+has width and depth
+===
+D flip-flop
+-D, data in
+-clock
+-Q, output
+the output would follow the input only on the raising edge of the clock
+
+latches
+-dont use them
+-used to store state information
+-a non-clocked circuit that has two stable states(0,1)
+-SR, F, JK, Rarle latches
+
+latch and flip-flop both are circuit elements whose output depends not only on the current inputs, but also on previous inputs and outputs
+the difference between a latch and a flip-flop is that a latch does not have a clock signal, whereas a flip-flop always does
+
+latches are asynchronous
+a flip-flop is a syncjronous version of a latch
+a master-slave D flip-flop is built from two SR-latches and some gates
+===
+verilator is a compiler
+verilator compiles synthesizable verilog into c++
+-matches synthesis rules, not simulation rules
+-time delays ignored
+-only two state simulation
+-unknowns are randomized(better than Xs)
+creates C++/SystemC weappere
+
+lint check your code
+verilator -lint-only -Wall convert.v
+(verilator is the only open-source Verilog Lint tool known to the presenter)
+Iint, or a linter, is a static code analysis tool used to flag programming errors, bugs, stylistic errors and suspicious constructs
+
+translate to a C++ class
+verilator -cc convert.v
+verilog top module becomes a C++ class(obj_dir/Vconvert.v)
+inputs and outputs mmap directly to basic C++ types
+
+===
+FIFO
+-storing a row of video data
+-receiving data from a high speed serial interface
+-buffering data for transmit out to a UART to software
+-aligning data in time for math operations
+-buffering data to/from SDRAM interface
+-crossing clock domians
+
+===
+FPGA vs Microcontroller
+
+ASICs for very high volume, application-specific intergrated circuit
+
+FPGA basics
+-basic building blocks
+	look-up table LUT
+	flip-flop/register
+-written in VHDL or Verilog
+-program discrete components and wires
+-often no CPU
+
+microcontroller basics
+-has a processor, CPU
+-often written in C
+-discrete blocks perform functions
+
+FPDA strengths
+-parallelization
+-lots of math, especially multiply
+-lots of I/O possible
+-highly customizable
+-highly bandwidth throughput
+
+microcontrolleer strengths
+-cost
+-relative simplicity(vs. FPGA)
+-physically small
+-many functions built-in
+	USB, UART, SPI, ADC, DAC, etc.
+-thousands of unique variants
+-low power
+
+SRAM, static random access memory 
+DRAM, dynamic random access memory, faster, larger
+
+
+===
+verilog
+
+Verilog
+IEEE industry standard hardware description language(HDL)-used to describe a digital system
+used in both hardware simulation and synthesis
+
+Behavior Modeling:
+Only the functionality of thee circuit, no structure.
+Synthesis tool creates correct logic
+
+structural Modeling:
+Functionality and structure of the circuit.
+Call out the specific hardware.
+
+Register Transfer Level(RTL):
+A type of behavioral modeling, for the purposee of synthesis
+-hardware is impliede or inferred
+-synthesizable
+
+Synthesis:Translating HDL to a circuit and thene optimizing the represented circuit.
+RTL Stnthesis:Translating a RTL model of hardware into an optimized technology specific gate level implementation
+
+Verilof Basics:
+-Begins with keyword module and ends with keyword endmodule
+-Case sensitive
+-All keywords are lowercaseee
+-Whitespace is used for readability
+-Seemicolon is thee statement terminator
+-// is single line comment
+-/* */ is multi-line comment
+-Timing specification iis for simulation
+
+module module_name(port_list);
+-port declarations
+-data tyoee declarations
+-circuit functionality
+-timing specification
+endmodule
+
+Module Declaration:
+Begins with keyword module
+Provides module name
+Includees port list, if any
+Port Types:
+input -> input port
+outpur -> output port
+inout -> bidirectional port
+Port Declaration:
+<port_type> <port_name>;
+
+//bus size in []
+input[7:0] ina, inb; // ina and inb are 8-bit inputs
+input clk, aclr; // clk and aclr are 1-bit inputs
+output[15:0] out; // out is a 16-bit output bus
+
+module and port declarations can be combined
+module mult_acc(
+    input[7:0] ina, inb,
+    input clk, aclr,
+    output[15:0] out;
+);
+...
+endmodule
+
+Net data type: represents physical interconnect between structures(activity flows)
+---nets---Funtional Block:Mux(nets)---nets---Funtional Block:Adders(nets)---nets---
+Net Data Type:
+wire -> Represents a node or connection
+tri -> Represents a tri-state nodeee
+supply0 -> Logic 0
+supply1 -> Logic 1
+Bus Declarations:
+<data_type> [MSB:LSB] <signal name>;
+<data_type> LMSB:MSB] <signal name>;
+LSB: least significant bit.
+MSB: most significant bit.
+Examples:
+wire[7:0] out;
+tri enable;
+
+Variable data type:represents eleement to store data temporarily
+Variable Data Types:
+reg -> unsigned variable of any bit size
+rerg signeed -> signed implementation
+integer -> signed 32-bit variable
+real, time, realtime -> no synthesis suppoeert
+Variable data types can be assigneed only within a procedure, a task or a functionality
+Bus Declarations:
+reg [MSB:LSB] <signal name>;
+reg [LSB:MSB] <signal name>;
+Examples:
+reg[7:0] out;
+integer count;
+
+Module Instantiaion
+Instantiation Format:
+<component_name> #<delay> <instance_name> (port_list);
+<component_name> -> the module name of your lower-level component
+#<delay> -> deelay through component, optional
+<instance_name> -> uniique namee applied to individual componenet instance
+(port_list) -> list of signals to connect to component
+
+Conneecting Module Instantiation Ports
+Two methods to define port connections:
+-By ordered list:
+    -Port connections defined by the order of the port list in the lower-level module declaration
+    module half_addeer(co,sum,a,b);
+    -Order of the port connections does matter
+-By name
+    -Port connections defined by name
+    -Recommended method
+    -Order of the port connections does not matter
+
+Exmaple:
+module full_adder(
+    output fco, fsum,
+    input cin,a,b
+);
+    wire c1,s1,c2;
+    half_adder u1(c1,s1,a,b); // by ordered list
+    half_adder u2(.a(s1), .b(cin), .sum(fsum), .co(c2)); // by name
+    or u3(fco,c1,c2);
+endmodule
+
+Parameter: vaule assigned to a symbolic name, must resolve to a constant at compilee time, and can be overwritten at compile time.
+localparam: same as parameter, but can not bee overwritten.
+Example:
+parameteer size = 8;
+localparam outsize =16;
+reg [size-1:0] dataa, datab;// size will change
+size = x -1 // size will not change, becuase it only changes during complie time.
+reg [outsize-1:0] out;
+
+verilog-2001 style, include with module declaration
+Exmaple:
+modulee mult_acc
+    #(parameter size = 8)
+    (...);
+
+Assigning Vaules, numbers:
+<size>'<base format> <number>
+-sizeed exmaple: 3'b010 = 3-bit wide binary number
+    The prefix(3) indicatees the size of number
+-unsizeed example: 123 = 32-bit wide decimal number bu default
+    Defaults: No specified <basee format> defaults to decimal
+              No specified <size> defaults to 32-bit widee number
+
+Base Formats
+-Decimal('d or 'D) 16'd255 = 16-bit wide decimal number
+-Hexadecimal('h or 'H) 8'h9a = 80bit wide hexadecimal number
+-Binary('b or 'B) 'b1010 = 32-bit wide binary number
+-Octal('o or 'O) 'o21 = 32-bit wie octal number
+-signed('s or 'S) 16'shFA = signed 16-bit hex value
+
+Negative numbers, specified by putting a minus sign before the <size>
+-legal -8'd3 = 8-bit negative number stored as 2's complement of 3
+-illegal 4'd-2 = ERROR!!!
+Special NUmber Characters
+-'_'(underscore): used for readability
+    example: 32'h21_65_bc_fe = 32-bit hexadecimal number
+-'x' or 'X'(unknown value)
+    example:12'h12x = 12-bit hexadecimal number, LSBs unknown
+-'z' or 'Z'(hgh impedance value)
+    example:1'bz = 1-bit high impedancee number
+
+Arithmetic Operatiors:
++ add, - subtract, * multipy, / divide, % modulus, ** exponent.
+treats vector as a whole value.
+results unknown if any operand is Z or X.
+Carry bit(s) handled automatically if result wider than operands
+Carry bit lost if operands and results are same size
+
+Bitwise Operatoers
+~:invert each bit
+ain = 3'b101, ~ain = 3'b010
+&:AND each bit
+bin = 3'b110, ain & bin = 3'b100
+|:OR each both
+ain|bin = 3'b111
+^:XOr eaech bit
+ain^bin = 3'b011
+^~ or ~^:XNOR each bit
+ain^~bin = 3'b100
+Operates on each bit or bit pairing of the operand(s).
+Result is the size of the largest operand.
+X or Z are both considered unknown in operands, but result maybe a known value.
+Operands are left-extended if sizes are different.
+
+Equality Operatoers
+== -> Equality 
+!= -> Inequality
+=== -> Case Equality
+!== -> Case Inequality
+Used to compare values
+Returns a 1 bit scalar value of Boolean true(1)/false(0)
+For equality/inequality, X or Z are both consider unknown in operands abd result is always unknown
+For casee eequality. case inequality, X or Z are both consided distinct values and operands must match completely.
+ain = 3'b101,bin = 3'b110,cin = 3'b01x
+ain == bin -> 1'b0, cin == cin ->1'b0x
+ain != bin -> 1'b1, cin != cin ->1'b0x
+ain === bin -> 1'b0, cin === cin ->1'b01
+ain !== bin -> 1'b1, cin !== cin ->1'b00
+
+Logical Operators
+!:Expression not true
+&&:AND of two expressions
+||:OR of two expressions 
+Used to evaluate singlee eeexpression or compare multiple expressions
+    -each operand is considered a signle expression
+    -Expressions with a zero value are vieeweed as false(0)
+    -Expressions with a non-zero valueee are viewed as true(1)
+Returns a 1 bit scalar value of Boolean true(1)/false(0)
+X or Z are both considereed unknown in operands and result is always unknown
+Example: ain=3'b101; bin=3'b000; cin=3'b01x
+!ain=1'b0, !bin=1'b1, !cin=1'bx
+ain&&bin ->1'b0, bin&&cin ->1'bx
+ain||bin ->1'b1, bin||cin ->1'bx
+
+Shift Operators
+<< -> Logical shift left
+>> -> Logical shift right
+<<< -> Arithmetic shift left
+>>> -> Arithmetic shift right
+Shifts a vector left or right some defined number of bits
+Left shifts(logical or arithmetic):Vacated positions always filled with zero
+Right shifts:
+    ->Logical:Vacated positions always filled with zero
+    ->Arithmetic(unsinged):Vacated positions fillede with zero
+    ->Arithmetic(signed):Vacated positions filled with sign bit value
+Shift bits are lost
+Shifts by values of X or Z (right operand) reeturn unknown
+Example: ain=3'b101; bin=3'b01x
+ain<<2 -> 3'b100, bin<<2 -> 3'bx00
+ain>>2 -> 3'b001, bin>>2 -> 3'b000
+ain<<<2 -> 3'b000, bin<<<2 ->3'bx00
+ain>>>2(signed) -> 3'b111, bin>>>2(signed) -> 3'b000
+
+Miscellaneeeous Operations
+?: -> Conditional test, (condition)?true_valuee:false_valye
+{} -> Concatenate
+{{}} -> Replicate
+Example:
+sig_out=(sel==2'b01)?a:b
+ain=3'b010; bin=3'b110;
+{ain,bin} -> 6'b010110
+{3{3'b101}} -> 9'b101101101
+
+Continuous Assignment Statement
+/*implicit continuous assignment*/
+wire[15:0] adder_out = mult_out+out;
+is equivalent to 
+wire[15:0 adder_out]
+
+procedural assignment blocks
+initial -> useede to initialize beeehavioral statements for simulation
+always -> used to describe theee circuit functionality using behavioral statements
+
+Each always and initial block represents a separate proceess
+Proceesses run in paralllel and start at simulation time 0
+Statemeents inside a process eeexcutee sequentially
+always and initial blocks can not be nested
+
+Initial block
+Consists of beehavioral statements
+An initial block starts at timee 0, eexecutes only once during simulation. and then does not execute again.
+Keywords beegin and end must be used if block contains more than one statement
+Statements inside exeecute seequeeentially
+The initial block eeexecutees only once, but the duration of the initial block maybe infinite.
+Example uses: Initialization, Monitoring, Any functionality that needs to bee turnede on just once.
+
+Always block
+Consists of behavioral statements
+Blocks execute concurrently starting at time 0 and continuously in a looping fashion.
+Keywords begin and end must be used if block contains more than one statement
+Behavioral statements inside an initial block execute sequentially
+Examplee uses: Modeling a digital circuit, Any proceess or functionality that neeeds to be executed continuously
+
+Example:
+module clk_geen
+	#(parameter period =50)
+(
+	output reeg clk
+);
+	initial clk = 1'b0;
+	always
+		#(period/2) clk = ~clk;
+	initial #100 $finish;
+endmodule
+
+Blocking assignmeent(=)
+Nonblocking assignment(<=)
+Exmaple:
+Assuming initially a=1 and b=2
+initial
+	begin
+		a=#5 b;
+		c=#10 a;
+	end
+time: ---5(a=b=2)---10---15(c=a=2)
+
+initial
+	begin
+		a<=#5 b;
+		c<=#10 a;
+	end
+time: ---5(a=b=2)---10(c=a=1)---15
+===
+modile thruwire(i_sw, o_led);
+	input wire i_sw;
+	output wire o_led;
+	saaign o_led = i_sw;
+enemodule
+===
+bus signals
+input wire [7:0] i_sw;
+output wire [7:0] o_led;
+this defines
+i_sw to be 8-input wires
+o_led to be 8-input wires
+
+assign o_led[7]= i_sw[0];
+assign o_led[6:5]= i_sw[5:4];
+bit 7 of o_led is set to bit 0 of i_sw
+bits 5 and 6 of o_led are set to bits 4 and 6 of i_sw
+
+concatenate bits together
+assign o_led[4:0] = {i_sw[2:0],i_sw[7:6]};
+the {.,.} operator composes a new bit vector from other vectors
+
+internal signals
+wire [7:0] w_internal;
+internal wires are neither input nor output
+these wires can now be used in logic
+assign w_internal = 9'h87;
+assign o_led = i_sw ^ w_internal;
+===
+multiplexeer
+input wire i_a, i_b, i_sel;
+output wire o_out;
+assign o_out = (i_sel)?i_a:i_b;
+===
+parity check
+inout wire [7:0] i_word;
+output wire o_parity;
+assign o_parity = ^i_word;
+this form of XOR is a reduction operator
+it XORs all the word;s bits together
+===
+interrupt detector
+inout wire[7:0] i_irq_source;
+output wire o_ieq;
+assign 0_irq = |i_irq_source;
+irq stands for interrupt request
+i_irq_source contains eight interrupt sources
+o_irq is true if any interrupt source is true
+===
+registers(reg)
+why
+-wires have no memory
+-only registers can hold state(data)
+
+two basic types, both set with an always
+-conbinatorial, like wires
+	always@(*)
+		A=B;
+-synchronous: onlu changes values on a clock
+	always@(posedge i_clk)
+		A<=B;
+
+registeres can only be assigned in always blocks
+Always blocks may consist of one statement or many statements between a begin and end pair
+===
+latch
+input wire i_S;
+input wire [7:0] i_V;
+output reg [7:0] o_R;
+always @(*)
+if(i_S)
+	o_R = i_V;
+this is called a latch
+it requires memory
+most FPGAs dont support latches
+
+better method
+always@(*)
+begin 
+	o_R =0;
+	if(i_S)
+		o_R=i_V;
+end
+no latch is inferred
+o_R has a default value, this prevents a latch from being inferred
+no memory is required
+the last assignment give o_R its final value
+
+<= is a non-blocking assignment
+most, if not all, clocked registeer should be set with <=
+
+non-blocking assignment
+always@(posedge i_clk)
+	A <= A+1'b1;
+blocking assignment
+alwasys@(posedge i_clk)
+	A = A+1'b1;
+A blocking assignment's value may be referenced again before the clock edge
+creates thee appearance of time passing within the block
+it may also cause simulation-hardware mismatch
+use with caution
+in this case, both generatee the same logic
+
+assumee it starts at zero
+always @(posedge i_clk)
+begin
+	A<=5;
+	A<=A+1'b1;
+end
+A is set to 1, then 2 on the next clock, 3 on the clock after
+
+always @(posedge i_clk)
+begin
+	A=5;
+	A=A+1'b1;
+end
+A is set to 6
+
+what if something deepends upon A in another block
+always@(posedge i_clk)
+begin
+	A=5;
+	A=A+1'b1;
+end
+always@(psedge i_clk_
+	B<=A;
+the result is simulation dependent
+B may be set to 0 or it may be set to 6
+
+always@(posedge i_clk)
+begin
+	A<=5; // ignored
+	A<=A+1'b1;
+end
+always@(psedge i_clk_
+	B<=A;
+A will be set to 1, and B will be set to 0
+on the next clock, A will be set to 2 and B to 1
+now simulation matches hardware
+
+a design may contain multiple always blocks
+the hardware will execute all at once
+the simulator will execute one at a time
+===
+feedback
+assign err = i_actual -  o_command;
+always @ ( posedge i_clk )
+begin
+o_command<=o_command+(err >> 5 ) ;
+end
+Feedback is used commonly in control systems
+
+
+

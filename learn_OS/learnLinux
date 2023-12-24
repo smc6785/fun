@@ -1,0 +1,538 @@
+a tour of the ARM architecture and its linux support
+https://www.youtube.com/watch?v=NNol7fRGo2E&ab_channel=linuxconfau2017-Hobart%2CAustralia
+
+# ARM: architecture specification
+- the specification of the ARM architecture
+- over time, improvements of the architecture, with numerous versions: ARMv4, ARMv5, ARMv6, ARMv7, ARMv8
+- take the form of voluminous documentation, named ARM ARM, ARM Architecture reference manual
+
+# ARM cores: an actual implementation
+- ARM creates IP cores that implement the specification
+- IP core = implementation in VHDL or Verilog of a block of hardware logic 
+	- ARM926 = implementation of ARMv5
+	-	ARM1176 = implmentation of ARMv6
+	- Cortex-A15 = implementation of ARMv7-A
+	- Cortex-A53 = implementation of ARMv8-A
+- multiple possible implementations for the same architecture specification
+ 	- exmaple: all of Cortex-A5,7,8,9,12,15 implement the smae ARMv7-A architecture ( with some additions in some cases)
+	- Cortex-A5 is a low-power lower-performance implementation, Cortex-A15 is a very high-performance and more power hungry implmentation
+	- difference in internal implementation: depth of the pipeline, out of order execution, size of caches, tec.
+- this is NOT hardware: ARM doesnot sell silicon
+
+# ARM system-on-chip
+- System-on-chip: integrated circuit that integreatees all components of a computer system
+	- CPU, but also peripherals: Ethernet, USB, UART, SPI, I2C, GPU, display, audio, etc.
+	- Integrated ina single chip: easier to use, more cost effective
+- SoC vendors:
+	- buy an ARM core from ARM
+	- integrate other IP blocks, either designed internnally, or purchased from other vendors
+	- create and sell silicon
+- large spectrum of SoCs available, addressing very different markets: automotive, mobile, industrial, low-power, set-top box, etc.
+
+# ARM hardware platform
+- even though an SoC is a full system on a chip, it is generally not self-sufficient
+	- RAM, NAND flash or eMMC, power circuitry
+	- display panel and touchscreen
+	- wifi and bluetooth chip
+	- ethernet PHY
+	- HDMI transceiver
+	- CAN transceiver
+	- connectors
+- SoC conencted to a wide varity of peripherals, through various busses
+- laid out on a PCB, with commponents soldered on it
+
+# ARM: from the architecture to the board
+arm architecture:
+	ARMv5, ARMv7-A
+|
+v
+ARM core implementation:
+	ARM926, ARM Cortex-A8
+|
+v
+system on chip:
+	Atmel AT91SAM9G20, Allwinner R8
+|
+v
+harware platform
+	Raspberry Pi, your phone,car,TV
+
+# example of ARM boards:
+	- raspbeeryPi 1
+		- Soc: Broadcom 2835
+		- ARM core: ARM1176JZF (single)
+		- ARM architecture: ARMv6
+	- raspbeeryPi 2
+		- Soc: Broadcom 2836
+		- ARM core: Cortex-A7 (quad)
+		- ARM architecture: ARMv7-A
+
+# linux support
+* three levels of hardware, three levels of software support
+	- the ARM core
+	- the SoC
+	- the board
+* supporting a platform with just the serial port and Ethernet is very different from fully supporting a platform (graphics, audio, power management, etc.)
+
+# three ARMv7-A variants
+- ARMv7-A, where A stands for applcaition
+	- fulll-featured variant designed for complex operating systems such as linux
+	- has a memory management unit (MMU), caches, supports ARM and Thumb2 instruction sets, high performance, VFP and NEON instructions
+	- cores: Cortex-A8, Cortex-A15
+
+- ARMv7-M, where M stands for microcontroller
+	- much maller variant: no MMU, no caches until recently, supports only Thumb2, low performance but also low power
+	- cores: Cortex-M3, Cortex-M4, Cortex-M7
+	- generally runs bare metal code, or a small real-time operating system. Linux has support for them, but requires external RAM and flash
+
+- ARMv7-R, where R stands for real-time
+	= reduced version of the A profile, with focus on deterministic respinse
+	- widely used in storage devices (hard drive and SSD controllers)
+	- typically doesnt run linux
+
+# ARMv8:
+	- introduction of AArch64, a new instruction set with 64 bits support (AArch64 support is optional, some ARMv8 cores do not support it)
+	- also supports a mode called AArch32, which offers backward compatibility with ARMv7-A
+	- ARMv8 cores: Cortex-A32 (32 bits only), Cortex-A53, Cortex-A57, Cortex-A72, etc.
+
+# architecture licensees
+- most SoC vendors buy ARM cores from ARM, i.e Cortex-A15 or Cortex-A57
+- A few SoC vendors however have an architecture license
+- they pay a fee to be allowed to create a CPU core that implements the same CPU architecture, but do not use the ARM cores
+- examples:
+	- Qualcomm Scorpion, Qualcomm Krait (ARMv7)
+	- Apple Swift (ARMv7, used in the A6)
+	- NVidia Denver (ARMv8)
+	- Cavium, Broadcom, Qualcomm, Samsung (ARMv8)
+* ARM architecture specification ->
+	Apple core implementation, apple swift ->
+	system on Chip, Apple A6 ->
+	hardware platform, iphone
+
+# lack of standardization
+- ARM architecture specified: instruction set is compatible between all ARMv7 cores, between all ARMv8 cores
+	- can run Linux, Ubantu (built for ARMv7) on any ARMv7 platform
+	- however, Ubuntu (built for ARMv7) will not run on RaspberryPi 1 (ARMv6)
+- almost no standardization for the other hardware components: inside the SoC and on the board
+	- need specific handling at the bootloader and linux kernel level for each SoC and board
+	- on most ARM SoCs, the hardware inside the chip is memory-mapped. No dynamic discovery/enumeration capability
+
+# hardware re-use
+- compatibility of procesor cores: they comply with ARM specification
+- for the other hardware blocks, SoC vendors very often
+	- purchase IP blocks from third-party vendors: ARM, Cadence, Synopsys, Mentor Graphics, Imagination technologies, etc.
+	- extensively re-use IP blocks between their different SoCs
+- example:
+	- Mentor graphics MUSB (USB gadget controller) is used in TI, Allwinner and ST SoCs, but also on Blackfin and some MIPS processors
+	-	the Marvell SPI controller is re-used in Marvell processors shipped over 15 years, from old ARMv5 Orions to modern ARMv8 processors
+- massive re-use drivers
+
+# BIOS
+- in terms of booting process, no standardized BIOS or firmware like on x86 machines
+- each ARM SoC comes with its own ROM code that implements a SoC-specific boot mechanism
+- the early stages of the boot process are therefore specific to each SoC
+- in general. capable of loading a small amount of code from non-volatile storage(NAND, MMC, USB) into a SRAM internal to the processor. (external DRAM not initil=alized yet)
+- often also provides a recovery method, to unbrick the platform. Over USB, serial or somethimes Ethernet.
+- used to laod a first stage bootloader into SRAM, which will itself initialize the DRAM and load/run a second stage into DRAM
+
+# bootloaders
+- Grub(2) typically not widely used on ARM platforms
+- U-boot, tyhe de-facto standard, found on most developemnt boards and community playforms
+- barebox, less widely used, but very interesting
+- homemade bootloaders, especially when security/DRM are involved
+- Grub starts to gain some traction, especially on ARM64, for the server market
+- RaspberryPi is bery special case, with some firmware executed on the GPU, and directly loading the linux kernel
+
+# bootloaders (2)
+- first stage bootloader provided either by:
+	- a seperate project. Example: AT91Bootstrap for Atmel platforms
+	- U-boot/Barebox itself. Concept of SPL: minimal version of the bootloader that fits in the constrants of the first stage
+- interaction with the bootlaoder typically over the serial port
+	- U-boot and Barebox offer a shell, with bootloader specific commands
+	- Sometimes screen/keyboard interaction possible, but not the norm
+	- embedded without a  serial port is weird
+
+# booting process diagram
+- ROM code, stored inside the SoC, in ROM
+- 1st stage, stored in NAND, SPI flash, USB, SD, runs form internal SRAM
+- 2nd stage, stored in NAND, SPI flash, USB, SD, runs form DRAM
+- linux kernel
+
+# describing hardware
+- on x86, most hardware can be dynamically discovered at run-time
+	- PCI and USB procide dynamic enumeration capabilities	
+	- for the rest, ACPI provides tables describing hardware
+	- thanks to this, the kernel doesn't need to know in advance the hardware it will run on
+- on RAM, no such mechanism exists at the hardware level
+	- in the old days (prior to 2011), the kernel code itself contains a description of all hardware platforms it had to support
+	- in 2011, the ARM kernel developers switched to a different solution for hardware descriptionL: device tree
+	- done together with an effort called multiplatform ARM kernel
+
+# device tree
+- a tree of nodes describing non-discoverable hardware
+- providing information such as register addresses, interrupt lines, DMA channels,type of hardware, etc.
+- provided by the firmware to the operating system
+- operating system agnostic, not linux specific
+	- can be used by bootloaders, BSDs, etc.
+- originates from the PowerPC world, where it has been in use for many more years
+- source format written by developers (dts), complied into a binary format understood by operating systems(dtb)
+	- one .dts for each hardware platform
+
+# device tree: in practice
+- used for almost all ARM platformss in linux and all all ARM64 ones
+- used for a dew platforms in bootloaders such as U-Boot or Barebox
+- Device tree source code stored in the Linux kernel tree
+	- duplicated in U-Boot/Barebox source code as needed
+	- plan for a central repository, but never occurred
+- supppoesd to be OS-agnostic and therefore backward compatible
+	- in practice, are changed quite often to accommodate linux kernel changes
+- loaded in memory by the bootloader, together with the lunux kernel image
+- parsed by the linux kernel at boot time to know which hardware is available
+
+# Linux kernel
+- support for the ARM core is generally done by ARM engineers themselves
+	- MMU, caches, virtualiztion, etc.
+	- in arch/arm and arch/arm64
+	- generally in linux upstream even before actual ARM SoCs with this core are available
+- support for the ARM SoC and hardware platform is a different story
+	- requires drivers for each and every hardware block. inside the SoC and on the board in drivers/
+	- requires device tree desciptions in arch/arm(64)/boot/dts
+	- sometimes supported only in vendor forks, sometimes supported in the upstream linux kernel
+	
+# Linux kernel: typical support fotr an SoC
+- core drivers
+	- clock controller, drivers/clk
+	- reset controller, drivers/reset
+	- pin-muxing controller, drivers/pinctrl
+	- interrupt conreoller, drivers/irqchip
+	- timers, drivers/clocksource
+	- GPIO controllers, drivers/gpio
+- peripheral drivers
+	- bus controllers:
+		- I2C, drivers/i2c
+		- SPI, drivers/spi
+		- USB, drivers/usb
+		- PCI, drivers/pci
+	- display controller, drivers/gpu/drm
+	- camera interface, drivers/media
+	- touchsreen or other input devices, drivers/input
+	- ethernet controller, drivers/net
+- platform code
+	- on ARM, minimal amount of platform code in arch/arm/mach-<foo> for power management and SMP support
+	- on ARM64, no platform code at all, power management and SMP activities handled using PSCI
+
+# Linux kernel: from vendor to up stream
+- most vendors fork the linux kernel, and add support for their SoC to their own fork
+- leads to kernel forks with sometimes millions of added lines for SoC support
+	- users can not easily change/upgrade their kernel version
+	- generally of poor quality
+	- situation got somewhat worse with Android
+- some vendors engage with the upstream linux kernel community, and submit patches
+	-	more and more vendors taking this direction
+	- Mileage may bary depending on the vendor, and sometimes the SoC family
+- thee community also significantly contributes to upstream Linux kernel support for ARM SoCs
+	- example: Allwinner support is fully community-contributed, no involvement from the vendor
+
+# Linux kernel: going multiplatform
+- originally, on ARM, a compiled kernel image could only boot on a reduced set of platforms, all using the same SoC
+	- lots of compile-time conditionals
+- wish to have a behavior more similar to x86, with one single binary kernel that works for all platforms
+- effort started around making the ARM kernel multiplatform
+	- handle more thigns at tuntime rather than at compile time
+	- part of a larger cleanup effort: switch to device tree, addition of numerous driver subsystems
+- one can now build a single kernel for ARMv4/v5, a single kernel for ARMv6/v7, and a single kernel for ARMv8
+	- make ARCH= arm multi_v7_defconfig
+	
+# root filesystem
+* the root file system is the top of the hierarchical file tree. It contains the files and directories critical for system operation, including the deivce directory and programs for booting the system
+- regular desktop-style distributions: Debian, Ubuntu, Raspbian, Fedora, etc.
+- specialized systems: Android, Tizen, etc.
+- embedded Linux build system
+	- widely used for embedded system
+	- produce a Linux root filesystem through cross-compilation
+	- allows a much more customized and stripped down system than a fyll-blown distribution
+	- examples: OpenEmbedded/Yocto, Buildroot, OpenWRT, etc.
+----------------------------------------------------------
+
+application
+library
+kernel
+BIO
+hardware
+
+# include <sttdio.h>
+int main(void)
+{
+	printf("hello world!\n")
+}
+$gcc -Wall hello.c -o hello
+$./hello
+$objdump -d hello
+.elf file, executable and linkable format
+a binary file written on disk that when you execute it 
+it goes into the kernel, the kernel would read the header file and knows how to parse elf files
+it's going to load parts with a file into various segments of memory
+and it's going to jumo to a location
+
+printf("hello world\n %p where main is\n", &main);
+the address of main is different every time, except the last three digits
+every you load anything into the kernel, its gonna to randomly palce it in virtual address space
+elf files are made, so yjeu can be executed anywhere
+thats why you had the offset from the instruction pointer, not just a hard-coded address space for those parameters, the string and for the value
+
+address spcce doesnt equal to memory,
+it also includes access to devices or something else
+
+# system call
+- this is the interface into the kernel from the application
+- tells the kernel what you want to do
+	- open a file
+	- read the network
+	- write a file
+	-etc
+- an application programming interface (API)
+- they do not change (once one is made, it must be backward capatible)
+
+# strace
+- sytem call tracer
+- see the interface into the kernel
+- traces all system calls
+- uses ptrace, same as gdb
+--------------------------
+
+Linux doesn't usually run on Cortex-M, 8051, AVR, other other popualr microcontroller architectures. Instead, we use application processor-popular ones are the ARM Cortex-A, ARM926EJ-S, and several MIPS iterations
+microprocessors have a memory management unit(MMU), and microcontrollers don't.
+
+# dynamic memory allocation
+- small microcontroller applications can usually get by with static allocations for everything. As your application grows, you'll find yourself calling malloc() more andn more.
+* malloc(), from the C standard library
+* void *malloc(size_t size) allocates the requested memory and returns a pointer to it
+* size, this is the size of the memory block, in bytes
+- with complex, long-running systems, thins would crash at random times.
+	- they almosy always stem from memory allocation issues
+		- memory leaks (that can be fixed with appropriate free() calls)
+		- memory fragmentation (when the allocator runs out of appropriately-sized free blocks)
+- because Linux0capable application processor have a memory management unit, *alloc() calls execute swiftlly and reeliably.
+
+# software workflow
+- when building embedded Linux systems, we need to start bu compiling all the off-the-shelf software we plan on running - the bootloader, kernel, and userspace libraries and applications.
+- five components that fo into every modern embedded Linux system
+	- A coress toolchian, susally, GCC+glibc, which contains your comiler, binutils, and C library. This doesnt't actually go nto your embedded Linux system, but rather is used to build the other components
+	* glibc, GNU C library
+	* two lightweight C libraries, musl libc and uClibc-ng, which implement a subset of features of the full glibc
+	- U-boot, a bootloader that initializes your DRAM, console, and boot media, and then loads the Linux Kernel into RAM and starts executing it
+	- the Linux kernel itself, which manages memory, schedules processes, and interfaces with hardware and networks
+	- busybox, a single executable that contains core userspace components (init, sh, ect)
+	- a root filesystem, which contains the aforementtioned userspace components, along with any loadable kernel modules you compiled, shared libraries and configuration files	
+
+# U-boot
+- unfortunately, our CPU's boot ROm cant directly load our kernel.
+- Linux has to be invoked in a specific way to obtain boot arguments and a pointer to the device tree and initrd (initial ramdisk), and it also expects that the main memory has already been initialized.
+- Boot ROMs also don't know hot to initialize main memory, so we would have nowhere to store Linux.
+- boot ROMs tend to just load a few KB from flash at the most, not enough to house an entire kernel, so we need a small program that the boot ROM can load that will initilized our main memory and then load the entire (usually-multi-megabyte) linux kernel and then execute it.
+- the most popular bootloader for embedded systems, Das U-boot, does all of that, but adds a ton of extra features it has a fully interactive sheel, scripting support, and USB/network booting
+- U-boot has to know a lot of technical details about your system. There's a dedicated board.c port for each supported platform that initializes clocks, DRAM, and relevant memory peripherals, along with initializing any important peripherals, like your UART console or a PMIC that might need to be configured properly before bringing the CPU up to full speed
+- newer board ports often store at least some of this configuration inofrmation inside a device tree.
+- some of the the DRAM configuration data is often autodetected, allowing you to change DRAM size and layout without altering the U-boot port's code for your processor
+- you configure what you want U-boot to do oby writing a script that tells it which device to initialize, which file/address to load into which memory address, and what boot arguments to pass along to Linux.
+
+# Linux Kernel
+- once U-boot turns over the program counter to Linux, the kernel initializes itself, loads its own set of device drivers and other kernel modules, and calls your init programs
+-	one big difference between embedded Linux and desktop Linux is that embedded Linux systems have to manually pass the hardware configuration information to Linux through a Device tree file or platform data C code, since we don't have EFI or ACPI or any of that desktop stuff that lets Linux auto-discover our hardware
+- we need to tell Linux the addresses and configurations for all of our CPU's fancy on-chip peripherals, and which kernel modules to load for each of them.
+
+# busy box
+- once Linux has finished initializing, it runs init. Our init program will likely want to run some shell scripts. Those scripts might touch or echo or cat thins. 
+- It looks like we're going to need to put a lot of userspace software on our root filesystem just to get things to boot. Now imagine we want to actually login(getty), list a directory(ls), configure a network(ifconfig), or edit a text file(vi)
+- rather than compiling all of these separately, BusyBox collects small, light-weight versions of these programs (plus hundreds more) into a single source tree that we can compile and link into a single binary executable.	
+- BusyBox configuration is obvious and uses the same Kconfig-based system that Linux and U-Boot use. You simply tell it which packages (and options) you wish to build the binary image with.
+
+# root filesystems
+- Linux requires a root filesystem, it needs to know where the root filesystem is and what filesystem format it uses, and this parameter is part of its boot arguments
+
+# YOCTO & Buildroot	
+- there's really no reason to hand-configure and hand-compile all of that stuff individually, instead, everyone uses build systems, Yocto and Buildroot, to automatically fetch and compile a full toolchain, U-boot, Linux kernel, busybox, plus other packages you may wish.
+https://jaycarlson.net/embedded-linux/#
+=======================================
+
+- lots of device drivers
+- network and filesystem support
+- memory management
+- interprocess communication
+- portable
+- open source/ free
+
+Linux Kernel:
+- memory management
+- Scheduler task management
+- filesystem layer and drivers
+- device drivers + driver frameworks
+- low level architecture specific code
+- network stack
+- device trees (hardware description) on some architectures, written in a device tree specific language
+
+Roottfs, root file system:
+- flash contents
+	- Bootloader
+	- kernel
+	- root filesystem
+
+system call:
+- the kernel offers an API library of functions to the user-space programs, those libraries are available through the GNU C library
+
+On Linux the memory is divided in two parts kernel and user space and they communicate through system calls
+======================================
+
+A standard GNU toolchain consists of three main components:
+- Binutils: a set of binary utilities including the assembler and the linker
+- GNU Compiler Collection (GCC)
+- C library: A standardized application program interface(API) based on the POSIX specifiction, which is the main interface to the operating system kernel for applications
+
+# building a toolchian using cresstool-NG
+- use ./ct-ng list-samples to generate the list
+- BeagleBone Black, TI AM335x SoC, which contains an ARM Cortex A8 core and a VFPv3 floating point unit
+- the closest sample is arm-cortex_a8-linux-gnueabi
+- ./ct-ng show-arm-cortex_a8-linux-gnueabi
+- ./ct=ng build
+
+- the toolchain sysroot is a directory which contains subdirectories for libraries, header files, and other configuration files.
+- it can be set when the toolchian is configured through --with-sysroot=, or --sysroot=
+- you can see the location of the default sysroot by using -print-sysroot:
+	- arm-cortex_a8-linux-gnueabihf-gcc -print-sysroot
+- subdirectories in sysroot:
+	- lib, contains the shared objects for the C library and the dynamic linmker/loader, ld-linux		
+	- usr/lib, the static library archive files for the C library, and any other libraries that may be installed subsequently
+	- usr/include, contains the headers for all the libraries
+	- use/share, used for localization and internationalization
+	- sbin, provides the ldconfig utility, used to optimize library loading paths
+	
+- other tools in the toolchain
+	- addr2line, ar, as, g++, gcc ...
+
+- the components of the C library
+	- libc, the main C library that contains the well-known POSIX functions such as printf, open , close, read, write and so on
+	- libm, contains maths functions such as cos, exp and log
+	- libpthread, contains all the POSIX thread functions with names beginning with pthread_
+	- librt, has the real-time extensions to POSIX, including shared memory and asynchronous I/O
+* the first one, libc, is always linked in but the others have to be explicitly linked with the -l option. The parameter to -l is the library name with lib stripped off. For example, a program that calculates a sine function by calling sin() would be linked with libm using -lm
+* arm-cortex_a8-linux-gnueabihf-gcc myprog.c -o myprog -lm
+* you can verify which libraries have been linked in this or any other program by using the readelf command
+* arm-cortex_a8-linux-gnueabihf -a myprog | grep "Shared library"
+* Shared libraries need a runtime linker, which you can expose using:
+* arm-cortex_a8-linux-gnueabihf-readelf -a myprog | grep "program interpreter"
+
+# linking with libraries, static and dynamic linking
+- any application you write for Linux, whether it be in C or C++, will be linked with the C library libc. This is so fundamental that you don't even have to tell gcc or g++ to do it because it always links libc. Other libraries that you may want to link with have to be explicitly named through the =l option
+- the library code can be linked in two different ways
+	- statically, meaning that all the library functions your application calls and their dependencies are pulled from the library archive and bound into your executable
+	- dynamically, meaning that references to the library files and functions in those files are generated in the code but the actual linking is done dynamically at runtime.
+
+## static libraries
+- static linking is useful in a few circumstances
+	- if you are building a small system which consists of onlu BusyBox and some scipt files, it is simpler to link BusyBox statically and avoid having to cpoy the runtime library files and linker
+	- it will also be smaller becuase you only link in the code that your application uses rather than supplying the entire C library. 
+	- static linking is also useful if you need to run a program before the filesystem that holds the runtime libraries is available
+- you tell to link all the libraies statcially by addiung - static to the command line
+	- arm-cortex_a8-linux-gnueabihf-gcc -static helloworld.c -o helloworld-static
+- you will note that the size of the binary increases dramatically
+- static linking pulls code from a library archive, usually named lib[name].a
+
+- creating a static library is as simple as creating an archive of object files using the ar command. 
+	- if i have two source files named test1.c test2.c and i want to create a static library named libtest.a
+		- arm-cortex_a8-linux-gnueabihf-gcc -c test1.c
+		- arm-cortex_a8-linux-gnueabihf-gcc -c test2.c
+		- arm-cortex_a8-linux-gnueabihf-ar rc libtest.a test1.o test2.o
+		- then I could link libtest into my helloworld program, using
+			- arm-cortex_a8-linux-gnueabihf-gcc helloworld.c -ltest \ -L ../libs -I ../libs -o helloworld
+
+## shared libraries
+- a more common way to deploy libraries is as shared objects that are linked at runtime, which makes more efficient use of storage and system memory, since only one copy of the code needs to be loaded
+- it also makes it easy yo update the library files without having to re-link all the programs that use them
+- The object code for a shared library must be position-independent, so that the runtime linker is free to locate it in memory at the next free address.
+	- to do this, add the -fPIC parameter to gcc, and then link it using the -shared option
+		- arm-cortex_a8-linux-gnueabihf-gcc -fPIC -c test1.c
+		- arm-cortex_a8-linux-gnueabihf-gcc -fPIC -c test2.c
+		- arm-cortex_a8-linux-gnueabihf-gcc -shared -o libtest.so test1.o test2.0
+	- this creates the shared library, libtest.so
+	- to link an application with this library, you add -ltest, exactly as in the static case memtioned in the preceding section, but this time the code is not included in the executable. Instead, there is a reference to the library that the runtime linker will have to resolve.
+		- arm-cortex_a8-linux-gnueabihf-gcc helloworld.c -ltest \ -L ../libs -I ../libs -o helloworld
+	- the runtime linker for this program is /lib/ld-linux-armhf.so.3 which must be present in the target's filesystem.
+	- the linker will look for libtest.so in the default search path: /lib and /usr/lib
+	- if you want it to look libraries in other directories as well, you can place a colon-separated list of paths in the shell variable LD_LIBRARY_PATH:
+		- # export LD_LIBRARY_PATH = /opt/lib:/opt/usr/lib
+
+# understanding shared library version numbers
+- one of the benefits of shared libraries is that they can be updated independently of the programs that use them.
+- library updates are of two types
+	- those that fix bugs or add new functions in a backwards-compatible way
+	- those that break compatibility with existing applications
+	- GNU/Linux has a versioning scheme to handle both these cases
+
+- each library has a release version and an interface number
+	- directory listing of <sysroot>/usr/lib/libjpeg*
+		- libjpeg.a, this is the library archive used for static linking
+		- libjpeg.so, this is a symbolic link, used for dynamic linking
+		- libjpeg.so.8, this is a symbolic link, used when loading the library at runtime
+		- libjpeg.so.8.0.2, this si the actual shared library, used at both compile time and runtime
+		* the first two are only needed on the host computerfor building
+		* the last two are needed on the target at runtime
+
+# the art of cross compiling
+- build systems
+	- makefiles
+	- The GNU build system, Autotools
+	- CMake
+- put the toolchian prefix in the make variable CORSS_COMPILE
+	- make CROSS_COMPILE = arm-cortex_a8-linux-gnueabihg-
+	- 1. export CROSS_COMPILE = arm-cortex_a8-linux-gnueabihg-
+		2. make	
+- the name Autotools refers to a group of tools that are used as the build system in many open source projects
+	- GNU Autocong
+	- GNU Automake
+	- GNU Libtool
+	- Gnulib
+	* the role of Autotools is to smotth over the differences between the many different types of systems that the package may be compiled for, accounting for different versions of compilers, different versions of libraries, different locations of header files, and dependencies with other packages.
+	* packages that use Autotools come with a script named configure that checks dependencies and generates makefiles according to twhat it finds.
+	* the configure script may also give you the opportunity to enable or disable certain features. 
+	* you can find the options on offer by running ./configure --help
+	- to configure, build, and install a package for the native operating system, you would typically run the following three commands
+		- ./configure
+		- make
+		- sudo make install
+	- you can influence the behavior of the configure script by setting these shell variables
+		- CC: the C compiler command
+		- CFLags: additiona; C compiler flags
+		- LDFLAGS: additional linker flags
+			- for example, if you have libraries in a non-standard direcrotry <lib dir>, you would add it to the library search path by adding -L<lib dir>
+		- LIBS: contains a lost of additional libraries to pass to the linker, for instance, -lm for the math library
+		- CPPFLAGS: contains C/C++ preprocessor flags
+			- for example, you would add -I<include dir> to search for headers in a non-standard directory <include dir>
+		- CPP: the C preprocessor to use
+		* sometime it is sufficient to set only the CC variable
+		* CC= arm-cortex_a8-linux-gnueabihf-gcc ./configure
+		- Autotools understands three different types of machines that may be involved when compiling a package
+			- Build, is the computere that buildds the package, which defaults to the current machine.
+			- Host, is the computer the program will run on; for a native compile, this is left blank and it defaults to be the same computer as build. When you are cross compiling, set it to be the tuple of your toolchain.
+			- Target, is the computer the program will generate code for, you would set this when building a cross compuleer, for example.
+		- to cross compile
+			- $ CC=arm-cortex_a8-linux-gnueeabiihg-gcc \
+					./confiigure --host=arm-cortex_a8-linux-gnueabihf
+# bootloaders
+- in embedded linux system, the bootloader hass two main jobs: initialize the system to a basic level and to loadd the kerneel
+- first, a power-on or a reset
+- the DRAM controller would not have been set up, so the main mery would not be accessible, so storeage acesed via NAND flash controller , MMC controlers, and so on, would also not be usable.
+*	DRAM controller, any integrated circuit havingg circuitry integrated thereon or contained thereon that is capable through an interface of transmitting and/or receiving data from a DRAM
+- typically, the only resources operational at the beginning are a single CPU core and some on-chip static memory.
+- as a result, system bootstrap consists of several phases of code, each bringing more of the system into operation.
+- the final act of the bootloader is to load the kernel into RAM and create an execution environment for it.
+- the details of the interface between the kernel and the bootloader are architecture-specific, but in each case it has to do two things
+	- botloader hass to pas a pointer to a structure containing informatiion about the hardware configuration
+	- it has to pass a pointer to the kernel command line
+- a subsidiary job of the botloadere is to provide a maintenance mode for updating bot configurations, loading new bot images into memory, and, running diagnostics.
+- the bootloader code runing in NOR flash memory can initialize the DRAM controler, so that the main memory, the DRAM, becomes available and then it copies itself into the DRAM. Once fuly operational, the bootloader can load the kernel from flash memory into DRAM and transfer control to it.
+* the above is for a simple linearly addressabe sotrage medium like NOR flash
+* now, the boot sequencee becomes a complex, multi-stage procedure, the details are very specific to each SoC, but they generaly follow each of he folowing phases
+# phase 1 ROM code
+
+
+

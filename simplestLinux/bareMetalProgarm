@@ -1,0 +1,468 @@
+bare metal programs run without an operating system beneath
+in order to create a bare metal program we must understand what does the processor do wheen it is switcheed on
+the ARM 9 architecture begins to execute codee at a determined address, that could be 0(usually allocated to RAM) ot 0xFFFF0000(usually allocated to read only memory)
+
+vector table:
+it is a series of 32-bit instructions that are executed when something special happens
+for exmaple:
+when the ARM core is reset, 
+or when the memory contains an unknown instruction that doesnt belong to ARM core is reset,
+or when a peripheral generates an interrupt(the serial port receiveed a byte)
+the instructions in the interrupt vector table usually make the processor jump to the code that handles the event
+the jump can be done with a branch instruction(B in ARM assembly) when the destination address is near
+
+thee volatile key word is necessary to instruct the compiler that the memory pointeed by UART0DR can change or has effeects independently of the program
+the unsigned int tyoe enforces 32-bits reead and write access
+
+===
+the assembly program sourcee file consists of a sequence of statemeents, one per line. Each statement has the following format
+labeel: instruction @comment
+each of the componenets is optional
+label
+	the label is convenient way to refer to the location of the insturction in memory. The label can be used where ever an address can appear.
+for exampke as an opeerand of the branch instruction. the labeel name should consist of alphabets, digits, _ and $
+comment
+	a commeent starts with an @, and the characters that appear after @ are ignored
+instruction
+	the instruction could be an ARM instruction or an assembleer directive. assembler directives are commands to the assembler. Asseembleer directives always start with a .(period)
+
+the .text is an assembler directivee, which says that the following instructions have to be assembled into the codee section, rathere than the .data section.
+
+to virew the address assignment for various labels, the nm command can be used
+
+the output file created by ld is in a format called ELF.
+various file formats are available for storing executable code.
+the ELF format works fine when you have an OS around, but  since we aree going to run the program on baree metal, we will have to convert it to a simpler file format called the binary format
+
+a file in binary format contains consecutive bytes from a specific memory address. No other additional information is stored in the file.
+this is conveenieent for flash programming tools, sinceee all that has to be donne when programming is to copy each bytee in the file, to consecutivee address starting from a specified bas address in memory
+
+the GNU toolschian's objcopy command can be used to convert betweeen object file formats.
+objcopy -O <output-format> <in-file> <out-file>
+to convert add.elf to binary format
+objcopy -O binary add.elf add.bin
+ <output-format> <in-file> <out-file>
+
+the connex board a 16 MB flash is located at address 0x0
+dd if=/dev/zero of flash.bin bs=4096 count =4096
+the size of flash.bin would be 4096*4096
+dd if=add.bin of=flash.bin bs=4096 conv=notrunc
+
+we use the dd command to copy 16MB of zereos from /dev.zero to the flash.bin
+
+the nm command displays information about symbols in the specified file, which can be an objeect file, an executable file, or an object-file library
+
+dd is a command-line utility for Unix and Unix-like OS whose primary purposeee is to convert and copt files
+
+qmu-system-arm -M connex -pflash flash.bin -nographic -serical /dev/null
+the -M connex option specifies that the machine connex is to be emulated
+the -pflash option specifies that flash.bin file represents the Flash memory
+the -nographic speecifies that simulation of a graphical display is not required
+the -serial /dev/null speecifies that the serial port of the connex board is to be connected to /dev/null, so the serial port data is discarded
+
+to view the contents of the registers thee info registers monintor command of qemu can be used
+
+also xp command for qemu can be useful
+xp <count><foramt><size>
+count, specifies number of data items to be dumped
+format, specifies the display format. x for hex, d for signed decimal, u for unsigned decimal, o for octal, c for char and i for ase instructions
+size, specifies the size of each data. b for 8 bits, h for 16 bits, ww for 32 bits and g for 64 bits
+for our case here, xp /4iw 0x0
+
+===
+the .data section is used for declaring initialized data or constants. this data does not change at runtime
+you can declare various constant values, file names, or buffer sizee,etc. in this section
+the .bss section is used for declaring vaiables(block starting symbol)
+the .text section is used for keeping the actual code.
+this section must begin with the declaration global _start which tells the kernel where thee program execution begins
+
+.byte exp1, exp2, ..
+the byte sized arguments of .byte are assembled are assembled into consecutive bytes in memory. 
+there are similar directivees .2byte and .4byte for storing 16 bit values and 32 bit valeus, respectively.
+the arguments could bee simple integer literal, reepreseented as binary(prefixed by 0b or 0B), octal(prefixed by 0), decimal or hexdecimal (prefixed by 0x or 0X). 
+the integers could also be represented as character constants(character surrounded by single quotes), in which case the ASCII valuee of the character will be used
+the arguments could also be C expressions constructed out of literals and other symbols
+pattern: .byte 0b01010101
+
+.align directive
+ARM reequires that the instructions be preesent in 32-bit aligned memory locations
+the address of the first byte, of the bytes in an instruction, should be a mulitple of 4 
+to adhere to this, the .align directive can be used to inseert padding bytes till thee next bytee addreess will be a multiple of 4.
+this is required only when data bytes or half words are inseerted within code
+
+str: .asciz "hello world"
+.equ nul,0
+the .asciz assembler directives accepts string literals as arguments
+String literal are a sequence charateers in double quotes.
+the string literals are assembled into consecutivee memory location
+the assembler automatically insets a nul character(\0 charactr) after each string
+the .ascii directive is same as .asciz, but the assembler does not insert a nul character after each string
+
+the assembler maintains something called a symbol table
+the symbol table maps label names to addresses
+whenever the asseembler encounters a label deginition, the assembler makes an entry in the symbol table
+and whenever the asseembler encounters a label refference, it replaces the labeel by the corresponding address from the symbol table
+using thee assembleer directive .equ, it is also possiblee to manually insert entries in the symbol table, to mao namees to values, which aree not neceessarily addresses.
+whenever the assembler encounters these names, it replaces them by their corresponding values.
+these names and label names are togetheer called symbol names
+.equ name, expression
+the name is a symbol name, and has the same restrictions as that of the label name
+the expression could be simple literal, or an expression as explained for the .byte directive
+unlike .byte directive, thee .equ directive itself does not allocate any memory. they just creeatee entries in the symbol table
+
+==
+the Flash memory, is a kind of EEPROM
+it is a useful secondary storage, like a hard disk, but is not convenient to store vaiables in Flash
+the variables should be stored in RAM, so they can be easily modified
+the connex board has a 64 MB of RAM starting at address 0xA0000000, in which variables can be stored
+the memory map of the connex board can be pictured as shown in the following diagram
+
+0x00000000 Flash(16MB)
+0x01000000 Flash(16MB)
+0xA0000000 RAM(64MB)
+0x40000000 RAM(64MB)
+
+necessary setup has to be done to place theee variables at this address, to understand what has to be done, the role of asseembler and linker has to be undeerstood
+
+===
+linker
+while writing a multi-file program, each filee is assembled individually into object files.
+the linker combines these object files to form the final executable
+
+whilee combining the object files together, the linker performs the following operations
+	1.symbol resolution
+	2.relocation
+
+symbol resolution
+in a single file program, while producing the object file, all references to labels are replaced by their correesponding address by the assembler
+but, in a multi-file program, if there are any references to labels defined in anothere file, the assembler marks these references as "unresolved"
+when these obeejct files are passed to the linker, the linker determines the values for these references from the other object files, and patchees the code with the correct value
+
+In C, all variablees declared outside functions are visible to other foles, until eexplicitly stated as static
+in assembly, all labels are static AKA local(to the file), until explicitly stated that they should be visible to otheer files using the .global directive
+
+, all labels are static AKA local(to the file), until explicitly stated that they should be visible to otheer files using the .global directive
+
+once those files are assembled, and the symbol tables can be dumped using the nm command
+the second column of nm result, a t indicates that the symbol is defined, in the text section. a u indicated that the symbpl is undefined. A letteer in uppercase indicates that the symbol is .global
+
+relocation:
+relocation is the the process of changing addresses already assigned to labels
+this will also involvee patching up all labeel references to reflect the neewly assigned address.
+primarily, relocation is performed for the following two reasons:
+1.section merging
+2.section palcement
+
+code and data hace different run time requirements
+for example code can be placed in real-only memory,
+and data might reeequire read-wrtie memory
+it would be convenient, if code and data is not interleaved
+for this purpose, programs aree divided into sections
+most programs have at least two sections
+.text for code
+.data for data
+
+- section merging
+	- when dealing with multi-file programs, the sections with the same name(example .text) might appear, in each file.
+	- the linker is responsible for merging sections from the input files, into sections of the output file
+	- by default, the sections, with the smae name, from each file is placed contiguously and the label references are patched to reflect the new address
+	- the effects of section merging can be seen by looking at the symbol table of the object files and the corresponding executable file
+
+- section placement
+	- when a program is assembled, each section is assumed to start from address 0.
+	- and thus labels are assigneed values relatives to start of the section
+	- when thee final executable is created, the section is placed at some address X
+	- and all references to the labels defined within thee section, are incremented by X, so that they point to the new location
+	- the placement of each section at a particular location in memory and the patching of all references to the labels in thee section, is done by the linker
+	- example, placee .text section at address 0x100
+		- arm-none-eabi-ld -Ttext=0x100 -o sum.elf sum.o
+
+- linker script file
+	- the programmeer can control how the sections are merged and at what locations they aree placed in memory through a linkeer script file
+	- the SECTIONS command is the most important linker command, it specifies how the sections are to be merged and at what location they are to be placed
+	- within the block following the SECTIONS command, the .(period) represents the location counter.
+	- the location is always initialised to 0x0.
+	- it can be modified by assigning a new value to it.
+	= setting the . valuee to 0x0 at the beginning is superfluous
+	- example,
+		SECTIONS{
+			. = 0x00000000
+			.text : {*(text);}
+			. = 0x000000400
+			.data:{*(.data);}	
+		}
+		note that if the location counter is not assigned a differeent value, the .text and .data sections will be located at adjacent memory locations
+
+- RAM is volatile memory, hence it is not possible to directly make the data available in RAM, on power up
+	- all code and data should be stored in Flash before power-up.
+	- on power-up, a startup ocde is supposed to copy the data from Flash to RAM, and then proceed with the execution of the program
+	- so the program's .data section has two addesses, a load address im Flash and a run-time address in RAM
+	= in .ld parlance, the load address is called LMA(load memory address), and the run-time address is called VMA(virtual memory address)
+
+- the following two modifications havee to be done, to make the program work correctly
+	- the linker script has to bee modified to specify both the load address and run-time address, for the .data section
+	- a small piece of code should dopy .data section from Flash(load address) to RAM(run-time address)
+
+- specifying load address
+	- the run-time address is what that should be used for determining the address of labels. In the previous linker script, we have speecified the run-time address for the .data section. the load address is not explicitly specified, and defaults to the run-time address. this is OK
+	- if data is to be placed in RAM during execution, the load address should correspond to Flash and the run-time address should correspond to RAM
+	- symbols can be created on the fly within the SECTIONS command by assigning values to them. Here etext is assigned the value of the location counter at that position. etext contains the address of the next free location in Flash right after all the code	- this will be used later on to specify where .data section is to be placed in Flash. Note that etext itself will not bee allocated any memory, it is just an eentry in the symbol tabel
+	- the AT keyword speecifies the load address of the .data section. An address of symbol(whose valuee is a vaild addreess) could be passed as argument to AT. Here the load address of .data is specified as the location irght after all the code in Flash
+
+- copying .data to RAM
+- to copy the data from Flash to RAM, the following information is reuired.
+	- address of dara in Flash
+	- address of data in RAM
+	- size of thee .data section
+	- example:
+		SECTIONS{
+			. = 0x00000000;
+			.text:{
+				*(.text);
+			}	
+		flash_edata =.;
+
+		. = 0xA0000000;
+		ram_sdata =.;
+		.data: AT(flash_sdata){
+			*(.data);		
+		}
+		ram_edata =.;
+		data_size = ram_edata - ram-sdata;
+	
+	- add data in RAM
+			.data	
+		val1: .4byte 10	
+		val2: .4byte 30	
+		result: .space 4
+			
+			.text	
+			;; copy data to RAM
+		start:
+			ldr r0, =flash_edata
+			ldr r1, =ram_sdata
+			ldr r2, =data_size
+		copy:
+			ldrb r4,[r0], #1
+			strb r4,[r1], #1
+			subs r2,r2, #1
+			bne copy
+
+			;; add and store result
+			ldr r0, =val1
+			ldr r1, =val2
+
+			ldr r2,[r0]
+			ldr r3,[r1]
+
+			add r4, r2, r3
+
+			ldr r0, =result
+			str r4,[r0]
+
+stop:	b stop
+
+===
+- exception handling
+	- the examples given so far havee a major bug
+	- the first 9 words in the memoru map are reserved for the eexception vectors
+	- when an exception occurs the control is transferred to one of these 8 locations
+	- the exceptions and their exception vector addresses are show in thee following table
+	- reset 0x00
+		Undefined Instruction 0x04
+		Software Interrupt(SWI) 0x08
+		Preefetch Abort 0x0C
+		Data Abort 0x10
+		Reeserved, not used 0x14
+		IRQ 0x18
+		FIIQ 0x1C
+	- These locations are supposed to contain a branch that will transfer control the appropriate exception handler, In the examples we have seen so far, we havent inseerteed branch instructions at the exception vector addresses. Wee got away without issues since exceptions did not occur, All the above programs can be fixed, by linking them with the following assembly code
+		- example
+			.section "vectors"
+			reset: b start
+			undef: b undef
+			swi: b swi
+			pabt: b pabt
+			dabt: b dabt
+			nop
+			ieq: b irq
+			fiq: b fiq
+
+		- only the reset eexception is vectored to a different address start. All other exceeptions are vectored to the same address. So if any exception othere that reset occurs, thee processor will be spinning in the same location. So if any exception othere that reset occurs, thee processor will be spinning in the same location. The exception can then be identifiede by looking at the value of pc through a debugger(thee monitor inteereface in our case)
+		- to ensure that these instruction are placed at the eexceeption vector addresses, the linker script should look something like below
+			- example:
+				SECTION{
+					. = 0x00000000;
+					.text :{
+						*(vectors);
+						*(.text);
+						...	
+					}
+					...
+				}
+
+===
+- it is not possible to directly eexecute C code, wheen the processor comees out of reset. Since unlikee asseembly language, C programs need some basic pre-reequisites to be satisied
+- before transferring control to C code, thee following have to be setup correctly:
+	- stack
+	- global variables
+		- initialized
+		- uninitialized
+	- read only data
+
+- stack
+	- C uses the stack for storing local(auto) vaiables, passing function argumeents, storing return address, etc. So it is essential that the stack be setup correctly, before transferring control to C code
+	- stacks aree highly flexible in thr ARM architecture, since the implementation is completely left to the software
+	- to make sure that code geneereated by different compileeers is intereroperable, ARM has created thee ARM Architecture Procedire Call Standard(AAPCS). Thee register to be used as thee stack pointer and the direction in which thee stacj grows is all dicrated by the AAPCS. According to the AAPCS, registeer r13 is to be used as the stack pointer. Also the stack should be full-deescending.
+	- one way of placing global variables and the stack is shown in the following
+		- example
+			global variables 0xA000000
+
+			stack 0A400000 (initial stack pointer)
+	- so all that has to done in thee startup code is to point r13 at the hiighest RAM addreess, so that the stack can grow downwards(towards lower addresses)
+		- for the connex board this can be acheiveeed using 
+			-	ldr sp, =0xA4000000
+			- not that the the assembler provides an alias sp for r13 register
+		- the address 0xA4000000 itself does not correpsond to RAM. The RAM eneds at 0xA3FFFFFF. But that is OK, since the stack is full-descending, during the first push the stack pointer will be decremented first and the value will be stored
+
+- global vaiables
+	- when C code is compiled, the compiler places initializeed global variablees in the .data section. So just as with the assembly, the .data has to be copeed from Flash to RAM
+	- the C alnguage guarantees that all uninitialized global vaiables will be initialized to zero. When C programs are compiled, a separate seection called .bss is used for uninitialized variables. Since the value of these vaiables are all zeros to start with, they do not have to be stored in Flash. Before transferring control to C code, the memory locations coresponding to thesee variables have to be initialized to zero
+
+- read only data
+	- GCC places global variables marked as const in a separate section, called .ordata. The .rodata is also used for storing string constants.
+	- Since contents of .rodata section will not be modified, they can be placed in Flash. The linker script has to modified to accomdata this
+
+- start-up code
+	- the .bss is placed right after .data section in RAM. Symbols to locate the start of .bss and end of .bss are also created in the linker script. The .rodata is placed right after text section in Flash.
+	- the following diagram shows the placement of the various sections
+		-example
+			Flash 0x00000000
+			vectors
+			.text
+			.rodata
+			.data
+			... 0x01000000
+			
+			RAM 0xA0000000
+			.data
+			.bss	
+			... 0xA4000000
+		- linker script for C code
+			SECTION{
+				.=0x00000000;
+				.text:{
+					*(vectors);
+					*(.text);
+				}
+				.rodata:{
+					*(.rodata);
+				}
+				flash_edata =.;
+
+				.=0xA0000000;
+				ram_sdata =.;
+				.data:AT(flash_edata){
+					*(.data);
+				}
+				ram_edata=.;
+				data_size = ram_edata - ram_sdata;
+
+				sbss = .;
+				.bss:{
+					*(.bss);
+				}
+				ebss = .;
+				bss_size = ebss-sbss;
+			}
+	- start up code has thee follwoing parts
+		- exception vectors
+		- code to cpoy the .data from Flash to RAM
+		- code to zero out the .bss
+		- code to setup thee stack pointer
+		- branch to main
+	- exmaple(C startup assembly)
+		.section "vectors"
+		reset: b start
+		undef: b undef 
+		swi: b swi
+		pabt: b pabt
+		dabt: b dabt
+		nop
+		irq: b irq
+		fiq: b fiq
+		
+		.text
+		start:
+		# copy data to RAM
+		ldr r0, =flash_edata
+		ldr r1, =ram_sdata
+		ldr r2, =ram_edata
+		
+		# handlee data_size =0
+		cmp r2,#0
+		beq init_bss
+		copy:
+		ldrb r4,[r0],#1
+		strb r4,[r1],#1
+		subs r2,r2,#1
+		bne copy
+
+		init_bss:
+		# initialize .bss
+		ldr r0, =abss
+		ldr r1, =ebss
+		ldr r2, =bss_size
+		
+		# handle bess_size
+		cmp r2, #0
+		beq init_stack
+		
+		move r4, #0
+		
+		zero:
+		strb r4,[r0],#1
+		subs r2,r2,#1
+		bne zero	
+
+		init_sstack:
+		# initialize the stack pointer
+		ldr sp, =0xA4000000
+		bl main
+		stop: b stop
+
+		-example: csum.c
+				static int arr[] = { 1, 10, 4, 5, 6, 7 };
+				static int sum;
+				static const int n = sizeof(arr) / sizeof(arr[0]);
+
+				int main()
+				{
+							int i;
+
+							for (i = 0; i < n; i++)
+											sum += arr[i];
+				}	
+
+		- arm-none-eabi-gcc -nostdlib -o csum.elf -T csum.ld csum.c startup.s
+		- arm-none-eabi-nm -n csum.elf
+		- arm-none-eabi-objcopy -O binary csum.elf csum.bin
+		- dd if=csum.bin of=flash.bin bs=4096 conv=notrunc
+		- qemu-system-arm -M connex -pflash flash.bin -nographic -serial /dev/null
+		- xp /6dw
+
+- http://www.bravegnu.org/gnu-eprog/index.html
+
+
+===
+executing in qemu
+
+arm-none-eabi-as -o add.o add.s
+//arm-none-eabi-ld -Ttext=0x0 -o add.elf add.o
+arm-none-eabi-ld -T linker.ld -o add.elf add.o
+arm-none-eabi-objcopy -O binary add.elf add.bin
+
+
+dd if=/dev/zero of=flash.bin bs=4096 count=4096
+dd if=add.bin of=flash.bin bs=4096 conv=notrunc
+qemu-system-arm -M connex -pflash flash.bin -nographic -serial /dev/null

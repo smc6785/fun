@@ -1,0 +1,23 @@
+binary Image
+0 black
+1 white
+
+8bit 2^8 = 256 levels 0~255
+
+grey scale Image
+
+RGB VGA  = 640*480*3 
+
+if waitkey(10)&& 0xFF == q""
+    break
+
+cv2 canny edge detection 
+
+dialation 扩张
+
+Erode 
+
+img cropped 剪裁
+
+getPerspectiveTransform
+warpPerspective 

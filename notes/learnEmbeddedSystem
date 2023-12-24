@@ -1,0 +1,1041 @@
+embedded system
+an embedded system can be thought of as a computer hardare system having software embedded in it. it can be an independent system or it can be a part of a large system.
+three components of an embedded system
+-hardware
+-application software
+-RTOS
+
+characteristics of an embedded system
+-single functioned
+	an embedded system usually performs a specialized operation and does the same repeatedlu.
+-tightly constrained
+	all computing systemes have constraints on design metrics, but those on an embedded system can be especially tight.
+	design metrics is a measure of an implementation;s features such as its cost, size, power, and performance. it must be of a sizee to fit on a signle chip, must perform fast enough to process data in real time and consume minimum power to extend battery life
+-reactive and real time
+	many embedded systems must continually react to changes in the system's encironment and must compute certain reesults in real time without any delay
+	consider an example of a car cruise controller, it continually monitors and reeacts to speed and brake sensors. it must compute acceleration or deeaccelerations repeeatedly within a limited time, a delayede computation can result in failure to control of the car
+-microprocessors based
+	it must be microprocessor or microcontroller based
+-memory
+	it must have a memory, as its software usually embeds in ROM, it does not need any secondary memories in thee computer	
+-connect
+	it must have connected peripherals to conneect inout and output devices
+-HW SW systems
+	software is used for more features and flexibility
+	hardware is used for performance and security
+
+advantages:
+-easily customizable
+-low power consumption
+-low cost
+-enhanced performance
+
+disadvantages:
+-high development effort
+-larger time to market
+
+===
+processor is the hreat of an embedded system. it is the basic unit that takes inputs and produces an output after processing the data. 
+a processor has two essential units:
+-program flow control unit(CU)
+-execution unit(EU)
+
+the CU includes a fetch unit for fetching instructions from the meemory.
+the EU has circuits that implement the instructions pertaining to data transfer operation and data conversion from one form to another
+
+processors can be of the following cateegories
+-general purpose processor(GPP)
+	microprocessor, microcontroller, embedded processor, figital signal processor, media processor
+-application specific system processor(ASSP)
+-application specific instruction processor(ASIPs)
+-GPP cores or ASIP cores on either an application specific integratedd ciruit(ASIC) or a very large scale integration(VLSI) circuit
+
+a microprocessor is a signle VLSI chip having a CPU. In addidtion, it may also have other units such as coaches, floating point processing arithmetic unit, and pipelining units that help in faster processing of instructions
+
+a microcontroller is a signle-chip VLSI unit. although having limited computational capabilities, possesses enhanceed input/output capability and a number of on-chip functionall units
+
+architecture of the processor:
+-Harvard Architectrue
+-Von Neumann Architecture
+
+type of instructions set of the processor:
+-RISC
+-CISC
+
+when data and code lie in different memory blocks, then the architecture is referred as Harvard architecture
+in case data and code lie in the same memory block, then the architecture is referred as Von Neumann architecture
+
+===
+Von Neumann architecture
+In the Von Neumann architecture, one data path or bus exists for both instruction and data.
+As a result, the CPU does one operation at a time. It either fetches an instruction from memory, or performs read/write operation on data, so an instruction fetch and a data operation can not occur simultaneously, sharing a common bus
+Von-Neumann architecture suppoerts simple hardware, it allows the use of a single, sequential memory. Today's processing speeds vastly outpace memory access times, and we employ a very fast but small amount of memory(cache) local to the processor
+
+===
+Harvard architecture
+the Harvard architecture offers separate storage and signal buses for instructions and data. 
+this architecture has data storage entirely contained within the CPU, and there is no access to the instruction storage as data. 
+computers have separate memory areas for program instructions and data using internal data buses, allowing siultaneous access to both instructions and data
+
+===
+Von-Neumann architecture:
+-single memory to be shared bu both code and data
+-processor needs to fetch code in a separate clock cycle and data in another clock cycle, so it requires two clock cycles
+-higher speed, thus less time consuming
+-simple in design
+
+Harvard architecture:
+-seeparate meemories for code and data
+-single clock cycle is sufficient, as separate buses are used to access code and date
+-slower in speed, thus more time consuming
+-complex in design
+
+CISC:
+-larger set of instrucions, easy to program
+-simpler design of compiler, considering larger set of instrcutions
+-many addressing modes causing complex instruction formats
+-higher clock cycles per second
+-emphasis is on hard ware
+-control unit implements large instruction set using microprogram unit
+-slower execution, as instructions are to be read from memory and decoded by the decoder unit
+-pipelining is not possible
+
+RISC:
+-smaller set of instructions, difficult to program
+-complex deisgn of compiler
+-few addressing modes, fix instruction format
+-instruction length varies
+-low clock cycle per second
+-emphasis is on software
+-each instruction is to be executed bu hardware
+-faster execution, as such instruction is to be executed by hardware
+-pipelining of instructions is possible considering single clock cycle
+
+===
+a compiler is a computer program(or a seet of programs) that transforms the source codee written in a programming language (the source language) into another computer language(normally binary format). the most common reason for conversion if to create an executablee program.
+
+cross-compiler
+if the compiled program can run on a computere having different CPU or operating system than the computer on which the compiler compiled thee program, then that compiler is known as a crossp-compiler
+
+decompiler
+a program that can translate a program from a low level language to a high-level language is called a decompiler
+
+languagee converter
+a program that translates programs written in different high-leevel languages is normally called a language translator, source to source translator, or language converter
+
+a compiler is likely to perform the following operations
+-preprocessing
+-parsing
+-semantic analysis(syntax-directed translation)
+-code generation
+-code optimization
+
+assemblers
+an assembler is a program that takes basic computer instructions(called as assembly language) and conveerts them into a pattern of bits that the computer's processor can use to perform its basic operations
+
+an assembler creates object code by translating assembly instruction mnemonics into opcodes, resolving symbolic namees to memory locations.
+
+Assembly language uses a mnemonic to represent each low level machine operation(opcode)
+
+===
+debugging tools
+-simulators
+-microcontroller starter kits
+-eemulator
+
+simulators
+code is tested for the MCU/system by simulating it on the host computer for code development. Simulators try to model the behavior of the complete microcontroller in software
+
+functions of simulators
+-defines thee processor or processing device family as well as its various versions for the target system
+-monitors the detailed information of a source code part with labels and symbolic arguments as the execution goes on for each single step
+-provides the status of RAM and simulated ports of the target system for each single step execution
+-monitors system response and determines throughput
+-provides trace of the output of contents of program counter versus the processor registers
+-provides the detailed meaning of the present command
+-monitors the detailed information of the simulator commands as these are entered from the keyboard or selected from the menu
+-supports the conditions(up to 8 or 16 or 32 conditions) and unconditional breakpoints
+-provides breakpoints and the trace which are together the important testing and debugging tool
+-facilitates synchronizing the internal peripherals and delays
+
+mricrocontroller starter kit consists of
+-hardware board(evaliation board)
+-in-system programmer
+-some software tools like compiler, assembler, linker, etc.
+-sometimes, an IDE and code size limited evaluation version of a compiler
+
+a big advantage of these kits over simulators is that they work in real-time and thus allow for easy input/output functionality verification. starter kits, however, are completely sufficient and the cheapest option to develop simple microcontroller projects
+
+emulators
+an emulator is a hardware kit or a software program or can be both which emulates the functions of one computer system(the guest) in another system(the host).
+emulation refers to the ability of a computer program in an electronic devide to emulate(imitate) another program or device. Emulation forcuses on recreating an orihinal computere environment. Emulators have the ability to maintain a closer connection to the authenticity of the digital object. An emulator helps the user to work on any kind of application or operating system on a platform in a similar way as the software runs as in its original environement
+
+a simulator mimics the basic behavior of a device
+an emulator deplicayes the thing exactly as it exists in real life
+
+===
+peripheral devices in embedded systems
+Embedded systems commu nicate with the outside world via their peripherals, such as following:
+-Serial Communication Interfaces(SCI), like RS-232, RS-422, RS-485,etc
+-Synchronous Seerial Communication Interface, like I2C, SPI, SSC and ESI
+-Universal Serial Bus(USB)
+-Multi Media Cards(SD cards, cimpact flash, etc)
+-Networks like Ethernet, lonWorks, etc
+-Fieldbuses like BAN-Bus, LIN-Bus, PROFIBUS,etc
+-imers like PLL(s), Capture/Compare and time processing units
+-Discrete IO aka General Purpose input/output(GPIO)
+-Analog to digital/ digital to analog (ADC/DAC)
+-debugging likee JTAG, ISP, ICSO, BDM Port, BITP, and DP9 ports
+
+criteria for choosing microcontroller
+-speed
+-packaging, is it 40-pin DIP(DUal-inline-package) or QFP(Quad flat packagee)
+	this is important in terms of space, assembling and prototyping the end-product
+-power consumption, for batteery-powered products
+-amount of RAM and ROM on the chip
+-cost per unit
+
+===
+Assembly languages were developed to provide mnemonics or symbols for the machine level code instructions. Assembly language programs consist of mneemonics, thus theey should be translated into machine code. 
+A program that is responsible for this conversion is known as assembleer.
+Assembly language is oftern termed as a low-level language, because it directly works with the internal structuree of the CPU.
+To program in assembly language, a programmer must know all the registers of the CPU
+
+structure of assembly language
+an assembly language program is a series of statements, which are eitheer asseembly language instruction such as ADD and MOV, or statements called directives
+An intruction tells the CPU what to do, while a directive(also calleede pseudo-instructions) gives instruction to the assembler.
+for example, ADD and MOV instructions are commands which the CPU runs,
+	while ORG and END are assembler directives. the assembler places thee opcode to the memory location 0 when the ORG directive is used, while END indicates to the end of the source code.
+
+===
+[lable:] mnemonics [operands] [;comment]
+a square bracket[] indicates that the field is optional
+the label field allows the program to refer to a line of code by name. The label fields can not eexceed a certain number of characters
+the mnemonics and operands field together perform the real work of thee program and accomplish the tasks
+statemnts like AAD A, C & Move C,#68 wheere ADD and MOV are the mnemonics, which profuce opcodes; "A,C" and "C,#68" are operands. 
+these two fields could contain directives, directives do not generate machine code and are used only by the assembler, whereas instructions are translated into machine code for the CPU to execute
+the comment field begians wiith a semicolon which is comment indicator
+any label which refers to an instruction should be followed by a colon
+
+
+editor program
+|(myFile.asm)
+v
+asseembler program -> myFile.lst(list file, it lists all the opcodes and addresses as well as error that the asseemblers deteeected
+|(myFile.obj)
+v
+linker program <- other obj files
+|(myFile.abs) (.abs is called an absolute file)
+OH program( object to hex convrter, which creates a file with the extension"hex" that is ready to burn in to the ROM
+|
+v
+myFile.hex
+
+===
+the DB directive is the most widely used data direective in the asseembler. it is useed to define the 8 bit data
+it can also be used to define decimal, binary, hex, or ASCII formats data.
+For decimal, the "D" after the decimal number is optional, but is is required for "B"(binary) and "HI"(hexadecimal)
+to indicate ASCII, simply place the characteers in quotation marks("like this"). The Assembler generates ASCII code for the numbers/characters automatically.
+
+===
+registers
+registers are used in the CPU to store information on temporaraily basis which could be data to be processed, or an address pointing to the data which is to be fetched.
+
+in 8051, there is onee data type is of 8-bit, from the MSB(most significant bit) D7 to the LSV(least significant bit) D0. With 8-bit data type, any data type larger than 8-bits must be broken into 8-bit chunks before it is processed.
+the most widely used registers of the 8051 are A(accumulator), B R0-R7, DPTR(data pointer), and PC(program counter). all these registers are of 8-bits, except DPTR and PC.
+
+Accumulator
+the accumulaor, register A, is used for all arithmetic and logic operations
+if the accumulator is not present, then every result of each calculation(addition, multiplication, shift,eetc.) is to be stored into the main memory.
+Access to main memory is slower than access to a register like the accumulator, because the technology used for the large main memory is slower(but cheaper) than that used for a register
+
+the R register
+the "R" registers are a set of eight registers, namely, R0,R1 to R7.
+these registers function as auxiliary or temporary storage registers in many operations
+the "R" registers are very important auxiliary or helper registers. The accumulator alone would not be very useful if it were not for these "R" registers. The "R" registers are meant for temporarily storage of values
+
+the B register
+the "B" register is very similar to the Accumulator in the sense that it may hold an 8-bit(1-byte) value. The "B" register is used only by two 8051 instructions: MUL AB and DIV AB. 
+To quickly and easily mulitiply or divide by another number, you may store the other number in "B" and make usee of these two instructions.
+apart from usng MUL and DIV instrucions, the "B" registere is often used as yet another temporary storage register, much like a ninth R register
+
+the data pointer
+the data pointer (DPTR) is the 8051's only user-accessible 16-bit(2-byte) register. the accumulator,R0-R7 registers and B register are 1-byte valye registers.
+DPTR is meant for pointing to  data. it is used by the 8051 to access external memory using the address indicated by DPTR. DPTR is the only 16-bti register available and is often used to storee 2-byte values
+
+program counter
+the program counter(PC) is a 2-byte address which tells the 8051 whre the next instruction to execute can be found in the memory.
+PC starts at 0000h when the 8051 initializes and is incremented every time after an instruction is executed.
+PC is not always incremented by 1, some som instructons may require 2 or 3 bytes, in such cases, the PC will be incremented by 2 or 3
+
+branch, jump and interrupt operations load the program counter with an addreess other than the next sequential location
+activiating a power-on reset will causee all values in thee register to be lost. it means the value of the PC is 0 upon reset, forcing the CPU to fetch the first opcode from the ROM location 0000. it means we must place the first byte of upcode in ROM location 0000 because that is wheree the CPU expects to find the first instruction
+
+the stack pointer(SP)
+the stack pointer, like all registers except DPTR and PC, may hold an 8-bit(1-byte) value. the stack pointer tells the location from where the next value is to be removed from the stack
+when a value is pushed onto the stack, the value of SP is incremented and then the valuee is stored at the resulting memory location.
+when a value is popped off the stack, the value is returned from the memory location indicated by SP, and then the value of SP is decremented
+the order of operation is important. SP will be initialized to 07h when the 8051 is initialized. if a value is pushed onto the stack at the same time, the value will be stored in the internal RAM address 08h because the 8051 will first increment the value of SP(from 07h to 08h) and then will store the pushed value at that memory address(O8h).
+SP is modified directly by the 8051 by six instructions: PUSH, POP, ACALL. LCALL, RET and RETI
+
+===
+ROM space in 8051
+different family members of 8051 have different bytes of on-chip ROM, like 8k, 8K, 32k, 64k bytes, etc.
+the point to remember is that no member of the 8051 family can access more than 64k bytes of opcode since the program counter in 8051 is a 16-bit register(0000 to FFFF address)
+
+the first location of the program ROM inside the 8051 has the address of 0000H, whereas the last location can bee different depending on the size of the ROM on the chip, Among the 8051 family members, AT8951 has 4k bytes of on-chip ROM having a memory address of 0000(first location) to 0FFFH(last lcoation)
+
+the program status word(PSW)
+the program status word(PSW) register is a 8-bit register, also known as flag register. it is of 8-bit wde but only 6-bit of it is used.
+he two unused bits aree user-defineed flags. Four of the flags are called conditional flags. which means that they indicate a condition which results after an instruction is eexecuted. These four are CY(carry), AC(auxiliary carry), P(parity), and OV(overflow). the bits RS0 and RS1 are used to change the bank register.
+
+CY, the carry flag, this carry flag, whenever there is carry out from the D7 bit. it is affected after an 8-bit addition or subtraction operatiion.
+it can also be rest to 1 or 0 directly by an instruction such as "SETB C" and "CLR C" where "SETB" stands for set bit carry and "CLR" stands for clear carry
+AC, auxiliary carry flag, if there is a carry from D3 and D4 during an ADD or SUb operation, the AC bit is set; otherwise, it is cleared, it is used for the instruction to perform binary codeed decimal arithmetic
+P, the parity flag, the parity flag represents the number of 1's in the accumulator register only. if the A register contains odd number of 1's, then P=1, and for even number of 1's, P is 0
+OV, the overflow flag, this flag is set whenever the result of a signeed number operation is too large casusing the high-order bit to overflow into the sign bit, it is used to detect errors in signed arithmetic operations
+
+
+the collection of general purpose register(R0-R7) is calld as registeer banks, which accept one byte of data(8 bits).
+the bank register is a part of the RAM memory in the embedded microcontrollers. Each mircocontroller consists of various memory banks, and each bank register consists of a unique address for recongnizing the storage locatio.
+by default, the 8051 microcontroller is poweered up with register bank0, and by using the program status word(PSW), we can switch to other banks. and it is used to store the program instructions. 
+
+===
+the 8051 microcontroller has a total of 128 bytes of RAM
+32 bytes from 00H to 1FH locations are seet aside for register banks and the stack
+16 bytes from 20H to 2F locations are set aside for bit-addressable read/write memory
+80 bytes from 30H to 7FH locations are used for read and write storage; it is called as scratch pad. These 80 locations RAM are widely used for purpose of storing data and parameters by 8051 programmers
+
+
+stack memory allocation in 8051 microcontroller
+the stack is an area of random access meory(RAM) allocated to hold temporarily all the parameters of the variables. The stack is also responsible for reminding the order in which a function is called so that it can b reeturned correctly. Wheneeever the function is called, the parameteers and local vaiables associated with it are added to the stack(PUSH). when the function retuens, the parameteers and the cariables are removed(POP) from the stack. this is why a program;s stack size changes continuously while the program is running
+the stack pointer (SP) is a CPU register, SP is used to access the stack. when wee push something into the stack memory, the stack pointer increases
+
+the stack is a section of a RAM used by the CPU to store information such as data or memory address on temporary basis. The CPU needs this storage areae considering limited nuber of registers in CPU
+
+as the stack is section of a RAM, there are registers inside the CPU to point to it. The register used to access the stack is known as the stack pointer register.
+the stack pointer in the 8051 is 8-bits wide, and it can take a value of 00H to FFH. when the 8051 is initialized, the SP pointer in the 8051 contains the value 07H. This means that the RAM location 08 is the first location used for the stack
+the storing operation of a CPU register in the stack is known as a PUSH
+getting the contents from the stack back into a CPU register is called a POP
+
+===
+address mode
+an addressing mode refers to how you are addressing a giiven memory locatio
+-immediate addreessing mode
+-direct addressing mode
+-register direct addressing mode
+-registeer indirect addrssing mode
+-indexed addressing mode
+
+immediate addressing mode
+it is termed as immediate because 8-bit dara is transferred immediately to the accumulator(destination operand)
+MOV A, #6AH
+the '#' symbol before 6AH indicates that the operand is a data(8-bit). in the absence of '#', the hexadecimal number would be taken as an address
+
+direect addressing mode
+this is anotheer way of adddressing an operand, the address of the data(source data) is given as an operand
+MOV A, 04H
+the register bank#0(4th register) has the address 04H, When the MOV instruction is executeed, the data stored in register 04H is moveed to the accumulator. As the register 04H holds the data 1FH
+we have not used '#' in direct addressing mode, unlikee immediate mode. if we had used '#', the data value 04H would have been transferred to the accumulator instead of 1FH
+
+register direct addressing mode
+in this addressing mode, we use the register name directly(as source operand)
+MOV A, R4
+at a time, the registers can take values from R0 to R7. there are 32 such registers. in order to use 32 registers with just 8 variables to address registeers, reegister banks are used
+the instruction above is 1 byte and requires 1 cycle for complete execution, hence it saves program memory
+
+register indirect addressing mode
+in this addressing mode, thee address of the data is stored in the register as opeerand
+MOV A, @R0
+the value stored in R0 is the address of the actual operand value
+only R0 and R1 are allowed to form a register indirect addressing instruction. in other words, the programmer can create an instruction either using @R0 or @R1. all regisrer banks are allowed
+
+indexed addressing mode
+MOVC A, @A+DPTR
+MOVC A, @A+PC
+FPTR has the value 01FE, where 01 is located in DPH(higher 8 bits) and FE is locateed in DPL(lower 8 bits). Accumulator ahs the value 02H. So data at location (01FEH + 02H)0200H will get transferred to the accumulator
+this is a 1 byte instruction with 2 cycles needed for execution
+
+===
+a timer is a specialized type of clock which is used to measure time intervals.
+a timer that counts from zero upwards for measuring time elapsed is often caled a stopwatch.
+it is also a device that counts down from a specifiedd time interval and used to generate a time delay
+
+a counter is a device that stores the number of times a particular event or process occurred, with respect to a clock signal.
+it is used to count the events happening outside the microcontroller.
+in electronics, counters can be impplemented quite easily using register-type circuits such as a flip-flop
+
+===
+an inteerrupt is a gisnal to the processor emiited by hardware or software indicating an event that needs immeediate attention
+wheneveer an interrupt occurs, the controller completees the execution of the current instruction and starts the execution of an Interrupt Service Routine(ISR) or interrupt handler
+ISR tells the processor or controller what to do when the interrupt occurs
+
+the state of continuoys monitoring is known as polling. the microcontroller keeps checking the status of other devices, and while doing so , it does not other operation and consumes all its processing time for moinitoring. this problem can be addressed by using interruptse
+
+interrupt modiles are of two types
+-edge trigering
+-leevel trigering
+
+
+===
+
+learndsPIC33EP64MC502
+
+capacitor 104 value, 0.1uF
+
+ceramic capacitor
+electrolytic capacitors
+	they are the only type of capacitor that is polarized
+	positive pin, the anode, the anode always needs to be connected to a higher voltage, longer pin
+	negative pin, cathode, shorter pin
+
+kilofarad kF 1000F
+milifarad mF 0.001F
+microfarad uF 0.000001F
+nanofarad nF 0.000000001F
+picofarad pF 0.000000000001F
+
+decoupling capacitor
+in intergrated circuit(IC), capacitors have a critical job to perform by remiving all of the high frequeency noise found in the power supply signals that power an IC
+any fluctuation in voltage can be fatal to an IC, and can even result in the chip powering off unexpectedly.
+By placing capacitors betweeen the IC and a power supply, they calm the voltage fluctuations and also as a second power source if the primary power drops its voltage enough to turn off an IC
+
+energy storage
+capacitors share many simiilar characteristics to batteries, including their ability to store energy. 
+However, unlike the battery, capacitors cant hold nearly as much poweer.
+but while they cant keep up in quantity, they make up for in their zest to discharge as quickly as possible
+capacitos can deliver energy way faster than a battery, which makes them the perfect fit for powering the flash in a camera, tuning a radio station, or switching the channels on a TV
+
+capacitive touch sensors
+one of the most recent advancements in capacitor applications has to do with thee explosion of touch screen technologies. 
+the glass screeens that make up these touch sensors ahve a very thin, transparent metal coating. when your finger touches the screen, this creates a voltage drop, identifying the exact location of your finger
+
+
+lab 16
+
+PIC from Mirochip
+AVR from Atmel
+8051 from Intel
+ARM from different manufacturers, like stm32
+
+master clear pin external reset
+MCLR is an optional reset is activated by pulling the pin low
+a small capacitor can be connected from the MCLR pin to ground to hold the device in reset mode longer wheen pulled low by a short signal
+a normally open momentary switch can also be added from MCLR to ground to offer a manual way to reset the device
+
+
+===
+why PLL
+phase locked loop
+a frequency multiplier
+having a PLL. so you can generate many frequencies off the onboard RC oscillator
+you can operate flexibly with no external oscillator
+also can reroute the PLL to an external oscillator
+
+example:(to save power)
+	I worked on a battery-powered product which normally ran at 8 MHz, with the PLL off. However, periodically, we needed to generate much faster clocks to enable I2S streaming from an external audio chip. So, we spun up the PLL just for the few seconds where we needed those clocks, then shut it down when we were done.
+
+example:(to redue EMC emissions)
+	Some microcontrollers have an embedded programmable PLL Clock Generator allowing the usage of standard 3 to 25 MHz crystals to obtain a large range of internal frequencies (up to a few hundred MHz). By these means, the microcontroller can operate with cheaper, medium frequency crystals, while still providing a high frequency internal clock for maximum system performance. The high clock frequency source is contained inside the chip and does not go through the PCB (Printed Circuit Board) tracks and external components. This reduces the potential noise emission of the application.
+
+===
+configuration bits, fuse bits
+those bits are written to the flash memory so you cant change those in the runtime
+need to flash again, if you want to change those
+
+===
+char a, value: -127 to +127(1byte)
+int i, value -32767 to +32767(2byte)
+unsigned char ch, value: 0to 255
+unsignede int i, value: 0 to 655635
+long&floar available
+
+C code: var1 = 55
+assembly code:
+movlw 55
+movwf var1
+
+C code: var1 = var2
+assembly code:
+movf var2,w
+movwf var1
+
+advantagee of C over assembly
+-structured program
+-logical/easier for the ehuman mind to understand/read
+-easier to debug
+-faster time to market
+-allow the C compiler to do the grunt work in assembly
+
+PIC MCU architecture is called harvard architecture
+PIC MCU has separatee data and program buses
+
+50mA drive capability
+TRISx, direction control
+
+Port and Latch R/W operation
+write to the port or the latch have the same effect
+read from latch, it reads the last value
+read from port, it reads the port value on the pin itself
+
+===
+#building and running bare metal executables for ARM target using GNU tools
+
+executable, embedded target specific machine codes
+
+cross -compolation is a process in which the cross-toolchain runs on the host machine(PC) and creates executables that run on diffferent machine(ARM)
+toolchain or a cross-compilation toolchain is a colleectiion of binaries which allows you to compole, assemble, link your applications
+it also contains binaries to debug the application on the target
+toolchain also comes with other binaries which help you to analyze the executables
+-dissect different sections of the executable
+-disassemble
+-extract symbol and size information
+-convert executable to other formats such as bin, ihex
+-provides C standard libraries
+
+popular tool-chains
+-GNU tools(GCC, GNU's Compiler Collections) for ARM embedded processors(free and open-source)
+-armcc from ARM Ltd(private limiteed company)
+
+EABI, embeddded apploiation binary interface
+compiler, linker, assembler arm-none-eabi-gcc, c
+ELF file analyzer
+-arm-none-eabi-objdump
+=arm-none-eabi-readelf
+-arm-none-eabi-nm
+assemebler, arm-none-eabi-as
+format conveerter, arm-none-eabi-objcopy
+linker, arm-none-eabi-Id
+
+main.c
+pre-processing stage, all pre-processing directives will be resolved
+-heaeder filees will be included
+-Marcos will be replaced
+-comments are removed
+main.i
+parser
+translating a source fie intro assembly language
+code feneration stagee
+higher level language code stateements will bee converted into processor architectural level mnemonics
+main.s
+assembler stage
+assembly level mnemonics are converted into opcodes(machine codes for instructions)
+main.o relocatable object
+processor architecture specific machine codees with no absolute address(relocatable)
+
+re-locatable objecct files
+linker <- .a other libraries (std and/or third party .Ex. libc)
+.elf executable and debug file  
+objcopy tool
+.ihex intel hex format
+.bin format
+
+makefile
+CC, cross compiler
+CC=arm-none-eabi-gcc
+MACH=cortex-m4
+CFLAGS= -c -mcpu=$(MACH) -mthumb -std=gnu11 -O0
+LDFLAGS= --specs=nano.specs  -T stm32_linkerScript.ld -Wl, -Map=fianl.map
+
+all: main.o led.o stm32_startup.o final.elf
+
+//target, dependency, recipe(followed by one TAB)
+main.o:main.c
+	$(CC) $(CFLAGS) main.c -o main.o 
+//$^, denotes dependency
+//$@, denotes target
+//$(CC) $(CFLAGS) $^ -o $@
+
+final.elf: main.o stm32_startup.o
+	$(CC) $(LDFLAGS) -o $@ $^
+
+clean:
+	rm -r *.o *.elf
+load:
+	openocd -f board/stm32f4discovery.cfg
+
+analyzing .o files (relocatable object files)
+-main.o is in elf format(eexecutable and linkable format)
+-ELF is a standard file format for object files and executable files when you use GCC
+-a file format standard describes a way of organizing various elements(data, read-only data, code, uninitialized data, etc.) of a program in different sections
+-thee Common Object File Format(COFF): introduced by Unix system
+-Arm image Format(AIF): introduced by ARM
+-SRECORD: introduced by Motorola
+
+relocatable object file, main.o, machine code file, it doesnt contain any absolute addreesses for data and code
+objdump -h a.out
+objdump -d a.out
+objdump -D a.out > a_log
+
+relocate memory addressees using linker script and assigning the relocatablee address to these sections
+relocatable address is decided based on the type of microcontroller or processor memory map
+
+in every obeject file,the base address is selected as zero.
+From that, the offset is counted
+
+the startup file is responsible for setting up the right environment for the main user code to run
+code written in startup file runs before main(). So, you can say startup file calls main()
+some part of the startup code file is the target(processor) dependent
+startup code takes care of vector table placement in code memory as required by the RAM cortex Mx processor
+startup code may also take care of stack reinitialization
+startup code is responsible of .data, .bss section initialization in main memory
+
+start-up file
+-create a vector table for your microcontroller .vector tables are MCU specific
+-write a start-up code which initializes .data and .bss section in SRAM
+-call main()
+
+code memoory(FLASH)
+unused code memory
+.data(initialized global and static variables)
+.rodata
+.text
+vector table
+
+vector table:
+exceptions and interrupt in STM32F4VGT MCU
+82 IRQs(interrupt request), IRQ0-IRQ81
+15 system exceptions
+MSP(main stack pointer)
+
+total memory consumed by vector table
+82+15+1=98 word addressable memory locations
+98*4=392 bytes
+
+create a vector table
+-create an array to hold MSP and handlers addreesses
+	uint32_t vectors[]={store MSP and address of various handlers here};
+-instruct the compiler not to include the above array in .data section but in a different user defined section
+
+===
+//stm32Startup.c
+#include<stdint.h>
+
+#define SRAM_START 0x20000000U
+#define SRAM_SIZE (128U*1024U) //128KB
+#define SRAM_END ((SRAM_START)+(SRAM_SIZE))
+#define STACK_START SRAM_END
+
+void Reset_handler(void);
+void NMI_handler(void);
+
+uint32_t vectors[] __attribute__((section(".isr_vector")))= {
+	STACK_START,
+	(uint32_t)&Reset_handler,
+	(uint32_t)&NMI_handler
+};
+//  __attribute__((section(".isr_vector")))
+// could also be at the end
+void Reset_handler(void){}
+void NMI_handler(void){}
+
+there are 97 exceptions(15 system exceptions+82 inteerrupts)
+it is not required to write handlers for all the exceptions
+lets creeate a single default handler for all the exceptions and allow programmer to implement required handlers as per application requirements
+
+compiler manual
+variablee attribute
+section
+normally, the compiler places the objects it fenerates in sections like data and bss.
+sometimes, however, you need additional sections, or you need certain particular variables to appear in special sections
+for example to map to special hardware. the section attribute speecifies that a variable(or function) lives in a particualr sectiono
+for example, int init_data __attribuutee__((section("INITDATA")));
+
+in GNU C, you declare certain thing about functions called in your program which help the compiler optimize function calls and check your code more carefully
+the key word __attribute__ allows you to specify special attributes when making a declaration
+
+weak attribute
+this is primaroly useeful in defining library functions which can be oveerridden in user code
+alias attribute
+the alias variable attribute causes the declaration to be emitted as an alias for another symbol known as an alias target
+
+//stm32Startup.c
+#include<stdint.h>
+
+#define SRAM_START 0x20000000U
+#define SRAM_SIZE (128U*1024U) //128KB
+#define SRAM_END ((SRAM_START)+(SRAM_SIZE))
+#define STACK_START SRAM_END
+
+//symbol that user created
+extern uint32_t end_of_text;
+extern uint32_t start_of_data;
+extern uint32_t end_of_data;
+extern uint32_t start_of_bss;
+extern uint32_t end_of_bss;
+
+//prototype of main;
+int main(void);
+
+void Reset_handler(void);
+void NMI_handler(void) __attrivute__((weak, alias("Default_Handler")));
+void HardFault_handler(void) __attrivute__((weak, alias("Default_Handler")));
+// ...
+
+uint32_t vectors[] __attribute__((section(".isr_vector")))= {
+	STACK_START,
+	(uint32_t)&Reset_handler,
+	(uint32_t)&NMI_handler
+	// ...
+};
+
+void Default_Handler(void){
+	while(1);
+}
+void Reset_handler(void){
+	//copy .data section to SRAM
+	uint32_t size=(uint32_t)&end_of_data - (uint32_t)%start_of_data;
+	uint8_t* pDst=(uint*_t*)&start_of_data; //SRAM
+	uint8_t* pSrc=(uint*_t*)&end_of_text;	//FLASH
+	
+	for(uint32_t i = 0; i<size; i++){
+		*pDst++ = *pSrc++;	
+	}	
+
+	//init .bss section to zero in SRAM
+	size =(uint32_t)&end_of_bss - (uint32_t)%start_of_bss;
+	pDst = (uint8_t*0 &start_of_bss;
+	for(uint32_t i = 0; i<size; i++){
+		*pDst++ = 0;	
+	}	
+
+	//call init function of standard library
+	main();
+	//call main()
+}
+
+here "Deffault_Handler" is an alias function name for "NMI_Handler"
+in the vector table array, address of "Default_Handler" function will be stored
+so when NMI exception triggers, "Default_Handler" will be executed
+
+now, we are making this weak, 
+this is because, we are allowing user to override this function with same function name in main application.
+there user can implement real implementation of handling that exception
+
+===
+transfeerring of .data section to RAM (C start up)
+
+code memory (FLASH)
+data memory (SRAM)
+
+merging and address relocation done by linker and locator with the help of linker script
+
+linker script is a text file hich explains how differeent sections of the objeect files should be merged to create an output file
+linker and locator combination assigns unique absolute addresses to different sections of the output file by referring to address information mentioned in the linker script
+linker script also includes the code and data memory address and size information
+linkere script are writteen using the GNu linker command language
+GNU linker scrupt has the file eextension of .ld
+you must supply linker script at thee linking phase to the linker using -T option
+
+linker scripts commands
+ENTRY
+MEMOORY
+SEECTIONS
+KEPP
+ALIGN
+AT>
+
+Entry command
+this command is used to set the Entry point address information in the header of final elf file generated
+in our case, "Reset_Handler" is the entry point into the applocation
+the first piece of code that executes right after the processor reset
+the debugger uses this information to locate the first function to execute
+not a mandatory command to use, but required when you debug the elf file using the debugger(GDB)
+syntax: Entry(__symbol_name__)
+	Entry(Reset_Handle)
+
+Memory command
+this command allows you to describe the different memories present in the target and their start address and size information
+the linker uses information mentioned in this command to assign addresses to merged sections
+the inforamtion is given under this command also helps thee linker to calculate total code and data meemory consumeed so far
+and throw an error message if data, codee, heap or stack areas can not fit into available size
+by using memory command, you can fine-tune various mmories available in your target and allow different sections to occupy different memory areas
+typically one linker script has one memory command
+
+syntax:
+MEMORY{
+	name(attr):ORIGIN=origin,LENGTH=len
+}
+
+name, defines name of the memory region which will be later refereeneced by other parts of the linker script
+ORIGIN, defines irigin address of the memory region
+LENGTH, defines the length inforamtion
+
+attr, defines the attribute list of the memory region
+vaild attribute lists must be made up of the characteers "ALIRWX" that match section attributes
+
+R, read-only sections
+W, read and write sections
+X, sections containing executable code
+A, allocated sections
+I, initialized sections
+L, same as I
+!, invert the sense of any of the following attributes
+
+sections command
+SECTIONS command is used to create different output sections in the final elf executable generated
+important command  by which you can instruct the linker how to merge the input sections to yield an output section
+this command also controls the order in which different output sections appear in the elf file generated
+by using this command, you also memtion the placement of a section in a memory region
+for example, you instruct the linker to place the .text section in the FLASH memory region, which is described by the MEMORY command
+
+location counter(.)
+this is a special linker symbol denoted by a dot .
+this symbol is calleed  "location counter" since linker automatically updates this symbol with location(address) information
+you can use this symbol inside thee linker scrupt to track and define boundaries of various sections
+you can also set location counter to any specific value while writing linker script
+location counteer should appear only inside the SEECTIONS command
+the location counteer is theen incrementede by the size of the output section
+
+linker script symbol
+a symbol is the name of an address
+a symbol declaration is not equivalent to a variablee declaration what you do in your C application
+
+symbol table
+addreess|symbol
+0x20000000|my_value
+
+symbol valuees are addresses added by thee linker for your variables and functions
+custom symbol values added by you by creating linker symbols in linker script
+
+
+===
+//stm32_linkerScript.ld
+//FLASH size(KB) 1024
+//SRAM1 size(KB) 112
+//SRAM2 size(KB) 16
+
+ENTRY(Rest_Handler)
+
+MEMORY{
+	FLASH(rx):ORIGIN =0x08000000,LENGTH=1024*1024
+	//SRAM1(rwx):ORIGIN =0x20000000,LENGTH=116*1024
+	//SRAM2(rwx):ORIGIN =0x20000000+(116*1024)-4,LENGTH=16*1024
+	SRAM(rwx):ORIGIN =0x20000000,LENGTH=128*1024
+}
+
+__max_heap_size=0x400; // a stmbol declaration. not a variable
+__max_stack_size=0x200; // a stmbol declaration. not a variable
+
+SECTIONS{
+	
+	.text:{
+
+		//by default, . is equal to vma which is FLASH(0x08000000
+		//its gonna increase the size of .isr_vector, .text and .rodata
+		*(.isr_vector)
+	
+		//.text of main.o led.o startup.o
+		*(.text) 
+		//* is wild card character. it just says merge .text sectioin of all input files
+
+		*(.rodata)
+		.= ALIGN(4)
+
+		end_of_text =.;
+		//store the updated location counteer value in to a symbol 'eend_of_text'
+
+		//merge all .isr_vector seection off all input files
+		//merge all .text section of all input files
+		//merge all .rodata section of al input files	
+	}>FLASH AT>FLASH
+
+	//}>(vma)AT>(lma)
+	//vma, vitural memory addreess
+	//lma, load memory address
+
+	.data:{
+		
+		start_of_data = . ;
+		//here, the location counter resets to start of VMA of this seection, which is SRAM(0x20000000)
+		//start_of_data = 0x20000000;
+		
+		//assgin a value to a symbol 'start_of_data'
+		*(.data)	
+
+		end_of_data = . ;
+
+	//heere mergeee all .data section of all input files
+	}>SRAM AT>FLASH
+	//}>(vma)AT>(lma)
+
+	.bss:{
+		start_of_bss = . ;
+		*(.bss)
+		*(COMMON)
+		. = ALIGN(4);
+		end_of_bss = . ;
+	}>SRAM
+
+}
+
+===
+storage of final executable in code memory
+codee memory(FLASH)
+unused code memory
+.data, initializd global and static variables
+.rodata
+.text
+vector table
+
+data memory(SRAM)
+stack
+unused SRAM
+heap
+.bss, un-initialized global and static variables
+.data, initializede global and static variables
+
+===
+to link:
+arm-none-eabi-gcc *.o -T stm32_linkerScript.ld -nostdlib -o final.elf
+
+to create memory map file
+arm-none-eabi-gcc *.o -T stm32_linkerScript.ld -nostdlib -o final.elf -Wl,-Map=final.map
+
+unaligned access is bad
+https://www.kernel.org/doc/Documentation/unaligned-memory-access.txt
+the effects of performing an unaligned memory access vary from architecturee to architecturee.
+-some architectures aree able to perform unaligneed memory accesses transpareently, but there is usually a significant performance cost
+-some architecture raise proceessor eexceptions when unaligned accesses happen. Thee exception handler is able to correct the unaligned access, at significant cost to performance
+-some architectures are not capable of unaligned memory access, but will silently peerform a difffereent memeory access to the one that was requestede, resilting in a subtle code bug that is hard to detect
+
+arm-none-eabi-nm final.elf
+to see all the symbol
+
+===
+
+downloading executablee to target
+host
+host interface:USB
+in-Circuit Programmer/Deebugger (debug adapter)
+target interface:SWD ot JTAG
+target
+
+OpenOCD(Open on Chip Debugger)
+OpenOCD aims to provide debugging, in-system programming, and boundary-scan testing for eembedded target devices
+its if ffreee and opensource host applocation allows you to program, deebug and analyze your applications using GDB(GNU Debugger)
+it supports various target boards based on different processor architcture
+OpenOCD currently supports many types of debug adapters:USB-based, parallel port-based, and other standalone boxes that run openOCD internally
+
+programming adapters
+programming adapteers are used to get access to the debug interface of the target with native protocol signaling such as SWD or JTAG since Host doesnt support such interfaces
+it does protocol conversion, forxamplee, commands and messages coming from host application in the form of USB packets will be converted to equivalent debug interface signaling(SWD or JTAG) and vice veersa
+mainly debug adapter helps you to download and debug the code
+somee advanced debug adapters will also help you to capture trace events such as on the ffly instruction trace and profiling information
+
+===
+Newlib is a C standard library implementation intended for use on embedded systems, and it is introduced by Cygnus Solutions(Red hat)
+"Newlib" is written as a Glibc(GNU libc) replacement for embeedded systeems. it can be used with no OS(bare metal) ot with a lightweeight RTOS
+Newlib ships with gnu ARM toolchain installation as the default C standard library
+
+the idea of Newlib is to implement the hardwaree-independent parts of the standard C library and reely on a few low-level systeem calls that must be implemented with the target hardwaree in mind
+when you are using newlib, you must implement the system calls appropriately to support devices, file-systems and memory management
+
+printf() embedded application
+Newlib-Nano, _write(); C standard library
+_write(){...} printf function implemented here will receive all the strings pre formatted by printf()
+_read(){...} scanf
+_sbrk(){...} malloc
+
+UART, ITM, LCD, stubs(low level target specific system implementation)
+
+
+===
+commProtocal
+
+SPI
+serial peripheral interface
+
+SPI master
+SPI slave
+
+SCLK, serial clock
+	means it is a synchronous interface as opposed to an asynchronous interface, like UART
+MOSI, master out slave in
+MISO, master in slave out
+SS, slave select, active when it is low
+	could have multiple SS
+
+advantages
+-full-fuplex, means can send and recieve at the same time
+-higher speed than UART and I2C
+-ubiquitous, loweer level than USB
+
+disadvantages
+-more pins than UART and I2C
+-short distance(vs. RS-485/RS-232)
+-lots of variants
+	CPOL, clock polarity, if CPOL is low, the clock is low when it is idle
+	CPHA, clock phase, what edge of the clock does the data go out on and does the date get sampled on
+===
+
+I2C, TWI(two wire interface)
+inter-integrated circuit
+I2C bus
+
+master, SCL, SDA
+slave, SCL, SDA
+SCL, serial clock line
+SDA, serial data line
+
+advantages
+-low pin count, only 2
+-addressing built-in
+-ubiquitous
+
+disadvantages
+-half-duplex, 400 kbps max(sorta)
+-careeful consideration of hardware
+-more complicated than SPI or UART
+
+hardware details - "open drain"(open collector)
+
+start init, SDA goes low,and then SCL goes low
+7 addreess bits, A6 A5 A4 A3 A2 A1 A0 
+R/W, 1 read, 0 write
+ACK, 0 ack
+8 data bits, D7 -> D0
+ACK, o ack
+stop, SCL goes high and then SDA goes high
+
+if master wants to read from a slave, it reads whatever is in the buffer
+
+resisor size(4.7k common)
+10-bit addreessing possible(uncommon)
+if 400kHZ is not enough, !MHz, 3.4MHz, 5MHz possible(uncommon)
+multi-master possible(uncommon)
+repeated start conditons possible(uncommon)
+clock streching possible(slave side)
+
+
+===
+
+UART
+universal asynchronous receiver/transmitter
+AKA serial port, com port, RS-232, RS-485
+
+Tx, receiver
+Rx, transmitter
+
+UART configuration parameters
+-baud rate(bits per second)
+	9600, 19200, 115200, others
+-number of data bits
+	7,8
+-parity bit
+	on, off
+-stop bits
+	0,1,2
+-flow control
+	none, on,hardware
+
+start bit
+bit 0, bit 1, bit 2, bit 3, bit 4, bit 5, bit 6, bit 7
+(parity bit), does xor to every single bit
+stop
+
+look for falling edge if start bit
+sample middle of data bits
+
+ASCII
+

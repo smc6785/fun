@@ -1,0 +1,62 @@
+# server
+- SW, program that listens for requests and responds
+
+# client 
+- SW, program that makes reuqests of other programs
+
+# netowrk
+- multiple computers connected to each other
+- data can be sent from any system on the network to any other
+- a network is owned and controlled by a person or organiation
+
+# internet
+- network of networks
+- multiple networks connected together by routers
+  - private worknets
+  - internet service provider
+  - backbone networks, tele communication companies
+
+
+# IP, internet protocol
+- data sent in packets
+- each host and router hasss a unique 32-bit address, IPv4
+  - 128-bit address, IPv6
+- router, routing table
+  = CIDR, classless inter-domain routing
+  - BGP, border gateway protocol
+- modem, short for modulator and de-modulator
+  - converts digital signals to analog signals and vice-versa
+  - connected to ISP networks and it provides an IP
+- access router
+  - allows multiple devices to share one IP addess using network address translation
+  = wireless Ethernet connectivity
+  - firewall, unwanted traffics
+
+# DNS, domain name system
+- a system of resolving names to IP addresses
+- top-level domains:
+  com net org edy mil gov uk ca de etc.
+  each controlled by a designated authority
+- most top-level authorities let people lease subdomains:
+  google.com, yahoo.com, wikipedia.org, etc.
+- domain name owner determines IP address to which that name resolves
+- DNS server: program which your computer asks to resolve domain names
+  - keeps a local cache of the global registry 
+  = and periodically checks for updates from the top-level authorities
+
+# URL, uniform resource locator
+- string of text designating location of a thing on the internet
+  (nature of the thing)://host(the location, IP address or a domain name)/path(the thing)
+
+# layers
+- Application, HTTP(hyper-text transfer protocol), SMTP(email), etc
+- Transport, TCP, UDP
+- Internet, IP
+- Link, Ethernet (MAC, media access control), etc
+
+- Ethernet header + IP header + TCP header + application date
+
+
+
+
+

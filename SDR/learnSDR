@@ -1,0 +1,348 @@
+software defined radio
+
+the electromagnetic spectrum
+gamma rays, X-rays, ultra violet,(visible light) ,infrareed, radio waves
+
+long wave radio
+mdium wavee radio
+AM radio
+FM radio
+Wi-Fi
+GSM
+satellite boardcasting
+
+radio frequency(RF)
+
+radio (carrier) wave must be modulated to convey information
+-OOK(on-off keying),mpresence/absence of a signal, morse code
+-COFDM(coded orthogonal frequency-division multiplexing)
+	WiFi, DVB, DAB, WiMAX, UWB, 4G, ADSL, PLC
+
+carrier
+signal
+amplitude modulated wave
+frequency modulated wave
+pulse modulated wave
+
+Modilation technique defines how the signal will look on the spectrum
+
+modulation
+demodulation
+
+===
+antenna
+antenna wire, coaxial cable
+shield on the outside
+insulator, the center conductor
+
+a simle dipole antenna, like you put on your FM sterro at home
+two pieces of wires side by side, the electromagnrtic energy that is generated from current flow cancel each other out 
+
+===
+geostationary orbit
+
+program source
+DBS provider(direect broadcast satellite)
+===
+radio frequency sifnals
+use radio wave to transmit or reveice information
+radio frequency sifnals are made of electric and magnetic waves, eeelectromagnetic waves
+the two waves or fields vary in intensity over time forming two separate but related waves
+whenever the electric wave is oriented vertically, the magnetic wave is oriented horizontally
+because the electromagnetic waves have a distinct orientation, they are said to be polarized
+the polarity of an RF signal can be horizontal, vertical, or even circular
+
+RF is said to radiate and is referred to as electromagnetic radiation, but unlike nuclear radiation which is harmful
+radio waves are non ionizing, the energy they contain is at a much lower level and is not capable of ionizing atoms which is what makes nuclear radiation dangerous
+
+how quickly the electric and magnetic fields vary in intensity or oscillate determines their frequency
+if a wave passes through a complete cycle 100,000 times per second , then its frequency is said to be 100,00 hertz
+radio waves travels at the speed of light and the distance during one complete cycle determines the wave length of the RF singal
+lower frequency = longer wavelength
+higher frequency = shorter wavelength
+wavelength = speed of light / frequency
+299,792,458 / 870,000 = 345 meters, means the wavelength of a 870KHZ RF signal
+lambda, symbol for wavelength
+
+antennas emit and/or absord radio waves
+omni antenna
+directional antenna
+
+RF can travel through many environments, air, the vacuum of space, walls
+they just dont travel well through very dense materials such as concrete water dirt or metal
+
+ground waves
+radio herizon
+line of sight
+atmosphere conditions affect the way in which radio waves propagate through the air
+heavey rain can absorb certain high-frequency radio waves, because their short wavelngths allow them to be absorbed by large rain droplets
+the ionosphere affected by the solar winds
+path loss, the intensity or signal strength is reduced
+in general, lower frequencies travel further than high frequencies
+multipath interference
+
+
+===
+RFID, radio-frequency identification
+NFC, near field communications
+
+NFC/RFID are simply particaular forms of RFlinks
+
+transmitter
+transmission medium
+receiver
+
+typical RFID system structure where we see all the basic RF components such as antenna, receiver, transmitter, transceiver, modulator, demodulator
+
+passive tags
+active tags
+
+transformer principlee
+RFID antenna coupling
+
+===
+controlling IoT devices with crafted radio signals
+https://www.youtube.com/watch?v=qhuhJ9Oe9vA&ab_channel=DEFCONConference
+
+sampleRate = 1000
+lengthInSec = 1
+t = np.linspace(0,lengthInSex,sampleRate * lengthInSec)
+hz_4= 1* np.sin(4* 2* np.pi* t)
+
+setup_graph(title= '4 HZ sin wave', x_label= 'time', t_label= 'amplitude', fig_size= (18,7))
+plt.plot(t,hz_4)
+plt.margins(0.05)
+
+sin curve and the unit circle
+
+uncertainty principle
+- the more samples you take, the more certaiin you can be of the frequencies contained
+- but the more samples you take, the less localized in time you are 
+
+superposition principle
+x = np.linespace(0, 2*np.pi,100)
+y1 = 5* np.sin(x)
+y2 = 0* np.sin(2*x)
+y3 = 3* np.sin(3*x)
+y4 = 2* np.sin(4*x)
+
+f, axarr = plt.subplots(4, sharrex= True, sharey=True)
+f.set_size_inches(12,6)
+axarr[0].plt(x,y1)
+axarr[1].plt(x,y2)
+axarr[2].plt(x,y3)
+axarr[3].plt(x,y4)
+_ = plt.show()
+
+setup_graph(x_label='time', y_label='amplitude', titile='y1+y2+y3+y4', fig_size=(12,6))
+convoluted_wave = y1+y2+y3+y4
+_ =plt.plot(x,convoluted_wave)
+
+radio devices all around us that are transmitting
+they are all getting added togtether and making this really big complex wave
+we are able to tune in to one frequency with radio
+thats possible, because its able to de convolute this really complicated wave of electromagnetic radiation
+
+the superposition principle is how there can be many different radio signals in the air at the same time
+
+deconvolution is possible
+becasue waves of differing frequencies are orthogonal
+a convoluted wave (made of multiple frequencies) can be broken into each of its component frequencies
+* this can be done with fourier transform
+goes from the time domain to the frequency domain
+
+time domain
+setuo_graph(title='Ah vowel sound', x_label='time (in seconds)', y_label='amplitude', fig_size=(14,7))
+_ = plt.plot(time_array[0:4000], input_signal[0:4000])
+
+frequency domain
+fft_out = np.fft.rfft(input_signal)
+fft_mag = [np.sqrt(i.real**2 + i.imag**2)/len(fft_out) for i in fft_out]
+num_samples = len(input_signal)
+rfreqs =[(i*1.0/num_smaples)*sample_rate for i in range(num_samples//2+1)]
+setup_graph(tile='FFT of Ah Vowel (first 5000)', x_label='FFT bins', y_label='magnitude'. fig_size=(14,7))
+_ = plt.plot(rfreqs[0,5000], fft_mag[0:5000])
+
+deconvolution is basically how we tune into a particular radio frequency
+
+orthogonality of waves of differing frequencies
+waves of differing frequencies are orthogonal to one another (dot product is zero)
+t =np.linespace(0,1,samp_rate * len_in_sec)
+sin_8hz = 1*np.sin(8*2*np.pi*t)
+sin_12hz = 1*np.sin(12*2*np.pi*t)
+np.dot(sin_8hz, sin_12hz)
+* output of the dot product is 2.0790660859582033e-15
+
+whereas, waves of the same(or close) frequencies have larger dot products
+t =np.linespace(0,1,samp_rate * len_in_sec)
+sin_8hz = 1*np.sin(8*2*np.pi*t)
+sin_8_1hz = 1*np.sin(8.1*2*np.pi*t)
+np.dot(sin_8hz, sin_8_1hz)
+* output of the dot product is 464.37702127330243
+
+Euler's formula relates e^ix = cosx + i*sinx
+e^i*pi +1 =0
+
+radio waves are actually transmitted as complex waves, not simple waves
+if we want to craft our own radio waves to control thinf, we'll need to use complex sine waves
+
+modems = MOdulator + DEModulator
+
+modulation, manipulating a carrier wave to carry information
+- amplitude-shift keying, ASK
+- frequency-shift keying, FSK
+- phase-shift keying, PSK
+- quadrature amplitude modulation, QAM
+	essentially, this is a conbination of ASK and PSK
+	this is what modern WiFi mostly uses
+
+https://github.com/calebmadrigal/radio-hacking-scripts/blob/master/radio_signal_generation.ipynb
+
+potential attack vectors
+- jamming attacks
+	- spread spectrum radio
+	- channel hopping
+	- active low
+- replay attacks
+- brute force attacks
+
+===
+breadboard SDR
+
+antenna
+|
+-----clock
+|
+diode
+|
+-----ADC
+|
+resistor
+|
+GND
+
+MF, local AM broadcasts
+HF, worldwide AM broad casts
+VHF, 
+- local line of sight
+- low(er) bandwidths
+- less interaction with environment
+UHF, 
+- local line oi sight
+- interacts heavily with environment
+- higher bandwidths
+
+modes of prpagation:
+- NVIS near vertical indidence skywave
+		send a signal straght up, the ionosphere will reflect it back down, but in a broader area than we are
+- line of sight
+- skywave
+
+a decibel
+---------
+allows to describe qutity very widely over many oders of magnitude 
+math short cut, add and substract instead of multiple and didvide
+
+1 db = 1/10 bel
+10 db = 1 bel
+orders of magnitude
+10:1	1bel
+100:1 2bel
+
+A/B = 10^n, wheere n is the number of bel
+3db approximately 2:1
+destinate what you are relative to
+3 dBmike, 3dB taller
+dBm, decribes devibels relative to mW
+
+- 40m/2m, 20:1, (10*2):1
+10dB + 3dB = 13dB taller
+- 1m/2m, 1:2, (1/2):1, -3dB taller
+2m/2m, 1:1, 0dB taller
+- -5dB gain = 5 dB loss
+- 2.512 * 5.012 * 3.162
+	4dB + 7dB + 5dB = 16dB
+	10 + 3 +3 = 126dB
+	(10*2*2) = 40:1
+
+- 0dB, 1:1
+	3dB, 2:1
+	6dB, 4:1
+	9dB, 8:1
+	12dB, 16:1
+	15dB, 32:1
+
+complex number
+--------------
+i * i = -1
+-1 * i = -i
+-i * i = 1
+1 * i = i
+...
+
+exponent
+i^1
+i^2
+i^3
+i^4
+...
+
+1.
+z^1 = 1 degree
+z^2 = 2 degree
+z^3 = 3 degree
+z^180 = 180 degree = -1
+z^360 = 360 degree = 1
+
+2.
+z^1 = 1 radian = e^i, e = 2.71828...
+z^6.2831853, 6.2831853 = tau = 2 pi
+e^(i* theta)
+										e^(i*(1/4tau)) =i
+												|
+e^(i*(1/2tau))=-1  ------------------- e^(i*tau) =1
+												|
+										e^(i*(3/4tau)) = -i
+
+e^(i*(1/2tau)) = -1, e^(i*pi) = -1
+e^(i*pi) +1  = 0
+
+e^(i*theta) = cos(theta)+ i * sin(theta)
+
+rectangle coordinate
+a + bi
+
+polar coordinate
+r, theta
+r*e^(i*theta)
+r, distance from origin, radius, magnitude, modulus, amplitude, absolute value
+theta, angle, argument, phase
+
+quadrature signal
+quadrature=phase, Q
+in-phase, I
+-----------
+
+A weather station measures wind direction once per minute. Write a program to indicate the average direction over a five minute period. Try it on the following sets of readings:
+12°, 15°, 13°, 9°, 16°
+358°, 1°, 359°, 355°, 2°
+210°, 290°, 10°, 90°, 170°
+* see DSP.py
+------------
+
+amplitude modulation, AM
+amplitude shift keying, ASK
+sample
+rectify a signal
+
+frequency modulation, FM
+frequency shift keying, FSK
+take the angles of vectors
+two samples to calculate the instantaneous frequency
+
+frequency of operation
+FCC ID
+test report
+
+
+

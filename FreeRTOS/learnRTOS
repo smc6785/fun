@@ -1,0 +1,12 @@
+task:set of prograam instructions loaded in memory
+thread:unit of CPU ultilization with its own program counter and stack
+process:instance of a computer program
+freeRTOS: task=thread
+
+general purpose operating system
+-task scheduling
+-resource management
+-device drivers
+
+super loop
+interrupt service routine(ISR)
