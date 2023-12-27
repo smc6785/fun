@@ -705,4 +705,26 @@ there aree three basic multiprocessor cconfigurations
 -closely coupled configuration
 -loosely coupled configuration
 
+===
+# AVR
+- interrupt vector table
+  - located in FLASH memory
+  - starts at 0x0000
+  - 0000 reset
+  - 0002 external interrupt. pin16
+  - 000c watchdog timeout
+  - 0024 UART/serial receive/complete
+- interrupt occurs
+  - check if it is enabled
+  - store PC on the stack
+  - load PC from the interrupt vector
+  - RETI, return from  interrput
+    - pop PC from stack
+    - set "I" bit, back to interrupt enable 
+- bootloader on board receieves the executable and writes it to flash
+- servor motor
+  - analog, vary the voiltage
+  - PWM
+    - cycle time 20ms(50HZ)
+    - pulse width 0ms = 0%, 20ms = 100%
 

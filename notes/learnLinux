@@ -914,3 +914,129 @@ https://www.youtube.com/watch?v=m_NyYEBxfn8&ab_channel=TheLinuxFoundation
   - CS, chip select
   - MOSI, master out slave in
   - MISO, master in slave out
+
+# cache
+- faster access to frequently used blocks of data
+- less important data is still accessible, stored in chaeper memory
+- CPU <- cache -> main memory
+  browser <- cache -> internet
+- sits between CPU core and DRAM main memory
+- usually SRAM on process chip
+
+- RAM, reuqires constant electrical power to store data
+  - RAM stored on the motherboard in modules that are called DIMMs, Dual Inline Memory Module
+  - DRAM, dynamic RAM, contains capacitors, needs constant refresh with electricity, operates Asynchronously with the system clock
+  - SDRAM, synchronous dynamic RAM, operates synchronously with the system clock, better controlled timing.
+  - SRAM, static RAM, high performance, does not need to constant refresh
+  - flash memory, non volatile, limited write cycles
+- the term 64/32 bit data path, 8/4 byte wide bus refers to the number of bits of data that are transferred in one clock cycle
+
+- DDR, double data rate SDRAM
+  - sends double the amount of data in each clock signal
+  - non DDR, single data rate RAM
+- ECC, eerror correcting code, detects if the data was correctly processed by the memory module
+
+- CPU read
+  - cache hit
+    - the cache contains that block CPU wants to read
+    - access is fast
+  - cache miss
+    - the cache must get the block from the main memory
+    - only then can cache deliver block to CPU
+    - access is bad
+  - evication/replacement
+    - new block is loaded into cache
+    - some other block is removed
+    - furure requests can be served directly from the cache
+    - after a cache miss, evict a block, least recently used
+  - cache locality
+    - most programs exhibit localotity
+    - temporal locality, used bytes
+    - spatial locality, nearby used bytes
+- CPU write
+  - wrtie hit
+    - write through
+      - cache immediately writes modified block to memory
+    - write back
+      - cache waits, writes block to memory when the block is evicted
+      - cache needs a "dirty bit" to indicate if it is modified or not
+  - write miss
+    - write allocate
+      - read block into the cache, update the copy in the cache
+      - set "dirty bit"
+      - good if there are more writes to this block
+    - write no allocate 
+      - send the write on through to memory, do not load block into cache
+
+- cache blocks, 8 bytes
+- address, 32 bits
+- block address ends in 3 bits 000, alignment
+  - address of byte within the block, also called block offset
+- a cache line is 8 bytes in size, although it has additional stuff 
+  - 29 bits(32-3) + valid bit + dirty bit + 8 bytes of data
+
+- traditional memory, byte addressable
+  - address size, n bits -> 2^n bits stored
+- associative memory
+  - key -> value
+  - key can be any size, e.g. 29 bits
+  - small number of lines, key + value
+  - for cache
+    - key, address of block, also called tag
+    - value, data
+- example:
+  - a 32-bit addess input 
+  - extract 23-bit "tag" and 6-bit "block offset"
+  - send "tag" to associative memory
+  - if match:
+    - retrieve 64 bytes data block from associative memory
+    - use offset to extract the desired byte and send to CPU
+  - if no match:
+    - select a block to evict, need more bits to implement least recently used line of memory
+    - is it dirty, wirrte back to memory
+    - send "tag" to main memory, get 64 bytes back
+    - update cache line, tag(key), data, dirty bit, vaild bit
+    - extract the desired byte
+
+- fully associative cache, not good in large scale
+  - any block can go into any cachee line
+- direct-mapped cache
+  - each block can go into only one cache line
+  - to avoid associative lookup
+  - all we have to do is to retrieve the cache line and check to see if it contains the right block
+  - tag + index + offset into block
+    - 512 cache lines are indexed by 9-bit of index
+  - operation:
+    - from the address, extract tag, index and offset
+    - use the index to find the correct line
+      - 9-bit -> address into cache memory
+    - read out this line and compare the tag from the address to the tag in the cache line
+      - same -> cache hit
+      - different -> cache miss
+    - use the offset to extract the desired byte
+  - potential address for cache line 2
+    - 0 ... 00 00(17-bit tag) + 00 00 00 01 0(9-bit index) + offset, block 2
+    - 0 ... 00 01(17-bit tag) + 00 00 00 01 0(9-bit index) + offset, block 514
+    - 0 ... 00 10(17-bit tag) + 00 00 00 01 0(9-bit index) + offset, block 1026
+    - 0 ... 00 11(17-bit tag) + 00 00 00 01 0(9-bit index) + offsetm block 1538
+  - cache thrashes, a working set occurs in both potential blocks, would affect performance
+    - have a cache line holding multiple blocks
+
+- cache misses
+  - compulsory miss, cold cache
+    - nothing in cache when program begins
+  - capacity miss
+    - cache is too small, can not contain the entire working set
+  - conflict miss
+    - plenty of room in cache, but 2 blocks in working set, can not both be in the cache together
+
+# data aligmment
+- byte data
+  - can gi at any address
+- halfword data
+  - must be "halfword aligned"
+  - addresses must be even numbers
+- word data
+  - must be "word aligned"
+  - addresses must be divisible by 4
+
