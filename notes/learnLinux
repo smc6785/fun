@@ -1040,3 +1040,31 @@ https://www.youtube.com/watch?v=m_NyYEBxfn8&ab_channel=TheLinuxFoundation
   - must be "word aligned"
   - addresses must be divisible by 4
 
+# spin lock
+- struct spinlock
+  {
+    uint locked;
+    char *name;
+    struct cpu *cpu;
+  } 
+- acquire(ptr)
+  - if *locked == 0, *lock =1
+    - else loop and try agian
+  - Atomic SWAP instruction, AMOSWAP
+    - not interruption between retrive a value and settomg a value
+    - writing one to *locked, and retrive the previous value.
+      - if the previous value is not zero, then loop back to write
+  - a fence instruction to prevent C compiler andd the processor to move loads and stores
+    - to ensure that the critical section s memeory references happen strictly after the lock is acquired
+- release(ptr)
+  - *locked = 0;
+- init_lock(ptr)
+
+- spinlocks should not be held for long
+  - spinning wastes cycles
+  - use sleep)_ and wakeup()
+- used to protect shared data
+  - acquire()
+    "critial section"
+  - release()
+

@@ -754,3 +754,10 @@ scanf("%d", &a);
 */
 
 */
+
+extern keyword, tells the compiler to look for it in other translation units
+======
+* how to program in C
+- handle, pointer to opaqe data structure
+- func, function pointer or function used as functiom pointer
+- i, j, k, count, length, found, next, previous... 
