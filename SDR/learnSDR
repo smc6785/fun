@@ -20,8 +20,8 @@ radio (carrier) wave must be modulated to convey information
 
 carrier
 signal
-amplitude modulated wave
-frequency modulated wave
+amplitude modulated wave, constant frequency
+frequency modulated wave, constant amplitude
 pulse modulated wave
 
 Modilation technique defines how the signal will look on the spectrum
@@ -344,5 +344,13 @@ frequency of operation
 FCC ID
 test report
 
+# digital radio signal
+- demodulate the digital signal
 
-
+--------
+# raspberry pi
+- TX only, 5 KHZ to 1500 MHZ
+- square wave, not good
+- sin wave, good, interference, constructive interference, de constructive interference
+- harmonics, so transmitting square waves would affect other frequency
+  - bandpass filter
