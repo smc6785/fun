@@ -354,3 +354,10 @@ test report
 - sin wave, good, interference, constructive interference, de constructive interference
 - harmonics, so transmitting square waves would affect other frequency
   - bandpass filter
+
+antenna, SDR hardware
+RF filter, SDR hardware
+mixer <- local oscillator, SDR hardware
+IF(intermediate frequency) Amplifier & filter, replace by SW
+demodulator, replace by SW
+audio amplifer, replace by SW
