@@ -1039,3 +1039,11 @@ sample middle of data bits
 
 ASCII
 
+========
+# debug
+- ARM cortex-M
+  SWD
+  Debug probe, STLink
+  USB
+  openOCD, on chip debug
+    GDB, the GNU debugger, comes with arm-none-eabi 
