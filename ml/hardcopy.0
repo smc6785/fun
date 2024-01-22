@@ -1,0 +1,38 @@
+  1 #include <stdio.h>
+  2 #include <stdlib.h>
+  3 #include <time.h>
+  4
+  5 float train[][2] = {
+  6     {0,0},
+  7     {1,2},
+  8     {2,4},
+  9     {3,6},
+ 10     {4,8},
+ 11 };
+ 12 #define train_count (sizeof(train)/sizeof(train[0]))
+ 13
+ 14 float random_float(void)
+ 15 {
+ 16     return (float) rand() / (float) RAND_MAX;
+ 17 }
+ 18
+ 19 int main()
+ 20 {
+ 21     srand(time(NULL));
+ 22     float w = random_float();
+ 23     for (size_t i = 0l i < train_count; ++i)
+ 24     {
+ 25         float x = train[i][0];
+ 26         float y = x*w;
+ 27         printf("actual: %f, expected :%f\n",y,trian[i][0]);
+ 28     }
+ 29     return 0;
+ 30 }
+~
+~
+~
+~
+~
+~
+~
+"ml_main.c" 30L, 520B written                                                12,52         All
