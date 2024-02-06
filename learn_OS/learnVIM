@@ -157,7 +157,23 @@ vim
 	:5,20s/^/#/
 	add # before the line from 5 to 20
 
+45. control + n/p for auto complete
 
+46. !ls to run bash command
+
+47. 0 to the start of a line 
+
+48. ^ start of a line
+
+49. :100,111s/^/hello/
+
+50. q + a make a recording, q again to end
+    and (number )@ + a do the recording x nmber of times
+
+51. norm Icall("
+    add in the start
+
+52. gx 
 ===
 grep is an acronym that stands for global regular expression print
 grep 'string to match' 'file name'

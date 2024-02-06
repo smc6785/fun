@@ -764,3 +764,4 @@ extern keyword, tells the compiler to look for it in other translation units
 
 ======
 find ./ -iname "temp.txt"
+grep -r -i "abc" . | grep -i "def" 
