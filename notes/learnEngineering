@@ -966,4 +966,37 @@ the collector, emitter and base currents are all zero in this mode of operation
           base 
       drain -> source
 
+==========================
+* the smith chart
+- low frequency signals in a cable
+  - 50/60 HZ signals that come from our wall outlets
+  - 20KHZ, audio signals, maximum frequenct humans can hear
+- wavelength = speed/frequency
+  - lambda = ((3*10^8)m/s)/20KHZ = 15000 meters
+    - longer than the cable it is going through
+  - lambda = ((3*10^8)m/s)/100MHZ = 15000 meters
+    - radio waves
+    - comparable, shorter than the cable it will be travelling through
+    - REFLECTIONS within the cable
+- transmission line, a specialized cable oftern used for these high frequency signals
+  - Z0 = 50 omega
+  - Antenna, ZL = (25+j50) omega
+  - some of the voltage would get reflected 
+      and some of the voltage would get transmitted
+- ZL/Z0 = (25+j50)/50 = 0.5+j1
+  - get 0.62 from smith chart, https://www.youtube.com/watch?v=pXWbdxOAuDs (4.11s)
+  - 0.62 = Vreflected / Vincident
+- impedance of load and tranmisssion line matches, less reflection
+  - add component to match the inpedance
+
+========
+- sinusoidal
+- exponential decay, overdamped
+- sinusiudal + exponential decay, underdamped
+- fourier transform tells us which frequencies or sinusoids are present in a function 
+  - takes in some function of time 
+  - outputs a function of Omega, which tells you which sinusoids are present in your signal
+- laplace transform tells us which sinusoids and exponentials are present in a function
+
+
 
