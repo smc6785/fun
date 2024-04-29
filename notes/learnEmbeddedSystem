@@ -1047,3 +1047,42 @@ ASCII
   USB
   openOCD, on chip debug
     GDB, the GNU debugger, comes with arm-none-eabi 
+
+========
+- MCU, microcontroller
+  - CPU, RAM, flash storage and peripherals all on one chip
+  - small, low power, low performance
+  - microwave oven, washing machine, remote sensor
+- MPU, mircoprocesor
+  - CPU, RAM, storage and peripherals on separate chips
+  - high power, high performance, high cost
+  - mostly x86 architecture
+- SoC, system on chip
+  - MPU with on-chip peripherals
+  - mostly ARM architecture
+
+- most of MCU do not have virutal memory, even if they do not have enough RAM for linux
+- minimum hardware spec
+  - 32/64 bit processor architecture with MMU, memory management unit
+    - ARM, x86, RISC-V
+  - at least 16MB RAM
+  - at least 4MD storage, usually flash memory
+
+- BSP, board support packages
+  - bootloader
+  - linux kernel
+  - kernel drivers specific to the board
+  - device tree, ARM
+  - libraries to support vendor-specific components such as accelerated graphics
+  - boot scripts and run-time configuration files
+  - firmware binaries for on-chip peripherals
+- ARM/RISC-V BSP
+  - U-boot, linux, device tree, recipes for Yocto or buildroot
+- x86 BSP
+  - BIOS(part of BSP/motherboard), kernel drivers for non-generic or proprietary hardware
+
+- toolchain, to compile all the other elements
+- bootloader, to initialise the board and load the kernel
+- kernel, to manage system resources
+- root filesystem, to run applications
+
