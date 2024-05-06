@@ -1086,3 +1086,22 @@ ASCII
 - kernel, to manage system resources
 - root filesystem, to run applications
 
+========
+makefile
+
+.PHONY clean
+// in case you have a file named clean
+// a phony target is simplt a target that is alwayz out of date
+output: main.o messgae.o // primary target
+  g++ main.o message.o -o output
+
+main.o: main.cpp
+  g++ -c main.cpp
+
+message.o: message.cpp
+  g++ -c message.cpp
+
+clean:
+  rm *.o output
+
+

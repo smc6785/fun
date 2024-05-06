@@ -1068,3 +1068,11 @@ https://www.youtube.com/watch?v=m_NyYEBxfn8&ab_channel=TheLinuxFoundation
     "critial section"
   - release()
 
+========
+# linux kernel device driver
+- device drivers are just abstractions to a piece of hardware
+- on Unix based systems, a file is the most common abstraction to communicate with a device
+  - file(user space) <-> device driver(kernel space) <-> hardware device 
+
+  
+
