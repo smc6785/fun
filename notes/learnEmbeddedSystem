@@ -1104,4 +1104,23 @@ message.o: message.cpp
 clean:
   rm *.o output
 
+========
+- programming manual
+- processor technical reference manual
+- architecutre reference manual
 
+========
+- BIOS is copied from ROM to RAM
+- BIOS initializes HW, runs power-on self test
+- BIOS searches for an OS, loads and starts the OS
+
+# BIOS legacy booting
+- BIOS loads the first sector of each bootable device into memory(at location 0x7C00)
+- BIOS checks for 0xAA55 signature, if found, it starts executing code
+# EFI
+- BIOS looks into sepcial EFI partitions
+- OS miust be compiled as an EFI program
+
+- directive, gives a clue to the assembler that will affect how the program gets compoled. 
+  - not tranlsted to machine code
+- instruction, translated to a machine code instruction that the CPU will execute

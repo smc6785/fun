@@ -1074,5 +1074,18 @@ https://www.youtube.com/watch?v=m_NyYEBxfn8&ab_channel=TheLinuxFoundation
 - on Unix based systems, a file is the most common abstraction to communicate with a device
   - file(user space) <-> device driver(kernel space) <-> hardware device 
 
-  
+========
+# BIOS
+- BIOS is tied to the MBR, master boot record systems, which limits the disk size to 2 TB
+- slower boot time
+- less secure boot
+
+# UEFI
+- UEFI uses the GPT, GUID partition table
+- removing size consttanints 
+- faster boot time
+- secure boot
+
+- GRUB2, boot lodaer
+
 
