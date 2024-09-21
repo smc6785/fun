@@ -1,0 +1,75 @@
+# setup
+- Download kernel source code
+- Compile the kernel
+- .config file under Linux
+  - zcat /proc/config > .config
+  - cp /proc/config.gz ./
+    gunzip ./config.gz
+    mv config .config
+- make menuconfig, to edit the config file
+- make xconfig, to edit the config file
+- make oldconfig, for older confile file with a newer version of kernel
+- uname -a, to see the current running kernel
+
+# make kernel
+- make -j8
+  - nporc
+- make module_install
+  - ls /lib/modules/5.12.0-rc6-MANJARO/
+- make install
+  - ls /boot/
+- cp /boot/vmlinuz /boot/vmlinz-$(make kernelversion)-$(uname -m)
+- /boot/grub/grub.cfg
+  - problem with editting this .config file:
+    - update-grub would over write .config file
+  - instead, edit /etc/grub.d/40_custom
+- cat /etc/mtab
+
+# make kernel module
+- kernel header files
+- make -C /lib/modules/$(uname -r)/build M=$(pwd)
+- sudo insmod ./helloworld.ko
+- sudo rmmod helloworld
+- sudo dmesg -C, to clean kernel log ring buffer
+- load kernel module in system start
+  - /etc/modules-load.d/modules.conf
+  - this would load modules with modprobe
+  - modprobe is looking for modules in certain directory
+  - move .ko under that directory
+
+# module param
+- int gpio_pin = 18;
+  module_param(gpio_pin, int, 0);
+  MODULE_PARM_DESC(gpio, "GPIO-pin ID";
+
+# char device/ character device
+- cat /proc/devices, device number
+- dev_t devno;
+  devno = MKDEV(137, 0);
+  // 137 major number, 0 minor number
+  register_chrdev_region(devno, 1, "gpio_morse");
+  unregister_chrdev_region(devno, 1);
+- struct file_operations my_fops = {
+    ...
+  };
+  struct cdev my_cdev;
+  cdev_init(my_cdev, &my_fops);
+  cdev_add(&my_cdev, devno, 1);
+- mknod /dev/gpio_morse c 137 0
+- each "hello" > /dev/gpio_morse
+
+========
+# busybox
+- wget busybox and linux kernel
+- make linux kernel
+- make busybox
+  - systems can not load dynamically linked library
+  - we need to create a static build for busybox
+  - musl-gcc ?
+- busybox is using arg 0 to check its own file name
+  - rename busybox to echo
+  - ln -s /bin/busybox echo
+  - ./echo "hello world"
+  - busybox --list
+- find . | cpio -o -H newc > ../initrd.img
+- qemu-system-x86-64 -kernel bzImage -initrd initrd.img -nographic -append 'console=tty50'

@@ -1,0 +1,5 @@
+# startup
+- Firmware, copy BIOS to RAM
+- Harddrive, master boot record systems
+  - load bootloader from harddrive to RAM
+  - bootloader would use partition table, file systems
