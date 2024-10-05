@@ -1,5 +1,45 @@
 # startup
 - Firmware, copy BIOS to RAM
 - Harddrive, master boot record systems
-  - load bootloader from harddrive to RAM
-  - bootloader would use partition table, file systems
+  - Load bootloader from harddrive to RAM
+    - Bootloader would use partition table, file systems
+      - /boot/grub/grub.cfg
+    - Bootloader loads the kernel to RAM
+      - /boot/kernel.bin
+  - bootloader won't set stack pointer
+    - loader.s
+      - set the stack pointer
+      - compiled with as
+      - loader.a
+    - kernel.c
+      - compiled with gcc
+      - kernel.o
+    - ld, linker
+      - kernel.bin
+      - bootloader would look for a magic number in kernel.bin
+      - 0x1badb002
+      - bootloader would store a struct called multoboot, containing RAM info
+        - multiboot.h from GNU
+
+- in grub.cfg
+  - menuentry 'my operating system'{
+      multiboot /boot/myKernel.bin
+      boot
+    }
+
+- Create type.h
+  - In case of size change for premative data type, int...
+  - So when different compliers are used, only need to change type.h
+
+# printf
+- No exception handling and dynamic memory management when in bare metal.
+- Linux would link your program to Glibc in normal case.
+- Write to 0xb8000 woulld result to outpu from graphic.
+- Frist byte, color inforamtion.
+  - First and second half are for foreground and background color.
+
+========
+# linux from scratch
+- master boot record + boot partition + root partition
+- init(system-V/stsemd)
+- /etc/fstab
