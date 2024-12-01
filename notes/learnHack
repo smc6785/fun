@@ -298,3 +298,25 @@ embedded devices can contain some of the following types of software:
 - main operating system kernal and appliations
 	- the main OS in an embedded system can be a gemeral-purpose OS, like Linux, or a real-time OS, like VxWorks or FreeRTOS.
 	
+========
+### tools
+- nmap -p- 10.10.10.142
+  - nc -vv 10.10.10.142 8091
+    - JSON-RPC
+    - curl -X POST --data '{"xyz"}' httpss://10.10.10.142:9810
+  - curl httpss://10.10.10.142:9810
+- nmap 10.10.10.142
+  - Availiable ports
+  - ftp 10.10.10.142
+    - ftp> get anonymous.txt
+  - nc -vz -u 10.10.10.142 30301
+- tcpdump -X
+- ifconfig
+- :set paste
+- otool
+- xxd
+- lldb
+- g++ -Os
+- g++ -O2
+
+
