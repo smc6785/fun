@@ -73,3 +73,86 @@
   - busybox --list
 - find . | cpio -o -H newc > ../initrd.img
 - qemu-system-x86-64 -kernel bzImage -initrd initrd.img -nographic -append 'console=tty50'
+
+========
+# kernel
+- MMU, memory management unit 
+  - It is the hardware responsible for implementing virtual memory
+  - TLB, tranlation lookaside buffer
+    - A list of mappings from virtual to physical address
+    - Part of MMU
+    - TLB is consulted by the MMU when the CPU accesses a virtual address
+      - If the virtual address is in TLB,
+        - MMU can look up the physical resource
+      - If the virtual address is not in TLB, or the permissions are insufficient
+        - MMU will generate a page fault exception and interrupt the CPU
+          - A page fault is when software attempts to use an invalid virtual address
+  - MMU operates on basic units of memoory called pages
+    - Page size varies by architecutre
+  - A page is a unit of memory sized and aligned at the page size
+  - A page frame, or frame refers toa page-sized and page-aligned physcial memory block
+    - pfn, page frame number
+  - A memory map for a process will contaion many mappings
+  - A mappiing often covers multiple pages
+  - The TLB holds each mapping virtual address, physical address, permissions
+  - Rach process has its own set of mappings
+    - The same virtual addresses in two diffrent processes 
+      will likely be used to map different physical addresses
+- In Linux, both kernel and user space uses virtual addresses
+  - The upper part is used for the kernel
+  - The lower part is used for user space
+  - On 32-bit, by default the split is at 0xC0000000
+    - Kernel 1GB, 0xFFFFFFFF to 0xC0000000
+      - Kernel address space is the area above CONFIG_PAGE_OFFSET
+    - User space 3GB, 0x00000000 to 0xC0000000
+  - On 64-bit, the spli varies by architecture
+    - 0x8000000000000000 for ARM64
+    - 0xFFFF880000000000 for x86_64
+  - three kinds of virtual addresses
+    - Kernel logical address
+      - Normal address space of the kernel
+      - kmalloc()
+      - They are a fixed offset from their physical addresses
+        - Virtually-contiguous regions, also physically contiguous
+        - Virtual: 0xC0000000 <-> Physical: 0x00000000
+      - __pa(x) and __vs(x)
+      - Contains allocated memory and kernel stacks(per process)
+      - Kernel logical memory can never be wapped out
+      - For 32 bit large RAM system:
+        - Low memory
+          - Physical memory which has a kernel logical address
+          - Physically contiguous
+        - High memory
+          - Physical memory beyond 806MB (1GB- 104MB(for virtual kernel memory))
+          - Has no logical address
+          - Not physically contiguous
+          - only on 32-bit
+    - Kernel virtual address
+      - The addresses in the region above the kernel logical address mapping
+      - Also called vmalloc() area
+      - Non-contiguous memory mappings
+        - Large buffers which could be potentially be too large to find contiguous memory
+      - Memory-mappped I/O
+        - Map peripheral devices into kernel
+          - PCI, Soc IP blocks
+        -- ioremap(), kmap()
+    - User virtual address
+      - Memory used by user space programs
+      - All addresses below PAGE_OFFSET
+      - Not contiguous, can be swapped out, can be moced
+      - Only used portions of RAM are mapped
+      - Each process has its own memory map
+        - struct mm, pointers in task_struct
+    - Pages, divide physical memory in fixed-size blocks
+      - Typical page size 2^p: 4KB - 16 KB
+      - virtual page number | offset
+# virtualization
+- A running prgarm plus its context is called a process
+  - All register state, stock pointer, program counter
+  - Program code, stack and heap
+- A special control process manages all other processes
+  - Control process runs in kernel mode or protected mode
+  - Controller performs context-switches
+    - Suspend the currently running procesds, copy context to memory
+    - Copy another process's context into running area and then resume it
+
