@@ -319,4 +319,24 @@ embedded devices can contain some of the following types of software:
 - g++ -Os
 - g++ -O2
 
+========
+# C complilation process
+- source.c -> preprocesser -> source.i
+  - #include
+  - #ifdef
+- source.i -> compiler -> source.s
+- source.s -> ASM -> source.o
+- source.0 -> linker -> source.o
+  - Static linker, Other .o file
+  - Dynamic linker,  .so, .dylib
+  https://www.youtube.com/watch?v=ksJ9bdSX5Yo
+  https://www.youtube.com/watch?v=wLq-5lBc7x4
+
+
+
+
+
+
+
+
 
