@@ -998,5 +998,33 @@ the collector, emitter and base currents are all zero in this mode of operation
   - outputs a function of Omega, which tells you which sinusoids are present in your signal
 - laplace transform tells us which sinusoids and exponentials are present in a function
 
+========
+capacitor 104 value, 0.1uF
 
+ceramic capacitor
+electrolytic capacitors
+	they are the only type of capacitor that is polarized
+	positive pin, the anode, the anode always needs to be connected to a higher voltage, longer pin
+	negative pin, cathode, shorter pin
+
+kilofarad kF 1000F
+milifarad mF 0.001F
+microfarad uF 0.000001F
+nanofarad nF 0.000000001F
+picofarad pF 0.000000000001F
+
+decoupling capacitor
+in intergrated circuit(IC), capacitors have a critical job to perform by remiving all of the high frequeency noise found in the power supply signals that power an IC
+any fluctuation in voltage can be fatal to an IC, and can even result in the chip powering off unexpectedly.
+By placing capacitors betweeen the IC and a power supply, they calm the voltage fluctuations and also as a second power source if the primary power drops its voltage enough to turn off an IC
+
+energy storage
+capacitors share many simiilar characteristics to batteries, including their ability to store energy. 
+However, unlike the battery, capacitors cant hold nearly as much poweer.
+but while they cant keep up in quantity, they make up for in their zest to discharge as quickly as possible
+capacitos can deliver energy way faster than a battery, which makes them the perfect fit for powering the flash in a camera, tuning a radio station, or switching the channels on a TV
+
+capacitive touch sensors
+one of the most recent advancements in capacitor applications has to do with thee explosion of touch screen technologies. 
+the glass screeens that make up these touch sensors ahve a very thin, transparent metal coating. when your finger touches the screen, this creates a voltage drop, identifying the exact location of your finger
 

