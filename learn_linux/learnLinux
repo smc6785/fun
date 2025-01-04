@@ -2512,3 +2512,83 @@ lspci -s "00:03.0" -vvv
 cat /proc/cpuinfo
 cat /proc/meminfo
 
+========
+# Virtualization
+- Virtualizing the CPU
+  - prompt> ./cpu A & ./cpu B & ./cpu C & ./cpu D &
+    [1] 7353
+    [2] 7354
+    [3] 7355
+    [4] 7356
+    A
+    B
+    D
+    C
+    A
+    B
+    D
+    C
+    A
+  - Turning one CPU into a seemingly infinite number of CPUs.
+    Allowing many programs to seemingly run at once.
+- Virtualizing the memory
+  - prompt> ./mem & ./mem &
+    [1] 24113
+    [2] 24114
+    (24113) address pointed to by p: 0x200000
+    (24114) address pointed to by p: 0x200000
+    (24113) p: 1
+    (24114) p: 1
+    (24114) p: 2
+    (24113) p: 2
+    (24113) p: 3
+    (24114) p: 3
+    (24113) p: 4
+    (24114) p: 4
+  - Each proces accesses its own private virtual address space
+- Concurrency
+  - Threads
+  - Atomically (all at once)
+- Persistence
+  - Data persistence to volatile memory
+  - File system, OS software that manages the disk
+
+# Process
+- The abstraction provided by the OS of a running program.
+- Summarize a process by 
+  - Taking an inventory of the different pieces of the system
+    it accesses or affects during the course of its execution.
+  - Machine state
+    - Memory, addres sapce
+    - CPU registers, Program counter, stack pointer, frame pointer.
+    - information about I/O 
+      - such as open files which can be read or written.
+- Process in memory
+  - Program is stored in Disk
+    Load proragm to Process in memory from disk
+  - Loading can be done
+    - Eagerly, all at once before running the program
+    - Lazily, loading pieces of code and data only as they are
+              needed during program execution.
+    - Paging and swapping
+    --------
+   | (process in memory)|  
+   | code               |  
+   | static data        |  
+   | heap               |  
+   |                    |  
+   | run time stack     |  
+    --------
+- In UNIX, each proces by default has three file descriptors
+  - Standard input, output and error.
+- Time sharing
+- Space sharing
+- Process states
+  - Running, Ready, Blocked
+    - When one process initiates an I/O request to a disk
+      the process becomes blocked and thus some other precess
+      can use the process.
+- A proces list contains information about all processes in the system
+  - Each entry is called process control block (PCB).
+  - PCB contains a structure that contains information about a specific process.
+

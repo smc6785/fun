@@ -2159,8 +2159,9 @@ embedded devices can contain some of the following types of software:
 			- theoretically, creating this chain of trust seems pretty secure, but the scheme is vulnerable to a number of attacks, ranging from exploiting verifivation weaknesses to fault injection, timing attacks, and more
 - trusted execution environent (TEE) OS and trusted applcaitions
 	- TEE is common in phones and tablets based on systems such as Android.
-		- the idea is to create a virtual secure SoC bu paritioning an entire SoC into secure and nnonsecure worlds
-		- the goal is to keep all nonsecure and complex opeerations, such as user applcaitions, in the nonsecure world, and all secure operations, such as banking applciation in the secure world
+		- the idea is to create a virtual secure SoC by paritioning an entire SoC into secure and nnonsecure worlds
+		- the goal is to keep all nonsecure and complex opeerations, such as user applcaitions, in the nonsecure world, 
+		    and all secure operations, such as banking applciation in the secure world
 - firmware images
 	- firmware is the low-level software that runs on CPUs or peripherals
 	- simplle peripherals in a device are often fully hardware based, but more complex peripherials can contain a microcontroller that runs firm ware
