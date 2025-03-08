@@ -20,7 +20,7 @@ str[3] = '\0';
 free(str) to RAM
 
 sockets
-sockers are the low level endpoint used for processing information across a net work
+sockets are the low level endpoint used for processing information across a network
 common networking protocols like HTTP, and FTP rely on sockets underneath to make connections
 
 client socket workflow
@@ -207,8 +207,50 @@ internet address representation in C
       
       - Ethernet header + IP header + TCP header + application date
       
-      
-      
-      
+========
+# tools
+- nmap -p- 10.10.10.142
+  - nc -vv 10.10.10.142 8091
+    - JSON-RPC
+    - curl -X POST --data '{"xyz"}' httpss://10.10.10.142:9810
+  - curl httpss://10.10.10.142:9810
+- nmap 10.10.10.142
+  - Availiable ports
+  - ftp 10.10.10.142
+    - ftp> get anonymous.txt
+  - nc -vz -u 10.10.10.142 30301
+- tcpdump -X
+- ifconfig
+- :set paste
+- otool
+- xxd
+- lldb
+- g++ -Os
+- g++ -O2
+
+# HTTP server
+- Transport layer
+  - TCP, transport layer protocols
+  - UDP, datagram protocol
+  - SPC, sequenced packet exchange
+- Socket
+  - The mechanism OS provides to give programs access to the network.
+  - It allows messages to be sent and received between applications onn different neworked machines
+  - int server_fd = socket(domain, type, protocol);
+  - Bind
+    - Assigning a transport address to the socket(a port number in IP networking)
+    - int bind(int socket, const struct sockaddr *address, sockelen_t address_len);
+    - struct sockaddr_in
+      - { sin_len
+      -   sin_family
+      -   sin_port
+      -   sin_addr
+      -   sin_zero[8] }
+ - Listen
+  - Listen tells a sockete that it should be capable of accespting incoming connections
+  - int listen(int socket, int backlog);
+  - int accept(int socket, struct sockaddr *restrict_address, socklen_t *restrict_address_len);  
+- http://www.google.com:80/index.html
+  - Port 80, file index.html, http protocol
       
       

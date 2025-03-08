@@ -2592,3 +2592,33 @@ cat /proc/meminfo
   - Each entry is called process control block (PCB).
   - PCB contains a structure that contains information about a specific process.
 
+- Monolithhic kernel design
+  - User space and kernel space
+  - Tight integration
+- Micro kernel design
+  - Small kenrel, most of drivers are in user sapce, 
+    it does IPCs to user space
+  - Worse proformence
+
+# File system
+
+* ar
+- the GNU ar program creates, modifies, and extracts from archives
+- an archive is a single file holding aa collection of other files in a structure that makess it possible to retrieve the original individual files
+
+* kill -1 1234 >/dev/null 2>&1
+- use the Linux universal 'bit bucket' of /dev/null to efficiently discard the entire output
+- including redirecting both output of kill and standard output
+
+* use gdb to print struct
+
+* fopen vs open
+- fopen is a library function
+  open is a system call
+- fopen provides buffered IO, faster 
+  open is non buffered
+- fopen is portable
+  open is not portable, open is environment specific
+- fopen returns a pointer to a FILE structure (FILE *)
+  open returns an integer that identifies the file
+

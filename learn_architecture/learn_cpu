@@ -1,0 +1,36 @@
+# In Order Execution
+- Executes instructions in sequential order.
+- All modern processors are pinpined, fetch/decode/branch prediction 
+    can still occur in an in-order machine 
+
+# Out of Order Execution
+- Executes instructions in non-sequential order.
+- A processor executes instructions in an order governed by
+    the availiablity of input data and execution units.
+- Out-of-order implementations tend to be more complex and more power hungry.
+
+# Reorder Buffer (ROB)
+- During decoding, allow ROB entry, checkif instruction can execute and 
+    source register, if so dispatch instruction to funtional unit.
+- Complete instructions out-of-order, but reorder them before making results visible to architectural state.
+- When a insturction is decoded,
+    it reserves the next-sequential entry in reorder buffer.
+- When a insturction is completes,
+    it writes result into ROB entry.
+- When a insturction is oldest in ROB,
+    and it has completed without exceptions, its result moves to reg file or memory
+
+# Dispatch
+- Act of sending an instruction to a functional unit.
+
+# Register Renaming
+- A technique that abstracts logical registers from physical register.
+
+# Superscalar Execution
+- Fetch, decode, execute, retire mulitple instructions per cycle
+- N-wide superscalar -> N instructions per cycle
+
+# Prefecthing
+- Fetch the data before it is needed by the program.
+  - If memory latency is high, we can reduce/eliminate some latency
+
