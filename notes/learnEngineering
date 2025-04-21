@@ -1028,3 +1028,23 @@ capacitive touch sensors
 one of the most recent advancements in capacitor applications has to do with thee explosion of touch screen technologies. 
 the glass screeens that make up these touch sensors ahve a very thin, transparent metal coating. when your finger touches the screen, this creates a voltage drop, identifying the exact location of your finger
 
+========
+# PID
+- Proportional, scales with the error.
+- Integral, removes the constant error, 
+  - Because errors will accumualte over time and cause the system to react.
+- Derivative, rate of change of the error.
+- Open Loop System
+  - Input -> Actuator -> Output
+- Close Loop System
+ - Input -> Controller ->Actuator -> Process ->
+   Output → Sensor → Feedback to Controller
+
+========
+- Gryo
+- A gyroscope sensor measures angular velocity (rate of rotaion) and round axes.
+  - Roll, x-axis
+  - Pitch, y-axis
+  - Yaw, z-axis
+- Typically, usus micro-electro-mechanical systems
+- Corilois effect

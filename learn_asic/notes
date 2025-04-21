@@ -1,0 +1,41 @@
+# ASIC
+- Application Sepcific Integrated Circuit
+
+# Design Cycle
+- Chip Specification
+  - Defines features, 
+      microarchitecture, 
+      functionalities(HW/SW interface),
+      specifications(time, area, power, speed)
+  - Design team
+    - Generates RTL code
+  - Verfication team
+    - Generates test bench
+- Design Entry/ Functional Verification
+  - Functional verfication confirms the functionality and logical behavior 
+      of the circuit by simulation on a design entry level.
+  - This is the stage where the desgin team and verfication team come into
+      the cycle where they generate RTL code using test-benches.
+      This is also known as behavioral simulation.
+- RTL Block Synthesis/ RTL Fcuntion
+  - Once the RTL code and testbench are generated,
+      the RTL team works on RTL description, they translate the RTL code
+      into a gate-lvel netlist using a logival synthesis tool that meets
+      required timing constraints.
+      A synthesized database of the ASIC design is created in the system.
+      When timming constraints are met with the logical synthesis, the design
+      proceeds to the design for testability(DFT) techniques.
+- Chip Partitioning
+  - This is the stage wherein the engineer follows the ASIC design layout
+      requirement and specification to create its structure using EDA
+      tools and proven methodologies.
+  - The design structure is going to be verified with the help of HLl
+      programming languages like C++ ot System C.
+- Design for Test(DFT) Insertion
+- Floor planning
+- Placement
+- CLock tree synthesis
+- Routing Stage
+- Final Verification
+
+#

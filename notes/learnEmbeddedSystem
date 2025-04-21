@@ -181,8 +181,6 @@ criteria for choosing microcontroller
 -amount of RAM and ROM on the chip
 -cost per unit
 
-
-
 ===
 registers
 registers are used in the CPU to store information on temporaraily basis which could be data to be processed, or an address pointing to the data which is to be fetched.
@@ -826,7 +824,132 @@ _sbrk(){...} malloc
 
 UART, ITM, LCD, stubs(low level target specific system implementation)
 
+====
+# GPIO
+1. Open Drain
+Definition: An output that can only actively pull the signal low (to ground) using a transistor (typically an N-channel MOSFET). When not pulling low, the pin is floating (high-impedance), requiring an external pull-up resistor to achieve a high state.
 
+How It Works:
+Low (0): The transistor turns on, connecting the pin to ground, sinking current.
+
+High (1): The transistor turns off, leaving the pin floating. A pull-up resistor connected to Vcc (e.g., 3.3V or 5V) pulls the line high.
+
+Electrical Behavior:
+Only sinks current (cannot source current to drive high).
+
+Relies on an external pull-up resistor for the high state.
+
+Supports wired-AND logic: Multiple devices can pull the line low, and the line is high only if all devices release it.
+
+Applications:
+I2C Communication: Used for SCL/SDA (primary bus) and XCL/XDA (auxiliary bus on MPU-6050) to allow multiple devices to share the bus safely.
+
+Interrupts: Open-drain pins for shared interrupt lines (e.g., MPU-6050’s INT pin).
+
+Mixed Voltage Systems: Supports devices with different logic levels (e.g., 3.3V and 5V) via pull-up voltage.
+
+Advantages:
+Safe for multi-device buses (e.g., I2C) due to no risk of high vs. low conflicts.
+
+Enables wired-AND logic for protocols like I2C.
+
+Supports voltage flexibility with appropriate pull-up resistors.
+
+Disadvantages:
+Slower rise times due to pull-up resistor and bus capacitance, limiting speed (e.g., I2C’s 400 kHz max for typical setups).
+
+Requires external pull-up resistors, adding components.
+
+Consumes current through the pull-up resistor when low (e.g., 3.3V / 4.7kΩ ≈ 0.7mA).
+
+2. Push-Pull
+Definition: An output that actively drives the signal both high (to Vcc) and low (to ground) using two transistors (typically a P-channel MOSFET for high and an N-channel MOSFET for low).
+
+How It Works:
+Low (0): The N-channel MOSFET turns on, connecting the pin to ground, sinking current.
+
+High (1): The P-channel MOSFET turns on, connecting the pin to Vcc, sourcing current.
+
+The two transistors are never on simultaneously to avoid short circuits.
+
+Electrical Behavior:
+Actively sources (high) and sinks (low) current, providing strong drive capability.
+
+No external resistors needed for high or low states.
+
+Can be set to high-impedance (tristate) when disabled to avoid driving the line.
+
+Applications:
+GPIO Outputs: Driving LEDs, relays, or other single-driver loads.
+
+High-Speed Protocols: SPI, UART, or PWM, where fast transitions are needed.
+
+Clock Signals: Non-shared clock lines requiring strong drive.
+
+Advantages:
+Faster rise and fall times due to active driving, suitable for high-speed signals.
+
+No external resistors required, simplifying circuit design.
+
+Lower power consumption for static high states (no pull-up current).
+
+Disadvantages:
+Unsuitable for shared buses like I2C, as multiple devices driving high vs. low can cause short circuits or damage.
+
+Limited to the microcontroller’s voltage level (e.g., 3.3V or 5V), requiring level shifters for mixed-voltage systems.
+
+Risk of contention if multiple devices drive the same line.
+
+====
+# ADC
+- Analog to digital convertor
+- Flash ADC/ parallel ADC
+  - Using parallel comparison method.
+  - Volatage divider splits the reference voltage.
+- Digital Ramp ADC
+  - A binary counter is conenct to a DAC and compared with the input.
+  - Lower the signal, faster the signal matches.
+- Digital ramp with SAR, Successive Approximation register.
+  - Starts witht the most significant bit.
+- Tracking ADC
+- Slope ADC
+
+====
+# CAN
+- Controller Area Network
+- Shared bus, no master device
+- Twisted to prevent EMI, electromagnetic interference
+- Terminated by 120 ohm resistors, prevent signal reflections.
+
+- Can Message Arbitration
+  - Each CAN node has an ID.
+  - On CAN bus, 0 bit overpowers a 1 bit.
+  - Each node will try to teansmit its ID first.
+    - If it gets overpowered, it stops and waits its turn.
+  - Therefore, lower IDs overpower high IDs.
+  - After wrting to the bus, each node would try to read back its ID.
+
+- CAN signal, PHY layer
+  - CAN-H voltage is higher than CAN-L, it represents a logic "0" (dominant state).
+  - CAN-H is less than or equal to CAN-L, it represents a logic "1" (recessive state).
+  - Dominant voltage.
+  - Recessive voltage.
+  - CAN-H
+  - CAN-L
+
+- CAN signal, data link layer
+  - 64 data bits in a CAN frame.
+  - Start of frame
+  - Arbitration
+  - Control
+    - Data length code
+  - Data
+  - CRC
+  - End of frame
+
+https://www.youtube.com/watch?v=4jZbmb4_BJg&list=PLQKJHs8Q1U_uUSHy-Vf2At_tnqrrv7aR-&index=21
+- CAN controller HW implements Data link layer
+- CAN transceiver HW implements PHY layer, usualyy external to the device.
 ===
 commProtocal
 
@@ -836,12 +959,27 @@ serial peripheral interface
 SPI master
 SPI slave
 
-SCLK, serial clock
-	means it is a synchronous interface as opposed to an asynchronous interface, like UART
+- SCLK, serial clock
+  - Cloc signal is generated by the master.
+  - Slaves do not require their own clocks.
+  - Speed usually into MHZ range
+    - Faster than UART and I2C.
+  - Clocks indicated when data should be sampled.
+    - When to read voltage levels.
+    - One bit is read per clock signal.
+	- Means it is a synchronous interface as opposed to an asynchronous interface, like UART
+  - CPOL, clock polarity
+  - Active hight and Active low.
+  - CPHA, clock phase
+    - SPSI receivers may sample data on either leading or trailing clock edge.
+      - Leading, data sampled on leading(or first) edge of each clock pulse.
+      - Trailing, data sampled on trailing(or second) edge of each clock pulse.
 MOSI, master out slave in
-MISO, master in slave out
-SS, slave select, active when it is low
-	could have multiple SS
+- MISO, master in slave out
+  - Master must know how manyy clock cycles to generate so the slave can send all of its data.
+- SS, slave select, active when it is low
+	- Could have multiple SS
+  - Cooperative slaves/daisy chain.
 
 advantages
 -full-fuplex, means can send and recieve at the same time
@@ -855,11 +993,59 @@ disadvantages
 	CPOL, clock polarity, if CPOL is low, the clock is low when it is idle
 	CPHA, clock phase, what edge of the clock does the data go out on and does the date get sampled on
 ===
-
 I2C, TWI(two wire interface)
 inter-integrated circuit
 I2C bus
 
+- Start condition
+  - In the IDLE state, SDA and SCL are both high.
+  - The start condition occurs when a node
+    - First pulls SDA low.
+    - Then pulls SCL low.
+  - This will claims the bus.
+    - Node is now the master.
+    - Prevents any other nodes from taking control of the bus.
+    - Reduces the risk off contention.
+  - Master that has seized the bus also starts the clock.
+    - Used by both master and slave.
+- Slave address
+  - Each I2C node on a bus must have a unique, fiexed address.
+  - Addresses mighe be hard coded or configurable via jumpers.
+- During data transmission, SDA only transitions while SCL is low.
+  - An SDA transition when SCL is high, indicates a start or stop condition.
+- Read/Write bit
+  - Read/write bit follows the slave address.
+  - Set by master to indicate desired operation.
+- Ack bit
+  - I2C is idle high, so 0 is ack and 1 is negative ack.
+  - Used after slace address and each data byte.
+- Data bytes
+  - Always 8 bit long, MSB first.
+  - Multiple data bytes can be send in one I2C frame.
+- Stop condition
+  - Stop condition indicates the end of data bytes
+    - First SCL returns high.
+    - Then SDA returns high.
+  - For data bytes, SDA only transitions when clock is low
+    - SDA transition when SCSL high = stop condition.
+  - Bus becomes IDLe
+    - No clock signal.
+    - Any node can now use the start condition to claim the bus.
+
+- Open Drain
+  - Pulling down a line is usually much faster than pulling up a line.
+    - Pull-up time is a function of bus capacitance and values of pull-up resistors.
+      - 1K ohm to 10K ohm.
+      - Higher resistances increase the time needed to pull up the line and thus limit bus speed.
+      - Lower resistances allow faster communications, but require high power.
+
+- Exchange dat over short distances.
+Mulitple masters and multiple slaves
+128 devices with 7 bit addressing
+
+Two lines are open drain.
+Devices on I2C bus are active low.
+Poll up resitors are used in both lines
 master, SCL, SDA
 slave, SCL, SDA
 SCL, serial clock line
@@ -880,6 +1066,8 @@ hardware details - "open drain"(open collector)
 start init, SDA goes low,and then SCL goes low
 7 addreess bits, A6 A5 A4 A3 A2 A1 A0 
 R/W, 1 read, 0 write
+ACK, 0 ack
+8-bite register address
 ACK, 0 ack
 8 data bits, D7 -> D0
 ACK, o ack
