@@ -947,7 +947,6 @@ Risk of contention if multiple devices drive the same line.
   - CRC
   - End of frame
 
-https://www.youtube.com/watch?v=4jZbmb4_BJg&list=PLQKJHs8Q1U_uUSHy-Vf2At_tnqrrv7aR-&index=21
 - CAN controller HW implements Data link layer
 - CAN transceiver HW implements PHY layer, usualyy external to the device.
 ===
