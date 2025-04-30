@@ -38,4 +38,33 @@
 - Routing Stage
 - Final Verification
 
-#
+====
+- ARM CPU Specification -> CPU module
+- RTL implementaion of the CPU module
+- Simulation compared the result with RTL results
+- Virtual software platform using the CPU module in C to execute production binary
+
+====
+- Specification
+- Requirements
+- Test cases
+- Strategies
+- Execution
+====
+# low power cpu
+- Dynamic Voltage and Frequency Scaling
+  - Multiple voltage domains
+  - Level shifters
+  - Power swtiches
+  - Sensors and power controllers
+- Partial shutdown
+====
+# HW/SW co-verification
+- Simulation
+  - Low cycles/sec
+- Emulation
+  - High cycles/sec
+- Prototyping
+  - Higher cycles/sec
+- Silicon
+  - Highest cycles/sec
