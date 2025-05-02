@@ -1,0 +1,97 @@
+# PCIE
+- Peripherial Component Interconnect Exoress
+- A PCIe lane is a serial connection for data transfer.
+  - PCIe x4
+  - PCIe x8
+  - PCIe x16
+- PCIe 1.0, PCIe 2.0, PCIe 4.0 would have different lane speed.
+
+# PCIe Topology
+- CPU <-> root complex <-> memory
+              |
+              v
+  PCIe endpoint/switches/repearter/PCIe bridage
+
+- In root complex
+  - CPU <-> Bridge <- primary bus -> PCI virtual bridge 
+    <-downstram port-> PCIe endpoint
+- Endpoint 
+  - Reuqester or completer of PCIe transcation.
+  - Legacy endpoint
+    - Supports PCI transactions to support backward compatability.
+  - Native endpoint
+    - Does not support the following PCI transactions
+      - I/O transactions
+      - 32 bit only memory access
+      - Locaked tansactions.
+- Switch
+  - Logical assembly of multiple virtual PCI to PCI bridge devices.
+  - Upstream port
+  - Downstream port
+  - PCIexpress, point to point, bus is not shared,
+    so switch like topology is required.
+
+- Root complex, an interface between CPU and memory and the reset of the PCIe.
+- Repeater, signal conditioner
+  - Reimers
+  - Redrivers
+- Endpoint
+- PCIe control signals
+  - PERST, fundamental reset.
+  - WAKE
+  - CLKREQ
+  - REFCLk
+  - RX detect
+  - PCIe x8
+  - Polling, link training 
+  - Configuration
+  - PCIe link equalization, presets.
+
+- A PCIe controller will be integrated to the SOC.
+  And connected to internal bus/NOC.
+
+# PCIe Initialization
+- Druing hardware initialization, each PCIe link is setup following a
+  negotiation of lane width and frequency of operation.
+- No firmware or OS required.
+# PCIe Link
+- Link sonsists of dual undirectional differential signal.
+  Can be of 1,2,4,8,12,16,32 lanes.
+- A data clock is embedded using an encoding scheme.
+# PCIe Lane
+- Set of differential signal pair
+- One pair for transmission, one pair for receiver.
+# Differential signaling
+- Method for electrically transmitting information
+  using two complementry signals.
+- Noise immunity.
+
+# PCIe Controller
+- Each layer has Tx and Rx.
+- Transaction layer
+  - Transaction layer packets, TLPs.
+- Data link layer
+  - Middle layer, does link management, data integrity, error detection
+    and correction.
+- Physical layer
+  - Contains all circuitory for interface
+    - Driver and input buffer.
+    - Parallel to serial and serial to paralled.
+    - PLL, Impedance matching circuitry.
+    - Encode/decoder, scrambller/descrambller.
+  - Logical sub block.
+  - Electrical sub block.
+  - Differential analog signaling increases noise immunity.
+  - Differential analog signaling decreases electomagnetic interface(EMI)
+    since the return current is flowing in th e2nd signal trace.
+  - Data scrambling spreads RF energy, resulting in less EMI.
+  - Link training
+    - Both peers negotiate
+- Address mode:
+  - Memory.
+  - I/O
+  - Configuration
+  - Message, like power management related transcation and interrupts.
+
+- Data is transmitted in form of packets.
+

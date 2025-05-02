@@ -97,7 +97,7 @@
       - Tournament branch predictors
       - Perceptron branch predictors
 - Speculation:
-  - Choosing to tun an instruction that is not guaranteed to be needed.
+  - Choosing to run an instruction that is not guaranteed to be needed.
 - When a wrong prediction occurs, flash the cpu pipeline.
 - Branch Target Buffer
   - A table indexed by the current PC, which contains branch target addresses.
