@@ -40,18 +40,13 @@ static void vTask2(void* pvParameters);
 
 int main(void)
 {
+    xTaskHandle handle1;
+    xTaskHandle handle2;
+    // xTaskHandle handle3;
+    xTaskCreate( vTask1, (signed char*)"task01", configMINIMAL_STACK_SIZE, NULL, my_TASK_PRIORITY + 0, &handle1);
+    xTaskCreate( vTask2, (signed char*)"task02", configMINIMAL_STACK_SIZE, NULL, my_TASK_PRIORITY + 1, &handle2);
+    //xTaskCreate( vTask3, (signed char*)"task03", configMINIMAL_STACK_SIZE, NULL, my_TASK_PRIORITY + 3, &handle3);
     
-        xTaskHandle handle1;
-        xTaskHandle handle2;
-       // xTaskHandle handle3;
-
-        
-          
-        xTaskCreate( vTask1, (signed char*)"task01", configMINIMAL_STACK_SIZE, NULL, my_TASK_PRIORITY + 0, &handle1);
-        xTaskCreate( vTask2, (signed char*)"task02", configMINIMAL_STACK_SIZE, NULL, my_TASK_PRIORITY + 1, &handle2);
-        //xTaskCreate( vTask3, (signed char*)"task03", configMINIMAL_STACK_SIZE, NULL, my_TASK_PRIORITY + 3, &handle3);
-    
-
     // Start scheduler.
     vTaskStartScheduler();
 
@@ -86,23 +81,18 @@ static void vTask1(void* pvParameters)
     //(void) pvParameters;
   
     while (1)
-    {
-
- 
-         
-        
-
+    {   
     }
 
     vTaskDelete( NULL);
 }
 
 static void vTask2(void* pvParameters)
-{ DDRB=32;
+{ 
+    DDRB=32;
     while (1)
     {
-	PORTB=32;
-     
+        PORTB=32;
     }
 
     vTaskDelete( NULL);
@@ -112,12 +102,10 @@ static void vTask3(void* pvParameters)
 {
     for(;;)
     {
-		//...
-        
-     
+        //...
     }
 
     vTaskDelete( NULL);
 }
 // avr-gcc -mmcu=atmega328p main.o FreeRTOS/Source/tasks.o FreeRTOS/Source/croutine.o FreeRTOS/Source/list.o FreeRTOS/Source/queue.o FreeRTOS/Source/timers.o -o main
-//avr-gcc -mmcu=atmega328p -c port.c
+// avr-gcc -mmcu=atmega328p -c port.c

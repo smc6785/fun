@@ -37,13 +37,16 @@ Von-Neumann architecture suppoerts simple hardware, it allows the use of a singl
 ===
 Harvard architecture
 the Harvard architecture offers separate storage and signal buses for instructions and data. 
-this architecture has data storage entirely contained within the CPU, and there is no access to the instruction storage as data. 
-computers have separate memory areas for program instructions and data using internal data buses, allowing siultaneous access to both instructions and data
+this architecture has data storage entirely contained within the CPU, 
+and there is no access to the instruction storage as data. 
+computers have separate memory areas for program instructions and data using internal data buses,
+ allowing siultaneous access to both instructions and data
 
 ===
 Von-Neumann architecture:
 -single memory to be shared for both code and data
--processor needs to fetch code in a separate clock cycle and data in another clock cycle, so it requires two clock cycles
+-processor needs to fetch code in a separate clock cycle and data in another clock cycle,
+ so it requires two clock cycles
 -higher speed, thus less time consuming
 -simple in design
 
@@ -75,7 +78,7 @@ RISC:
 -pipelining of instructions is possible considering single clock cycle
 
 ===
-a compiler is a computer program(or a seet of programs) that transforms the source codee written in a programming language (the source language) into another computer language(normally binary format). the most common reason for conversion if to create an executablee program.
+a compiler is a computer program(or a seet of programs) that transforms the source code written in a programming language (the source language) into another computer language(normally binary format). the most common reason for conversion if to create an executablee program.
 
 cross-compiler
 if the compiled program can run on a computere having different CPU or operating system than the computer on which the compiler compiled thee program, then that compiler is known as a crossp-compiler
@@ -113,7 +116,8 @@ Assembly language uses a mnemonic to represent each low level machine operation(
 editor program
 |(myFile.asm)
 v
-asseembler program -> myFile.lst(list file, it lists all the opcodes and addresses as well as error that the asseemblers deteeected
+asseembler program -> myFile.lst(list file, it lists all the opcodes and 
+addresses as well as error that the asseemblers deteeected
 |(myFile.obj)
 v
 linker program <- other obj files
@@ -161,14 +165,14 @@ an emulator deplicayes the thing exactly as it exists in real life
 
 ===
 peripheral devices in embedded systems
-Embedded systems commu nicate with the outside world via their peripherals, such as following:
+Embedded systems communicate with the outside world via their peripherals, such as following:
 -Serial Communication Interfaces(SCI), like RS-232, RS-422, RS-485,etc
 -Synchronous Seerial Communication Interface, like I2C, SPI, SSC and ESI
 -Universal Serial Bus(USB)
 -Multi Media Cards(SD cards, cimpact flash, etc)
 -Networks like Ethernet, lonWorks, etc
 -Fieldbuses like BAN-Bus, LIN-Bus, PROFIBUS,etc
--imers like PLL(s), Capture/Compare and time processing units
+-Timers like PLL(s), Capture/Compare and time processing units
 -Discrete IO aka General Purpose input/output(GPIO)
 -Analog to digital/ digital to analog (ADC/DAC)
 -debugging likee JTAG, ISP, ICSO, BDM Port, BITP, and DP9 ports
@@ -524,7 +528,7 @@ section
 normally, the compiler places the objects it fenerates in sections like data and bss.
 sometimes, however, you need additional sections, or you need certain particular variables to appear in special sections
 for example to map to special hardware. the section attribute speecifies that a variable(or function) lives in a particualr sectiono
-for example, int init_data __attribuutee__((section("INITDATA")));
+for example, int init_data __attribute__((section("INITDATA")));
 
 in GNU C, you declare certain thing about functions called in your program which help the compiler optimize function calls and check your code more carefully
 the key word __attribute__ allows you to specify special attributes when making a declaration
@@ -594,7 +598,8 @@ in the vector table array, address of "Default_Handler" function will be stored
 so when NMI exception triggers, "Default_Handler" will be executed
 
 now, we are making this weak, 
-this is because, we are allowing user to override this function with same function name in main application.
+this is because, we are allowing user to override this function 
+with same function name in main application.
 there user can implement real implementation of handling that exception
 
 ===

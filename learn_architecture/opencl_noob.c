@@ -7,7 +7,7 @@
 #else
 #include <CL/cl.h>
 #endif
-
+// gcc -framework OpenCL helloworld.c 
 // OpenCL kernel code with corrected address space
 const char *kernelSource = 
 "__kernel void hello(__global char *output) {\n"

@@ -1,3 +1,161 @@
+# setup
+- Download kernel source code
+- Compile the kernel
+- .config file under Linux
+  - zcat /proc/config > .config
+  - cp /proc/config.gz ./
+    gunzip ./config.gz
+    mv config .config
+- make menuconfig, to edit the config file
+- make xconfig, to edit the config file
+- make oldconfig, for older confile file with a newer version of kernel
+- uname -a, to see the current running kernel
+
+# make kernel
+- make -j8
+  - nproc
+- make module_install
+  - ls /lib/modules/5.12.0-rc6-MANJARO/
+- make install
+  - ls /boot/
+- cp /boot/vmlinuz /boot/vmlinz-$(make kernelversion)-$(uname -m)
+- /boot/grub/grub.cfg
+  - problem with editting this .config file:
+    - update-grub would over write .config file
+  - instead, edit /etc/grub.d/40_custom
+- cat /etc/mtab
+
+# make kernel module
+- kernel header files
+- make -C /lib/modules/$(uname -r)/build M=$(pwd)
+- sudo insmod ./helloworld.ko
+- sudo rmmod helloworld
+- sudo dmesg -C, to clean kernel log ring buffer
+- load kernel module in system start
+  - /etc/modules-load.d/modules.conf
+  - this would load modules with modprobe
+  - modprobe is looking for modules dependencies
+  - move .ko under that directory
+
+# module param
+- int gpio_pin = 18;
+  module_param(gpio_pin, int, 0);
+  MODULE_PARM_DESC(gpio, "GPIO-pin ID";
+
+# char device/ character device
+- cat /proc/devices, device number
+- dev_t devno;
+  devno = MKDEV(137, 0);
+  // 137 major number, 0 minor number
+  register_chrdev_region(devno, 1, "gpio_morse");
+  unregister_chrdev_region(devno, 1);
+- struct file_operations my_fops = {
+    ...
+  };
+  struct cdev my_cdev;
+  cdev_init(my_cdev, &my_fops);
+  cdev_add(&my_cdev, devno, 1);
+- mknod /dev/gpio_morse c 137 0
+- each "hello" > /dev/gpio_morse
+
+========
+# busybox
+- wget busybox and linux kernel
+- make linux kernel
+- make busybox
+  - systems can not load dynamically linked library
+  - we need to create a static build for busybox
+  - musl-gcc ?
+- busybox is using arg 0 to check its own file name
+  - rename busybox to echo
+  - ln -s /bin/busybox echo
+  - ./echo "hello world"
+  - busybox --list
+- find . | cpio -o -H newc > ../initrd.img
+- qemu-system-x86-64 -kernel bzImage -initrd initrd.img -nographic -append 'console=tty50'
+
+========
+# kernel
+- MMU, memory management unit 
+  - It is the hardware responsible for implementing virtual memory
+  - TLB, tranlation lookaside buffer
+    - A list of mappings from virtual to physical address
+    - Part of MMU
+    - TLB is consulted by the MMU when the CPU accesses a virtual address
+      - If the virtual address is in TLB,
+        - MMU can look up the physical resource
+      - If the virtual address is not in TLB, or the permissions are insufficient
+        - MMU will generate a page fault exception and interrupt the CPU
+          - A page fault is when software attempts to use an invalid virtual address
+  - MMU operates on basic units of memory called pages
+    - Page size varies by architecutre
+  - A page is a unit of memory sized and aligned at the page size
+  - A page frame, or frame refers to a page-sized and page-aligned physcial memory block
+    - pfn, page frame number
+  - A memory map for a process will contaion many mappings
+  - A mappiing often covers multiple pages
+  - The TLB holds each mapping virtual address, physical address, permissions
+  - Each process has its own set of mappings
+    - The same virtual addresses in two diffrent processes 
+      will likely be used to map different physical addresses
+- In Linux, both kernel and user space uses virtual addresses
+  - The upper part is used for the kernel
+  - The lower part is used for user space
+  - On 32-bit, by default the split is at 0xC0000000
+    - Kernel 1GB, 0xFFFFFFFF to 0xC0000000
+      - Kernel address space is the area above CONFIG_PAGE_OFFSET
+    - User space 3GB, 0x00000000 to 0xC0000000
+  - On 64-bit, the spli varies by architecture
+    - 0x8000000000000000 for ARM64
+    - 0xFFFF880000000000 for x86_64
+  - three kinds of virtual addresses
+    - Kernel logical address
+      - Normal address space of the kernel
+      - kmalloc()
+      - They are a fixed offset from their physical addresses
+        - Virtually-contiguous regions, also physically contiguous
+        - Virtual: 0xC0000000 <-> Physical: 0x00000000
+      - __pa(x) and __vs(x)
+      - Contains allocated memory and kernel stacks(per process)
+      - Kernel logical memory can never be wapped out
+      - For 32 bit large RAM system:
+        - Low memory
+          - Physical memory which has a kernel logical address
+          - Physically contiguous
+        - High memory
+          - Physical memory beyond 806MB (1GB- 104MB(for virtual kernel memory))
+          - Has no logical address
+          - Not physically contiguous
+          - only on 32-bit
+    - Kernel virtual address
+      - The addresses in the region above the kernel logical address mapping
+      - Also called vmalloc() area
+      - Non-contiguous memory mappings
+        - Large buffers which could be potentially be too large to find contiguous memory
+      - Memory-mappped I/O
+        - Map peripheral devices into kernel
+          - PCI, Soc IP blocks
+        -- ioremap(), kmap()
+    - User virtual address
+      - Memory used by user space programs
+      - All addresses below PAGE_OFFSET
+      - Not contiguous, can be swapped out, can be moced
+      - Only used portions of RAM are mapped
+      - Each process has its own memory map
+        - struct mm, pointers in task_struct
+    - Pages, divide physical memory in fixed-size blocks
+      - Typical page size 2^p: 4KB - 16 KB
+      - virtual page number | offset
+# virtualization
+- A running progarm plus its context is called a process
+  - All register state, stock pointer, program counter
+  - Program code, stack and heap
+- A special control process manages all other processes
+  - Control process runs in kernel mode or protected mode
+  - Controller performs context-switches
+    - Suspend the currently running procesds, copy context to memory
+    - Copy another process's context into running area and then resume it
+
 a tour of the ARM architecture and its linux support
 https://www.youtube.com/watch?v=NNol7fRGo2E&ab_channel=linuxconfau2017-Hobart%2CAustralia
 
@@ -22,7 +180,7 @@ https://www.youtube.com/watch?v=NNol7fRGo2E&ab_channel=linuxconfau2017-Hobart%2C
 # ARM system-on-chip
 - System-on-chip: integrated circuit that integreatees all components of a computer system
 	- CPU, but also peripherals: Ethernet, USB, UART, SPI, I2C, GPU, display, audio, etc.
-	- Integrated ina single chip: easier to use, more cost effective
+	- Integrated in a single chip: easier to use, more cost effective
 - SoC vendors:
 	- buy an ARM core from ARM
 	- integrate other IP blocks, either designed internnally, or purchased from other vendors
@@ -133,15 +291,15 @@ harware platform
 - the early stages of the boot process are therefore specific to each SoC
 - in general. capable of loading a small amount of code from non-volatile storage(NAND, MMC, USB) into a SRAM internal to the processor. (external DRAM not initil=alized yet)
 - often also provides a recovery method, to unbrick the platform. Over USB, serial or somethimes Ethernet.
-- used to laod a first stage bootloader into SRAM, which will itself initialize the DRAM and load/run a second stage into DRAM
+- used to load a first stage bootloader into SRAM, which will itself initialize the DRAM and load/run a second stage into DRAM
 
 # bootloaders
 - Grub(2) typically not widely used on ARM platforms
-- U-boot, tyhe de-facto standard, found on most developemnt boards and community playforms
+- U-boot, the de-facto standard, found on most developemnt boards and community playforms
 - barebox, less widely used, but very interesting
 - homemade bootloaders, especially when security/DRM are involved
 - Grub starts to gain some traction, especially on ARM64, for the server market
-- RaspberryPi is bery special case, with some firmware executed on the GPU, and directly loading the linux kernel
+- RaspberryPi is very special case, with some firmware executed on the GPU, and directly loading the linux kernel
 
 # bootloaders (2)
 - first stage bootloader provided either by:
@@ -163,7 +321,7 @@ harware platform
 	- PCI and USB procide dynamic enumeration capabilities	
 	- for the rest, ACPI provides tables describing hardware
 	- thanks to this, the kernel doesn't need to know in advance the hardware it will run on
-- on RAM, no such mechanism exists at the hardware level
+- on ARM, no such mechanism exists at the hardware level
 	- in the old days (prior to 2011), the kernel code itself contains a description of all hardware platforms it had to support
 	- in 2011, the ARM kernel developers switched to a different solution for hardware descriptionL: device tree
 	- done together with an effort called multiplatform ARM kernel
@@ -238,7 +396,7 @@ harware platform
 	- lots of compile-time conditionals
 - wish to have a behavior more similar to x86, with one single binary kernel that works for all platforms
 - effort started around making the ARM kernel multiplatform
-	- handle more thigns at tuntime rather than at compile time
+	- handle more things at runtime rather than at compile time
 	- part of a larger cleanup effort: switch to device tree, addition of numerous driver subsystems
 - one can now build a single kernel for ARMv4/v5, a single kernel for ARMv6/v7, and a single kernel for ARMv8
 	- make ARCH= arm multi_v7_defconfig
@@ -272,12 +430,12 @@ $objdump -d hello
 a binary file written on disk that when you execute it 
 it goes into the kernel, the kernel would read the header file and knows how to parse elf files
 it's going to load parts with a file into various segments of memory
-and it's going to jumo to a location
+and it's going to jump to a location
 
 printf("hello world\n %p where main is\n", &main);
 the address of main is different every time, except the last three digits
 every you load anything into the kernel, its gonna to randomly palce it in virtual address space
-elf files are made, so yjeu can be executed anywhere
+elf files are made, so you can be executed anywhere
 thats why you had the offset from the instruction pointer, not just a hard-coded address space for those parameters, the string and for the value
 
 address spcce doesnt equal to memory,
@@ -289,7 +447,7 @@ it also includes access to devices or something else
 	- open a file
 	- read the network
 	- write a file
-	-etc
+	- etc
 - an application programming interface (API)
 - they do not change (once one is made, it must be backward capatible)
 
@@ -304,7 +462,7 @@ Linux doesn't usually run on Cortex-M, 8051, AVR, other other popualr microcontr
 microprocessors have a memory management unit(MMU), and microcontrollers don't.
 
 # dynamic memory allocation
-- small microcontroller applications can usually get by with static allocations for everything. As your application grows, you'll find yourself calling malloc() more andn more.
+- small microcontroller applications can usually get by with static allocations for everything. As your application grows, you'll find yourself calling malloc() more and more.
 * malloc(), from the C standard library
 * void *malloc(size_t size) allocates the requested memory and returns a pointer to it
 * size, this is the size of the memory block, in bytes
@@ -312,7 +470,7 @@ microprocessors have a memory management unit(MMU), and microcontrollers don't.
 	- they almosy always stem from memory allocation issues
 		- memory leaks (that can be fixed with appropriate free() calls)
 		- memory fragmentation (when the allocator runs out of appropriately-sized free blocks)
-- because Linux0capable application processor have a memory management unit, *alloc() calls execute swiftlly and reeliably.
+- because Linux capable application processor have a memory management unit, *alloc() calls execute swiftlly and reeliably.
 
 # software workflow
 - when building embedded Linux systems, we need to start by compiling all the off-the-shelf software we plan on running - the bootloader, kernel, and userspace libraries and applications.
@@ -327,39 +485,56 @@ microprocessors have a memory management unit(MMU), and microcontrollers don't.
 
 # U-boot
 - unfortunately, our CPU's boot ROm cant directly load our kernel.
-- Linux has to be invoked in a specific way to obtain boot arguments and a pointer to the device tree and initrd (initial ramdisk), and it also expects that the main memory has already been initialized.
+- Linux has to be invoked in a specific way to obtain boot arguments and a pointer to the device tree and initrd (initial ramdisk),
+   and it also expects that the main memory has already been initialized.
 - Boot ROMs also don't know hot to initialize main memory, so we would have nowhere to store Linux.
-- boot ROMs tend to just load a few KB from flash at the most, not enough to house an entire kernel, so we need a small program that the boot ROM can load that will initilized our main memory and then load the entire (usually-multi-megabyte) linux kernel and then execute it.
-- the most popular bootloader for embedded systems, Das U-boot, does all of that, but adds a ton of extra features it has a fully interactive sheel, scripting support, and USB/network booting
-- U-boot has to know a lot of technical details about your system. There's a dedicated board.c port for each supported platform that initializes clocks, DRAM, and relevant memory peripherals, along with initializing any important peripherals, like your UART console or a PMIC that might need to be configured properly before bringing the CPU up to full speed
+- boot ROMs tend to just load a few KB from flash at the most, not enough to house an entire kernel, 
+  so we need a small program that the boot ROM can load that will initilized our main memory and then load the entire (usually-multi-megabyte) 
+  linux kernel and then execute it.
+- the most popular bootloader for embedded systems, Das U-boot, does all of that,
+   but adds a ton of extra features it has a fully interactive shell, scripting support, and USB/network booting
+- U-boot has to know a lot of technical details about your system. There's a dedicated board.c port for each supported platform
+ that initializes clocks, DRAM, and relevant memory peripherals, along with initializing any important peripherals,
+ like your UART console or a PMIC that might need to be configured properly before bringing the CPU up to full speed
 - newer board ports often store at least some of this configuration inofrmation inside a device tree.
-- some of the the DRAM configuration data is often autodetected, allowing you to change DRAM size and layout without altering the U-boot port's code for your processor
-- you configure what you want U-boot to do oby writing a script that tells it which device to initialize, which file/address to load into which memory address, and what boot arguments to pass along to Linux.
+- some of the the DRAM configuration data is often autodetected, 
+  allowing you to change DRAM size and layout without altering the U-boot port's code for your processor
+- you configure what you want U-boot to do by writing a script that tells it which device to initialize, 
+  which file/address to load into which memory address, and what boot arguments to pass along to Linux.
 
 # Linux Kernel
-- once U-boot turns over the program counter to Linux, the kernel initializes itself, loads its own set of device drivers and other kernel modules, and calls your init programs
--	one big difference between embedded Linux and desktop Linux is that embedded Linux systems have to manually pass the hardware configuration information to Linux through a Device tree file or platform data C code, since we don't have EFI or ACPI or any of that desktop stuff that lets Linux auto-discover our hardware
+- once U-boot turns over the program counter to Linux, the kernel initializes itself, 
+  loads its own set of device drivers and other kernel modules, and calls your init programs
+-	one big difference between embedded Linux and desktop Linux is that 
+  embedded Linux systems have to manually pass the hardware configuration information to Linux through a Device tree file or platform data C code, 
+  since we don't have EFI or ACPI or any of that desktop stuff that lets Linux auto-discover our hardware
 - we need to tell Linux the addresses and configurations for all of our CPU's fancy on-chip peripherals, and which kernel modules to load for each of them.
 
 # busy box
-- once Linux has finished initializing, it runs init. Our init program will likely want to run some shell scripts. Those scripts might touch or echo or cat thins. 
-- It looks like we're going to need to put a lot of userspace software on our root filesystem just to get things to boot. Now imagine we want to actually login(getty), list a directory(ls), configure a network(ifconfig), or edit a text file(vi)
-- rather than compiling all of these separately, BusyBox collects small, light-weight versions of these programs (plus hundreds more) into a single source tree that we can compile and link into a single binary executable.	
-- BusyBox configuration is obvious and uses the same Kconfig-based system that Linux and U-Boot use. You simply tell it which packages (and options) you wish to build the binary image with.
+- once Linux has finished initializing, it runs init. Our init program will likely want to run some shell scripts. 
+  Those scripts might touch or echo or cat things. 
+- It looks like we're going to need to put a lot of userspace software on our root filesystem just to get things to boot. 
+  Now imagine we want to actually login(getty), list a directory(ls), configure a network(ifconfig), or edit a text file(vi)
+- rather than compiling all of these separately, BusyBox collects small, 
+  light-weight versions of these programs (plus hundreds more) into a single source tree that we can compile and link into a single binary executable.	
+- BusyBox configuration is obvious and uses the same Kconfig-based system that Linux and U-Boot use.
+ You simply tell it which packages (and options) you wish to build the binary image with.
 
 # root filesystems
-- Linux requires a root filesystem, it needs to know where the root filesystem is and what filesystem format it uses, and this parameter is part of its boot arguments
+- Linux requires a root filesystem, it needs to know where the root filesystem is and what filesystem format it uses, 
+  and this parameter is part of its boot arguments
 
 # YOCTO & Buildroot	
-- there's really no reason to hand-configure and hand-compile all of that stuff individually, instead, everyone uses build systems, Yocto and Buildroot, to automatically fetch and compile a full toolchain, U-boot, Linux kernel, busybox, plus other packages you may wish.
+- there's really no reason to hand-configure and hand-compile all of that stuff individually, 
+  instead, everyone uses build systems, Yocto and Buildroot, to automatically fetch and compile a full toolchain,
+    U-boot, Linux kernel, busybox, plus other packages you may wish.
 https://jaycarlson.net/embedded-linux/#
 =======================================
-
 - lots of device drivers
 - network and filesystem support
 - memory management
 - interprocess communication
-- portable
+- portable   
 - open source/ free
 
 Linux Kernel:
@@ -429,7 +604,8 @@ A standard GNU toolchain consists of three main components:
 
 ## static libraries
 - static linking is useful in a few circumstances
-	- if you are building a small system which consists of onlu BusyBox and some scipt files, it is simpler to link BusyBox statically and avoid having to cpoy the runtime library files and linker
+	- if you are building a small system which consists of onlu BusyBox and some scipt files,
+   it is simpler to link BusyBox statically and avoid having to cpoy the runtime library files and linker
 	- it will also be smaller becuase you only link in the code that your application uses rather than supplying the entire C library. 
 	- static linking is also useful if you need to run a program before the filesystem that holds the runtime libraries is available
 - you tell to link all the libraies statcially by addiung - static to the command line
@@ -446,7 +622,8 @@ A standard GNU toolchain consists of three main components:
 			- arm-cortex_a8-linux-gnueabihf-gcc helloworld.c -ltest \ -L ../libs -I ../libs -o helloworld
 
 ## shared libraries
-- a more common way to deploy libraries is as shared objects that are linked at runtime, which makes more efficient use of storage and system memory, since only one copy of the code needs to be loaded
+- a more common way to deploy libraries is as shared objects that are linked at runtime, 
+  which makes more efficient use of storage and system memory, since only one copy of the code needs to be loaded
 - it also makes it easy yo update the library files without having to re-link all the programs that use them
 - The object code for a shared library must be position-independent, so that the runtime linker is free to locate it in memory at the next free address.
 	- to do this, add the -fPIC parameter to gcc, and then link it using the -shared option
@@ -454,7 +631,8 @@ A standard GNU toolchain consists of three main components:
 		- arm-cortex_a8-linux-gnueabihf-gcc -fPIC -c test2.c
 		- arm-cortex_a8-linux-gnueabihf-gcc -shared -o libtest.so test1.o test2.0
 	- this creates the shared library, libtest.so
-	- to link an application with this library, you add -ltest, exactly as in the static case memtioned in the preceding section, but this time the code is not included in the executable. Instead, there is a reference to the library that the runtime linker will have to resolve.
+	- to link an application with this library, you add -ltest, exactly as in the static case memtioned in the preceding section, 
+    but this time the code is not included in the executable. Instead, there is a reference to the library that the runtime linker will have to resolve.
 		- arm-cortex_a8-linux-gnueabihf-gcc helloworld.c -ltest \ -L ../libs -I ../libs -o helloworld
 	- the runtime linker for this program is /lib/ld-linux-armhf.so.3 which must be present in the target's filesystem.
 	- the linker will look for libtest.so in the default search path: /lib and /usr/lib
@@ -520,16 +698,21 @@ A standard GNU toolchain consists of three main components:
 # bootloaders
 - in embedded linux system, the bootloader hass two main jobs: initialize the system to a basic level and to loadd the kerneel
 - first, a power-on or a reset
-- the DRAM controller would not have been set up, so the main mery would not be accessible, so storeage acesed via NAND flash controller , MMC controlers, and so on, would also not be usable.
-*	DRAM controller, any integrated circuit havingg circuitry integrated thereon or contained thereon that is capable through an interface of transmitting and/or receiving data from a DRAM
+- the DRAM controller would not have been set up, so the main mery would not be accessible, 
+  so storeage acesed via NAND flash controller , MMC controlers, and so on, would also not be usable.
+*	DRAM controller, any integrated circuit having circuitry integrated thereon or contained thereon 
+  that is capable through an interface of transmitting and/or receiving data from a DRAM
 - typically, the only resources operational at the beginning are a single CPU core and some on-chip static memory.
 - as a result, system bootstrap consists of several phases of code, each bringing more of the system into operation.
 - the final act of the bootloader is to load the kernel into RAM and create an execution environment for it.
 - the details of the interface between the kernel and the bootloader are architecture-specific, but in each case it has to do two things
 	- botloader hass to pas a pointer to a structure containing informatiion about the hardware configuration
 	- it has to pass a pointer to the kernel command line
-- a subsidiary job of the botloadere is to provide a maintenance mode for updating bot configurations, loading new bot images into memory, and, running diagnostics.
-- the bootloader code runing in NOR flash memory can initialize the DRAM controler, so that the main memory, the DRAM, becomes available and then it copies itself into the DRAM. Once fuly operational, the bootloader can load the kernel from flash memory into DRAM and transfer control to it.
+- a subsidiary job of the botloadere is to provide a maintenance mode for updating bot configurations, 
+  loading new bot images into memory, and, running diagnostics.
+- the bootloader code runing in NOR flash memory can initialize the DRAM controler, so that the main memory, the DRAM,
+  becomes available and then it copies itself into the DRAM. Once fuly operational, 
+  the bootloader can load the kernel from flash memory into DRAM and transfer control to it.
 * the above is for a simple linearly addressabe sotrage medium like NOR flash
 * now, the boot sequencee becomes a complex, multi-stage procedure, the details are very specific to each SoC, but they generaly follow each of he folowing phases
 # phase 1 ROM code
@@ -793,7 +976,8 @@ eg:
 - signal from device causes CPU to run interrupt handler code
 
 # kernel
-- the kernel is a computer program that manages input/output requests from SW and translates them into data processing instructions for the cpu and other components
+- the kernel is a computer program that manages input/output requests from SW and 
+  translates them into data processing instructions for the cpu and other components
 - under /boot
 - uname -a
 - /lib/modules
@@ -999,7 +1183,7 @@ https://www.youtube.com/watch?v=m_NyYEBxfn8&ab_channel=TheLinuxFoundation
     - extract the desired byte
 
 - fully associative cache, not good in large scale
-  - any block can go into any cachee line
+  - any block can go into any cache line
 - direct-mapped cache
   - each block can go into only one cache line
   - to avoid associative lookup
@@ -1032,7 +1216,7 @@ https://www.youtube.com/watch?v=m_NyYEBxfn8&ab_channel=TheLinuxFoundation
 
 # data aligmment
 - byte data
-  - can gi at any address
+  - can go at any address
 - halfword data
   - must be "halfword aligned"
   - addresses must be even numbers
@@ -1051,7 +1235,7 @@ https://www.youtube.com/watch?v=m_NyYEBxfn8&ab_channel=TheLinuxFoundation
   - if *locked == 0, *lock =1
     - else loop and try agian
   - Atomic SWAP instruction, AMOSWAP
-    - not interruption between retrive a value and settomg a value
+    - not interruption between retrive a value and setting a value
     - writing one to *locked, and retrive the previous value.
       - if the previous value is not zero, then loop back to write
   - a fence instruction to prevent C compiler andd the processor to move loads and stores
@@ -1062,11 +1246,12 @@ https://www.youtube.com/watch?v=m_NyYEBxfn8&ab_channel=TheLinuxFoundation
 
 - spinlocks should not be held for long
   - spinning wastes cycles
-  - use sleep)_ and wakeup()
+  - use sleep() and wakeup()
 - used to protect shared data
   - acquire()
     "critial section"
   - release()
+
 ========
 driver_dev
 
@@ -1095,14 +1280,15 @@ driver_dev
 
 * module
 - each piece of code that can be added to the kernel at runtime
-- each module is made up of object code 
-  - not linked into a complete executable
+- each module is made u of object code 
+  - not linked into a pcomplete executable
   - that can be dynamically linked to the running kernel by insmod program aand unlinked by the rmmod program
 
 * character devices
   - a char device is one that can be accessed as a stream of bytes (like a file)
   - such a driver usually implements at least the open, close, read and write system calls
-  - the text console (/dev/console) and the serial ports (/dev/ttyS0) are examples of char devices, as they are weell represented by the stream abstraction
+  - the text console (/dev/console) and the serial ports (/dev/ttyS0) are examples of char devices, 
+    as they are weell represented by the stream abstraction
   - you can always move back and forth in thee regular file
   - whereas most char devices are data channels, you can only acceess sequentially
     - frame grabbers using mmap aand lseek
@@ -1265,9 +1451,6 @@ https://www.youtube.com/watch?v=pIUTaMKq0Xc&ab_channel=TheLinuxFoundation
 - or
   - while true; do clear; lsusb; sleep 2; done
 
-
-
-
 ========
 # linux kernel device driver
 - device drivers are just abstractions to a piece of hardware
@@ -1337,7 +1520,8 @@ OS xv6
 microprocessor RICS-V
 QEMU machine simtlator
 
-xv6 has no ps command, but, if you type Ctrl-p, the kernel will print information about each process. If you try it now, you'll see two lines: one for init, and one for sh.
+xv6 has no ps command, but, if you type Ctrl-p, the kernel will print information about each process. 
+If you try it now, you'll see two lines: one for init, and one for sh.
 
 To quit qemu type: Ctrl-a x (press Ctrl and a at the same time, followed by x).
 
@@ -1368,7 +1552,7 @@ malloc() free()
   - not initialized by default. will refleect whatever happened to be in that piece of memory
 ---
 pointers in C
-a pointer is a 640bit integer whose value is an address in memory
+a pointer is a 64bit integer whose value is an address in memory
 every variable has an address. so every variable's pointer can be accessed
 including a pointer to a pointer, and a pointeer to a pointer to a pointer...
 a pointer can handle arithmetic with the operators ++,--,-,+
@@ -1399,7 +1583,7 @@ users are allowed to access or modify illegal memory by accessing an array out o
 
 int strlen(const char& str){
   int i;
-  for(i =0;str[i] !=0li++){
+  for(i =0;str[i] !=0; i++){
     return i;
   }
 }
@@ -1548,7 +1732,8 @@ ls -l -h, use -h option together with -l, this will have the pitput in k,M,G for
 
 .../qemu-system-x86_64 -cdrom .../TempleOS.ISO
 * x86_64 is a 64 bit version of the x86 instriuction set
-* x86 is a family of instuction set architecture initially developed by Intel based on Intel 8086 microprocessor and its 8088 variant
+* x86 is a family of instuction set architecture initially developed by Intel based on
+Intel 8086 microprocessor and its 8088 variant
 * cdrom, compact disc read only memory
 
 .../qemu-system-x86_64 --help | more
@@ -1556,8 +1741,10 @@ ls -l -h, use -h option together with -l, this will have the pitput in k,M,G for
 * less is more + more additional features
 
 .../qemu-system-x86_64 -cdrom .../TempleOS.ISO -m 512
-* if qemu-system-x86_64 is not able to read the bios.bin under /usr/share/qemu directory, then it will end up with an error Çould not load PC bios.bin
-* ‘-L /usr/local/Cellar/qemu/6.1.0_1/share/qemu‘ and this will allow the command qemu-system-x86_64 to look out for the bios.bin under the given directory.
+* if qemu-system-x86_64 is not able to read the bios.bin under /usr/share/qemu directory,
+ then it will end up with an error Çould not load PC bios.bin
+* ‘-L /usr/local/Cellar/qemu/6.1.0_1/share/qemu‘ and this will allow
+ the command qemu-system-x86_64 to look out for the bios.bin under the given directory.
 
  /Users/chenshen/Downloads/qemu/build/qemu-system-x86_64 -cdrom /Users/chenshen/Downloads/TempleOS.ISO  -m 512 -L /usr/local/Cellar/qemu/6.1.0_1/share/qemu
 * when OS doesnt have GUI, use ctrl-a x to quit
@@ -1576,12 +1763,15 @@ boot from the image
 /Users/chenshen/Downloads/qemu/build/qemu-system-x86_64 -m 512 -L /usr/local/Cellar/qemu/6.1.0_1/share/qemu -hda ./templeOS.img
 
 #!/bin/sh, bourne shell compatible script
-The first line tells the shell that if you execute the script directly (./run.sh; as opposed to /bin/sh run.sh), it should use that program (/bin/sh in this case) to interpret it.
-If the file that this script lives in is executable, the hash-bang (#!) tells the operating system what interpreter to use to run the script. In this case it's /bin/sh, for example.
+The first line tells the shell that if you execute the script directly (./run.sh; as opposed to /bin/sh runsh), 
+it should use that program (/bin/sh in this case) to interpret it.
+If the file that this script lives in is executable,
+ the hash-bang (#!) tells the operating system what interpreter to use to run the script. 
+ In this case it's /bin/sh, for example.
 
 set -x, in shell script
 
-print shell co,,amd nefore execute it
+print shell command before execute it
 
 set -e, in shell script
 
@@ -1596,7 +1786,8 @@ next line, ctrl v + ctrl j
 linux, mounting and unmounting a filesystem
 - to begin interacting with the disk, we need to mount the filesystem to  a directory.
 * why not just cd /dev/sdb (second disk), becuse /dev/sdb is not a directory
-* to resolve this, we need to create a directory and then mount the file system of the external drive to this directory
+* to resolve this, we need to create a directory and then mount the file system of 
+the external drive to this directory
 * most OS actually do this for us automatically when we plug ina device like a USB drive.
 * unmount the filesystem, using umount
 
@@ -1724,22 +1915,27 @@ like file type, permission, file size, time when last it is modified
 
 thread
 thread is a concurrent unit of execution within a process
-a process can have multiple threads where each thread can perform a different task independently, thus increasing the efficiency of a process.
+a process can have multiple threads where each thread can perform a different task independently,
+thus increasing the efficiency of a process.
 a process always has one thread by default called main thread which is executed first
 e.g 
-- Word processor, a background thread may check spelling and grammar while a foreground thread processes user input (keystrokes).
-- Web server – Multiple threads allow for multiple requests to be served simultaneously, without having to service requests sequentially.
+- Word processor, a background thread may check spelling and grammar w
+hile a foreground thread processes user input (keystrokes).
+- Web server – Multiple threads allow for multiple requests to be served simultaneously,
+ without having to service requests sequentially.
 
 benifits of a thread
 - responsiveness
   a process with thread are said to be more responsiveness than a process without thread 
-  because even if one thread if blocked or waitting for some resources the other thread still continue to function
+  because even if one thread if blocked or waitting for some resources 
+  the other thread still continue to function
 - lighter,
    most of the resource of a process are shared by all its thread making it lighter
 - thoughput
   it improves the throughput of a multithreaded application, mulitiprocessor environment
 - economy
-   creating and managing thread is much faster, context switching is faster than performing same task for processes
+   creating and managing thread is much faster, 
+   context switching is faster than performing same task for processes
 
 disadvantages associated with thread
 - robustness
@@ -1756,16 +1952,19 @@ thread
 - are used for mall task, lightweight
 - more responsive than process
 - less robust
-- threads are within a process thus share same address space9memory)
+- threads are within a process thus share same address space(memory)
 - Since they share same address space, synchronization is more overhead than process
 
 scheduler
-it is one of the compenonet of kernel responsible for scheduling that is deciding when to run which process 
+it is one of the compenonet of kernel responsible for s
+cheduling that is deciding when to run which process 
 
-mutex is a kind of semaphore which only allows one thread or process
+mutex, 
+is a locking mechanism which allows only one process to access the resource at a time
 
 deadlock
-a deadlock is a situation where two or more process or threads sharing the same resource are effectively preventing each other from accessing the resources
+a deadlock is a situation where two or more process or threads 
+sharing the same resource are effectively preventing each other from accessing the resources
 the conditions required for deadlock to happene
 - mutual exclusion, mutex
 - hold and wait
@@ -1774,8 +1973,10 @@ the conditions required for deadlock to happene
 - circular wait
 
 semaphore
-semaphore is one of the simplest synchronization mechianism used to control access to a common resource by multiple processes in a concurrent system 
-it is a variabelw with a value range between 0 to N, where N is maximu mresources-1, when it is 1, it is mutex, binary semaphore
+semaphore is one of the simplest synchronization mechianism used to
+control access to a common resource by multiple processes in a concurrent system 
+it is a variabelw with a value range between 0 to N, where N is maximu mresources-1,
+ when it is 1, it is mutex, binary semaphore
 - a binary semaphore
   - only takes the vaalues 0 and 1
 - a general semaphore
@@ -1794,9 +1995,6 @@ it is a variabelw with a value range between 0 to N, where N is maximu mresource
     V(sv);
     noncritical code section;
     }
-
-mutex, 
-is a locking mechanism which allows only one process to access the resource at a time
 
 virtual memeory
 paging
@@ -1837,7 +2035,7 @@ xv6
 a kernel, a pecial progra that provides services to running programs
 each running program, called a process,
   - has memory containing instructions, data and a stack
-  - when a process needss to invoke a kernel service,
+  - when a process needs to invoke a kernel service,
       it invokes a system call
       the system enters the kernel
       the kernel performs the service and returns
@@ -1965,7 +2163,8 @@ although the child has the memory contents as the paret initially, the parent an
     write(fd, "world\n", 6);
 
 - pipes
-  a pipe is a small kernel buffer exposed to processes as a pair of file descripts, one for reading and one eof writing
+  a pipe is a small kernel buffer exposed to processes as a pair of file descripts,
+   one for reading and one eof writing
   writing data to one end of the pipe makes that data available for reading from the other end of the pipe
   pipes provide a way for processes to communicate
  
@@ -1979,11 +2178,13 @@ although the child has the memory contents as the paret initially, the parent an
     metadatra
   - links
 
-- the Unix system call interace has been standardized through the Portable Operating System Interface (POSIX) standard
+- the Unix system call interace has been standardized through the 
+Portable Operating System Interface (POSIX) standard
 
 - multiplexing
 - isolation
-  - to achieve strong isolation its helpfil to forbid applications from directly accessing sensitive hardware resources, and instead to abstract the resources into services
+  - to achieve strong isolation its helpfil to forbid applications from
+   directly accessing sensitive hardware resources, and instead to abstract the resources into services
   - RISC-V has three modes
     - machine mode
       configuring a computer
@@ -2023,43 +2224,56 @@ although the child has the memory contents as the paret initially, the parent an
 ===
 starting xv6, the first process and system call
 
-- when a RISC-V computer powers on, it initializes itself and runs a boot loader which is stored in read-only memory
+- when a RISC-V computer powers on, it initializes itself and runs a boot loader 
+which is stored in read-only memory
 - the bootloader loads he xv6 kernel into memory
 - in machine mode, the CPU executes xv6 starting at _entry
 - the RISC-V starts with paging hardware disable: virtual address map directly to physcial addresses
 - the loader loads the xv6 kernel into memory at physical address 0x800000000.
-  - the reason it places the kernel at 0x800000000 rather than 0x0 is because the address range 0x0 -> 0x800000000 contains I/O devices
+  - the reason it places the kernel at 0x800000000 
+  rather than 0x0 is because the address range 0x0 -> 0x800000000 contains I/O devices
 - the instructions at _entry set up a stack so that xv6 can run C code
 - xv6 declares space for an initial stack, stack0
-- the code at _entry loads the stack pointer register sp with the address stack0+4096, the top of the stack. because the stack on RISC-V frows down.
+- the code at _entry loads the stack pointer register sp with the address stack0+4096, 
+the top of the stack. because the stack on RISC-V frows down.
 - now that the kernel has a stack, _entry calls into C code at kernel/start.c
 
-- the function start performs some configuration that is only allowed in machine mode and then switches to supervisor mode
+- the function start performs some configuration that is only allowed in machine mode 
+  and then switches to supervisor mode
 - to enter supervisor mode, RISC-V provides the instruction mret
-  - the instruction mret is most often used to return from a previous call from supervisor mode to machine mode
+  - the instruction mret is most often used to return from a previous call 
+    from supervisor mode to machine mode
   - start isn't returning from such a call, and 
-  - instead sets things up as if there had been one: it sets the previous privilege mode to supervisor in the register mstatus, 
+  - instead sets things up as if there had been one: 
+    it sets the previous privilege mode to supervisor in the register mstatus, 
   - it sets the return address to main by writing main's address into the register mepc, 
   - disables vitrual address translation in supervisor mode by writing 0 into the page-table register satp,
   - and delegates all interrupts and exceptions to supervisor mode
-- before juming into supervisor mode, start performs one more task: it programs the clock chip to generate timer interrupts
+- before juming into supervisor mode, start performs one more task: 
+  it programs the clock chip to generate timer interrupts
 - after all that, start "returns" to supervisor mode by calling mret
 - that would cause the program counter to change to main
-- after main initilizes several devices deices and subsystems, it creates the first process by calling userinit
-- the first process executes a small program written in RISC-V assembly, which makes the first system call in xv6
-- initcode.S loads the number of the exec system call, SYS_EXEC into register a7 and calls ecall to re-enter the kernel
+- after main initilizes several devices deices and subsystems,
+  it creates the first process by calling userinit
+- the first process executes a small program written in RISC-V assembly,
+  which makes the first system call in xv6
+- initcode.S loads the number of the exec system call,
+ SYS_EXEC into register a7 and calls ecall to re-enter the kernel
 - the kernel uses the number in register a7 in syscall to call the desired system call
 - the system call table maps SYS_EXEC to sys_exec, which the kernel invokes
 - once the kernel has completed exec, it returns to user space in the /init process
-- init creates a new console device file if needed and then opens it as file descriptors 0,1, and 2. then it starts a shell on the console. the system si up
+- init creates a new console device file if needed 
+ and then opens it as file descriptors 0,1, and 2. then it starts a shell on the console. the system si up
 
 - security
-  - the OS must assume that a process's user-level code will fo its best to wreck the kernel or other processes
+  - the OS must assume that a process's user-level code will fo its best to wreck the kernel 
+  or other processes
     - try to dereference pointers outside its allowed address sapce
     - it may attempt to execute any RISC-V instructions
     - try to read and write any RISC-V control register
     - it may try to directly access deivce hardware
-    - it may pass clever values to system calls in an attempt to trick the kernel into crashing or doing somethin stupid
+    - it may pass clever values to system calls in an attempt to trick the kernel into 
+    crashing or doing somethin stupid
 
 ===
 page table
@@ -2089,8 +2303,10 @@ page table
                                     v   v
               physical address 56: 44| 12
 
-- a page table gives the OS control over virtual to physical address translations at the granularity of aligned chunks of 4096(2^12) bytes. suck a chunk is called a page
-- in sv39 RISC-V, th top 25 bits of a virtual address are not used for translation, the physcial address also has room for growth, 2^39 = 512 GB, shoudl be enough
+- a page table gives the OS control over virtual to physical address translations 
+  at the granularity of aligned chunks of 4096(2^12) bytes. suck a chunk is called a page
+- in sv39 RISC-V, th top 25 bits of a virtual address are not used for translation, 
+  the physcial address also has room for growth, 2^39 = 512 GB, shoudl be enough
 
 - a RISC-V CPU translates a virtual address into a physial address in three steps:
   - a page table is stored in physical memory as a three-level tree:
@@ -2100,38 +2316,51 @@ page table
     - the middle 9 bits to selet a PTE in a page-table page in the next level of the tree
     - and the bottom 9 bits to select the final PTE
 
-- if any of the three PTEs required to translate an address is not present, the paging hardware raises a page-fault exception, leaving it up to the kernel to handle the exception
+- if any of the three PTEs required to translate an address is not present, 
+  the paging hardware raises a page-fault exception, leaving it up to the kernel to handle the exception
 
-- the three-level structure allows a memory-efficient way of recording PTEs, compared to the single-level design
+- the three-level structure allows a memory-efficient way of recording PTEs, 
+compared to the single-level design
 - one down side:
-  - CPU must load three PTEs from memory to perform the translation of the irtual address in the load/store instruction to a physical address
-    - to avoid the cost of loading PTEs from physical memory, a RISC-V CPU caches page table entries in a Translation Look-aside Buffer (TLB)
+  - CPU must load three PTEs from memory to perform the translation of the virtual address 
+  in the load/store instruction to a physical address
+    - to avoid the cost of loading PTEs from physical memory, a RISC-V CPU caches page table entries 
+    in a Translation Look-aside Buffer (TLB)
   
-- each PTE contains flag bits that tell the paging hardware how the associated virtual ddress is allowed to be used
+- each PTE contains flag bits that tell the paging hardware how the associated virtual ddress 
+  is allowed to be used
   - PTE_V indicates whether the PTE is present,
       if it is not set, a reference to the page causes an exception
   - PTE_W controls whether instructions are allowed to write to the page
   - PTE_R controls whether instructions are allowed to read to the page
   - PTE_U controls whether instructions in user mode are allowed to access the page
       if it us not set, the PTE can be used only in supervisor mode
-  - PTE_X controls whether instructions the CPU may interpret the content of the page as instruction and execute them
+  - PTE_X controls whether instructions the CPU may interpret the content of the page 
+  as instruction and execute them
 
-- to tell a CPU to use a page table, the kernel must write the physical address of the root page-table page into the satp register
-  - a PCU will translate all addresses generated by subsequent instructions using the page table pointed to by its own satp
-  - each CPU has its own satp so that different CPUs can run different processes, each with a privte address space described by its own page table
+- to tell a CPU to use a page table, the kernel must write the physical address of 
+  the root page-table page into the satp register
+  - a CPU will translate all addresses generated by subsequent instructions 
+  using the page table pointed to by its own satp
+  - each CPU has its own satp so that different CPUs can run different processes, 
+  each with a privte address space described by its own page table
   
 - physcial memory refers to storage cells in DRAm
 - A byte of physical memory has an address, called a physical address
 - instructions use only virtual address, which the paing hardware translates to physcial address,
   - and then send to the DRA hardware to read or write storage.
 
-- xv6 maintains one page table per process, describing each process's user address space, plus a single page table that describes the kernel's address space
+- xv6 maintains one page table per process, describing each process's user address space,
+ plus a single page table that describes the kernel's address space
 
 - the kernel gets at RAM and memory-mapped device registers using irect mapping
   - that is mapping the resources at virtual addresses that are equal to the physical address
     - for example, the kernel itself is located at KERNBASE = 0x80000000 in both virtual and physical memory
     - direct mapping simplifies kernel code that reads or writes physical memory
-    - For example, when fork allocates user memory for the child process, the allocator returns the physical address of that memory; fork uses that address directly as a virtual address when it is copying the parent’s user memory to the child.
+    - For example, when fork allocates user memory for the child process, 
+      the allocator returns the physical address of that memory;
+      fork uses that address directly as a virtual address when it is copying the parent’s user memory 
+      to the child.
   - a couple of kernel virtual addresses that aren't direct mapped:
     - the tranpoline page
       - it is mapped at the top of the virtuaal addresss space
@@ -2139,8 +2368,10 @@ page table
       - each process has itw own kernel stack
       - which is mapped high so that below it xv6 can leave an unmapped guard page
       - the guard page's PTE is invaild (PTE_V is not set)
-      - so that if the kernel overflows a keernel stack, it will likelt caause an exceeption and kernel will paanic
-      - without a guard page an overflowing stack would oveerwrite other kernell memory, resulting in incorrect operation. a panic crash if preferrable
+      - so that if the kernel overflows a keernel stack, 
+      it will likely cause an exceeption and kernel will paanic
+      - without a guard page an overflowing stack would oveerwrite other kernell memory,
+       resulting in incorrect operation. a panic crash if preferrable
 
 - creating an address space
   - the central data structure is pagetable_t, which is a pointeer to aa RISC-V root page -table page
@@ -2148,7 +2379,8 @@ page table
 ===
 * the processs model
   - sequential processes
-  - a process is an instance of an executing program, including the value of the program counter, registers and variables 
+  - a process is an instance of an executing program, 
+  including the value of the program counter, registers and variables 
 
 - process creation
   - system initialization
@@ -2169,7 +2401,8 @@ page table
 
 - implementataion of processes
   - process table, aka, process control blocks
-    - to implement the process model, the operating system maintains a table, an array of structures, with one entry per process
+    - to implement the process model, the operating system maintains a table,
+     an array of structures, with one entry per process
     - some of the fields of a typical process table entry:
       - process management
       - memory management
@@ -2177,9 +2410,15 @@ page table
         - pointer to data segment info
         - pointer to stack segment info
       - file management
-    - this entry contains important information about the process' state, like, program counter, stack pointer, memory allocation, the status of its open files, its accounting and scheduling information and everything else about the process that must be saved when the process is switched from running to ready or blocked state so that it can be restarted later
+    - this entry contains important information about the process' state, 
+    like, program counter, stack pointer, memory allocation, the status of its open files, 
+    its accounting and scheduling information and everything else 
+    about the process that must be saved when the process is switched from running to ready or blocked state 
+    so that it can be restarted later
       - all interrupts start by saving the registers, often in the process tbale entry for the current process
-      - and then the inforamtion pushed onto the stack by the interrupt and then they are removed and the stack pointer is set to point to a temporary stack used by the process handler
+      - and then the inforamtion pushed onto the stack by the interrupt and 
+      then they are removed and the stack pointer is set to point to a temporary stack used 
+      by the process handler
 
 * process
 - each process provides the resources needed to execute a program
@@ -2217,18 +2456,24 @@ page table
 
 - InterProcess Comunication, IPC
   - race condition
-    - situation when two or more  processes are reading or writing some shared data and the final result depends on who runs precisely when
+    - situation when two or more  processes are reading or 
+    writing some shared data and the final result depends on who runs precisely when
   - mutual exclution
-    - some way of making sure that if one process is using a shared variable or file, the other processes will be excluded from doing the same thing
+    - some way of making sure that if one process is using a shared variable or file, 
+    the other processes will be excluded from doing the same thing
   - cirtical region, critical section
     - where the shared memory is accessed
-    - range matters such that no two processes were ever in their critical region at the same time to avoid races
+    - range matters such that no two processes were ever in their critical region 
+    at the same time to avoid races
 
 - mutal exclusion with busy waiting
   - disabling interrupts
-    - on a single-processor system, the simplesy solution is to have each process disble all interrupts just after entering its critical region and re-enable them ust before leaving it
+    - on a single-processor system, the simplesy solution is to have each process disble all interrupts
+     just after entering its critical region and re-enable them ust before leaving it
     - with interrupts disabled, no clock interrupts can occur
-    - with a multiprocessor system ( with two or more CPUs) disabling interrupts affects only the CPU that executed the disable instruction. the other ones will continue running and can access the shared memory
+    - with a multiprocessor system ( with two or more CPUs) disabling interrupts 
+    affects only the CPU that executed the disable instruction. 
+    the other ones will continue running and can access the shared memory
   - lock variables
     - read a lock before entering its critical region
   - strict alternation
@@ -2267,9 +2512,11 @@ page table
       - the down operation on a semaphore checks to see if the value is greater than o 
         - if so, it decreaments the vlaue (uses up one stored wakeup) and just continues
         - if the value is 0 the process is put to sleep wihtout completing the down for the moment
-      * checking the vlaue, changing it and possibly going to sleep are all done as a single indiisible aromic action
+      * checking the vlaue, changing it and possibly going to sleep 
+      are all done as a single indiisible aromic action
       - the up operation increments the value of the semaphore addressed
-        - if one or more processes were sleeping on that semaphore with processes sleeping on it, the semaphore will still be 0, but there will be one fewer process sleeping on it
+        - if one or more processes were sleeping on that semaphore with processes sleeping on it,
+         the semaphore will still be 0, but there will be one fewer process sleeping on it
 
 - mutexes
     - a simplified version of the semaphore, binray semaphores
@@ -2278,10 +2525,6 @@ page table
 
 * memory management
   - memory hierarchy
-
-
-
-
 
 * scheduling
 - scheduler
@@ -2351,7 +2594,8 @@ page table
 
 * SSH
   - secure shell protocol
-    - a remote admnistration protocol that allows users to accress, control and modify their remote servers over the internet
+    - a remote admnistration protocol that allows users to accress, 
+    control and modify their remote servers over the internet
     - it provides a mechanism for authenticating a remote user
   - ssh {user} @{host}
 
@@ -2600,7 +2844,65 @@ cat /proc/meminfo
     it does IPCs to user space
   - Worse proformence
 
-# File system
+# File System
+- User-friendly names/ pathnames.
+- Share files between users/processes.
+- Persistence/ Durability.
+- Abstraction is useful.
+- Crash safety 
+- Disk layout
+- Performance
+  - Storage devices are slow
+    - Buffer cache
+    - Concurency
+- Block cache, block read from disk.
+- fs = on-disk data structure.
+- mkfs
+
+# File System Structure
+- inode
+  - File info, independent of name.
+  - Link count, link name to a inode (link(), unlink())
+  - Open fd count
+    - Fd must maintain an offset.
+  - A file can be deleted when link count and open fd count is zero,
+- ls -i, shows inode ID
+- df -i, shows toal inodes and used inodes.
+- stat, shows detailed info about a file or directionory.
+
+# File system layers
+- name fds
+- inode
+- icache, inode cache -> synchronization 
+- Logging
+- Buffer cache
+- Disk
+  - SSD
+  - HDD, magnatic disk
+  - Sector on disk
+  - Block on OS, one or more sector
+
+# Disk layout
+- 0, boot sector, 
+  - A piece of OS kernel code, and would load the reset from disk.
+- 1, super block, describes the file system
+- 2 to 32, log
+- 32 to 58, inodes
+  - 46, bitmap indicated the usage of data blocks
+- 0 46 to the end, data
+
+# On-disk Inode
+- Type, directory or files
+- Nlink
+- Size
+- Direct block number 0 to 12.
+- Indirect block which points to a 256 blocks
+- Max file size is (256+12)*1024
+
+# Directories
+- dir, is a file with some structure.
+- /usr/dic, the first '/' indicated root inode.
+  - Scans block for name "usr"
 
 * ar
 - the GNU ar program creates, modifies, and extracts from archives

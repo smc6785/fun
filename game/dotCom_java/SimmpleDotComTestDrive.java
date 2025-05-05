@@ -24,11 +24,6 @@ public class SimmpleDotComTestDrive{
 	}
 }
 
-
-
-
-
-
 	/*SimpleDotCom dot = new SimpleDotCom();
 
 	int[] locations={2,3,4};
