@@ -2924,3 +2924,8 @@ cat /proc/meminfo
 - fopen returns a pointer to a FILE structure (FILE *)
   open returns an integer that identifies the file
 
+====
+# Locks
+- Locks for correct sharing.
+- Locks can limit performance.
+- Avoid race conditions.

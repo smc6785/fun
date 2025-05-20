@@ -253,4 +253,69 @@ internet address representation in C
 - http://www.google.com:80/index.html
   - Port 80, file index.html, http protocol
       
-      
+# Network
+- Copper wire
+- Fiber Optics
+  - FIber strand
+  - Cladding
+- Radio waves
+
+# Ethernet
+- Ethernet address, AKA, MAC address
+- Multipoint data link protocol
+- Preamble/SFD + Destination addr + Source Addr
+  + Ethernet type + payload + frame check sequence
+  - Ethernet type 
+    - 0800: IP packet
+    - 0860: APR
+
+# PPP, point to point protocol
+- PPP is for large ISP servers
+
+# IP, Internet Protocol
+
+# ICMP, internet control messgae protocol
+
+# ARP, address resoltion protocol
+- To find mac address of the router
+
+# DNS servers
+- Root servers maintained by IANA, internet assigned numbers authority.
+  - dig, DNS lookup utility
+  - SERVER: 192.5.6.30#53(192.5.6.30) 
+    - Cache name servers from ISP.
+    - dig www.facebook.com 
+      - Will lookup from cache name server.
+  - a.root-servers.net.	602950	IN	A	198.41.0.4
+  - Information about how long can these IPs be cached.
+- dig @198.41.0.4 www.facebook.com
+  - Get authoritatives for .com 
+    - ;; AUTHORITY SECTION:
+    - com.			172800	IN	NS	a.gtld-servers.net.
+    - a.gtld-servers.net.	172800	IN	A	192.5.6.30
+    - a.gtld-servers.net.	172800	IN	AAAA	2001:503:a83e::2:30
+- dig @192.5.6.30 www.facebook.com
+  - ;; AUTHORITY SECTION:
+  - facebook.com.		172800	IN	NS	a.ns.facebook.com.
+  - a.ns.facebook.com.	172800	IN	A	129.134.30.12
+- dig @129.134.30.12 www.facebook.com
+  - ;; ANSWER SECTION:
+    www.facebook.com.	3600	IN	CNAME	star-mini.c10r.facebook.com.
+    star-mini.c10r.facebook.com. 60	IN	A	31.13.70.36
+- dig @129.134.30.12 star-mini.c10r.facebook.com.
+- com. -> facebook.com. -> c10rfacebook.com.
+- Root server -> Top level domain server -> 
+  Facebook naming server -> Facebook sub domain server
+
+- IPv4 Address: 192.168.0.139
+- Subnet Mask: 255.255.255.0
+  - 34 ones, 8 zeros.
+  - First 34 bits of this IP address describe the local network.
+  - Last 8 bits describe a single device in this network.
+
+- Router: 192.168.0.1
+  - Default gateway to other IPs on the internet.
+
+- netstat -rn -f inet
+
+
