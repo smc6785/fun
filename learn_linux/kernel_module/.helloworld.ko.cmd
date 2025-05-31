@@ -1,0 +1,1 @@
+cmd_/home/vagrant/fun/learn_linux_kernel/helloworld.ko := ld -r -m elf_x86_64 -z max-page-size=0x200000 -T ./scripts/module-common.lds --build-id  -o /home/vagrant/fun/learn_linux_kernel/helloworld.ko /home/vagrant/fun/learn_linux_kernel/helloworld.o /home/vagrant/fun/learn_linux_kernel/helloworld.mod.o ;  true
