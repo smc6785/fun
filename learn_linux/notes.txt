@@ -2929,3 +2929,19 @@ cat /proc/meminfo
 - Locks for correct sharing.
 - Locks can limit performance.
 - Avoid race conditions.
+
+=== 
+# GDB
+- x /10i 0x12345678
+- x /10m 0x12345678
+  - https://sourceware.org/gdb/current/onlinedocs/gdb.html/Memory.html
+- info break
+- step/continue
+- delete (deletes all break points)
+- watch a 
+- set car a=12
+- set *(0x7fffffffe34c) = 12
+- target record-full
+- reverse-next
+- info registers
+
