@@ -2945,3 +2945,27 @@ cat /proc/meminfo
 - reverse-next
 - info registers
 
+===
+# wget
+- http://host[:port]/directory/file
+- ftp://host[:port]/directory/file
+- http://user:password@host/directory/file
+- ftp://user:password@host/directory/file
+- --user and --password, --ask-password
+
+- -b, background
+- -o log.txt, create a log file.
+- -a log.txt, append to a log file.
+- -c, continue downloading.
+- wget -p, download all contents.
+  - might point to file copies in a server.
+- wget -k, download all contents.
+  - point to local copies.
+- wget -r -l 1, download all contents.
+- wget -r -l 3 -p -k -D google.com
+  - -D, exclude anything other domain that is not lised
+  - --exclude-domains cgn.maplecircuit.dev
+
+
+https://www.youtube.com/watch?v=ZlZDWeVL2LI
+https://www.youtube.com/watch?v=hbSSi4bHF8E&list=PLCGpd0Do5-I3b5TtyqeF1UdyD4C-S-dMa&index=5
