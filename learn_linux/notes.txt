@@ -2934,6 +2934,7 @@ cat /proc/meminfo
 # GDB
 - x /10i 0x12345678
 - x /10m 0x12345678
+  - https://attie.co.uk/wiki/gdb/read_from_memory/
   - https://sourceware.org/gdb/current/onlinedocs/gdb.html/Memory.html
 - info break
 - step/continue

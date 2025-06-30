@@ -1048,3 +1048,13 @@ the glass screeens that make up these touch sensors ahve a very thin, transparen
   - Yaw, z-axis
 - Typically, usus micro-electro-mechanical systems
 - Corilois effect
+
+====
+- SSH keys
+  - Public key
+    - Can be calcualted from private key, not the other way around.
+  - Private key
+    - Secret
+  - Servers encrypt a message with the public key.
+  - Clients decrypt the message with the private key 
+      and send back to the servers.
