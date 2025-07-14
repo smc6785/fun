@@ -27,6 +27,7 @@
 
 # make kernel module
 - kernel header files
+- sudo apt-get install linux-headers-$(uname -r)
 - make -C /lib/modules/$(uname -r)/build M=$(pwd)
 - sudo insmod ./helloworld.ko
 - sudo rmmod helloworld
@@ -2967,6 +2968,36 @@ cat /proc/meminfo
   - -D, exclude anything other domain that is not lised
   - --exclude-domains cgn.maplecircuit.dev
 
+====
+# Executables
+- syscall, execve()
+- int execve(const char *pathname, char *const argv[],
+                char *const envp[]);
+- strace -e execve whoami
+- execve("/usr/bin/whoami", ["whoami"], 0x7fff6d88f330 /* 23 vars */) = 0
 
-https://www.youtube.com/watch?v=ZlZDWeVL2LI
+- To debug linux kernel with GDB
+- Make a kernel image with:
+  - KASLR disabled, randomize the address of thge kernel image
+  - Virtualization disabled
+  - Enable loadable module support disabled
+  - Networking support disabled
+  - Kernel hacking enabled
+  - KGDB enabled
+  
+- Download Linux source code, apt-get source linux
+- Download bash, wget and tar -xvzf 
+- gcc -static -o hello --entry main ./hello.c
+- ldd hello
+  - To check the executable is statically linked, not dynamically linked.
+- cat list | cpio -o -H newc > init.cpio 
+
+- add add-auto-load-safe-path ~/linux_source/linux-5.15.0/ to .gdbinit
+- qemu-system-x86_64 -kernel arch/x86/boot/bzImage -initrd init.cpio -s
+- qemu -s option is used to enable with GDB.
+- It makes qemu listen on port 1234 ffor a GDB connection
+- (gdb) target remote localhost
+- (gdb) target remote :1234
+- (gdb) advance 1845
+
 https://www.youtube.com/watch?v=hbSSi4bHF8E&list=PLCGpd0Do5-I3b5TtyqeF1UdyD4C-S-dMa&index=5

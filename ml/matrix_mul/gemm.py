@@ -1,16 +1,21 @@
 #!/usr/bin/env python3.10
 
 # gemm, general matrix multiplications
+# dgemm, double-precision general matrix multiply(64 bit)
+# sgemm, single-precision general matrix multiply(32 bit)
+
 # A * B = C
 # A: m x n
 # B: n x p
 # C: m x p
 # Each cell in C is the output of dot product of two vectors.
 
+import os
+os.environ['OMP_NUM_THREAD'] = '1'
 import numpy as np
 import time
 
-N = 4096
+N = 1024
 if __name__ == "__main__":
   A = np.random.randn(N,N).astype(np.float32)
   B = np.random.randn(N,N).astype(np.float32)
@@ -34,5 +39,10 @@ if __name__ == "__main__":
   et = time.monotonic()
   s = et-st
 
-  print(f"{flop/s * 1e-12} TFLOPS")
+  print(f"{flop/s * 1e-9} GFLOPS")
+
+  with open("./matmul", "wb") as f:
+    f.write(A.data)
+    f.write(B.data)
+    f.write(C.data)
 
