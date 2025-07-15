@@ -2999,12 +2999,4 @@ cat /proc/meminfo
 - (gdb) target remote :1234
 - (gdb) advance 1845
 
-====
-https://www.youtube.com/watch?v=RuocwHw0MzE&list=PLCGpd0Do5-I3b5TtyqeF1UdyD4C-S-dMa&index=2
-# Linux kernel driver
-- Monolithic kernel with loadable modules
-- sudo apt-get install linux-headers-$(uname -r)
-- ls /lib/modules/$(uname -r)/build
-- .ko, linux kernel module
-- sudo dmesg -W
 
