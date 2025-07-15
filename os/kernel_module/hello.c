@@ -1,10 +1,11 @@
 #include <linux/module.h> 
+#include <linux/init.h> 
 
 int count = 1;
-module_param(count, int, 0);
-MODULE_PARM_DESC(count, "how many times we print hellowolrd");
+// module_param(count, int, 0);
+// MODULE_PARM_DESC(count, "how many times we print hellowolrd");
 
-static int __init init_hello(void)
+static int init_hello(void)
 {
     int i;
     for (i = 0; i < count; i++)
@@ -14,7 +15,7 @@ static int __init init_hello(void)
     return 0;
 }
 
-static void __exit cleanup_hello(void)
+static void cleanup_hello(void)
 {
     printk("exit : hello world \n");
 }
