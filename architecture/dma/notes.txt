@@ -1,0 +1,33 @@
+# Linux DMA architecture
+- User Application
+- Linux kernel
+  - Device driver
+  - DMA subsystem
+  - Bus drivers
+  - IOMMU drivers
+- Hardware
+
+- linux DMA provides a unified API for DMA operations
+  - allocate
+    - Coherent DMA, synchronized
+    - Steaming DMA, data flow in one direction
+      requires explicit synchronization.
+  - map
+    - Coherent allocation
+    - Steaming Allocation
+    - Pool allocation
+    - Synchronization
+    - Scatter-Gather DMA
+  - synchronize
+
+
+# IOMMU, Input-Output Memory Management Unit
+- CPU virtual address -> IOMMU translation table -->
+  Device physical address
+- Memory protection, preventing devices from accessing arbitraty memory.
+- DMA address space virtualiation.
+- Contiguous virtual memory from fragmented physical memory.
+- Support for devices with limited addressing capabilities
+
+# Linux 
+- sudo less /proc/iomem

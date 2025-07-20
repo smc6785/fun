@@ -1,0 +1,1 @@
+cmd_/home/vagrant/fun/architecture/pci/smc6785_pci_driver.ko := ld -r -m elf_x86_64 -z noexecstack --build-id=sha1  -T scripts/module.lds -o /home/vagrant/fun/architecture/pci/smc6785_pci_driver.ko /home/vagrant/fun/architecture/pci/smc6785_pci_driver.o /home/vagrant/fun/architecture/pci/smc6785_pci_driver.mod.o;  true

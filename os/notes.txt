@@ -2999,4 +2999,49 @@ cat /proc/meminfo
 - (gdb) target remote :1234
 - (gdb) advance 1845
 
+====
+# /proc
+- https://docs.kernel.org/filesystems/proc.html
+- is a virtual file system.
+  - sudo cat /etc/mtab, list of mounted file systems
+- vagrant     2040  0.0  0.3  17072  9676 ?        Ss   Jul19   0:00 /lib/systemd/systemd --user  
+  vagrant@vagrant:/proc/2040$ cat cmdline
+  /lib/systemd/systemd--user
+  cwd, current working directory
+- vagrant@vagrant:/proc/2040$ sudo cat environ 
+  LANG=en_US.UTF-8PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/binNOTIFY_SOCKET=/run/systemd/notifyHOME=/home/vagrantLOGNAME=vagrantUSER=vagrantSHELL=/bin/bashINVOCATION_ID=329e91c40d2f497b8898ee4f7ccbae2eJOURNAL_STREAM=8:36698SYSTEMD_EXEC_PID=2040XDG_RUNTIME_DIR=/run/user/1000
+- vagrant@vagrant:/proc/2040$ ls -al fd
+  lr-x------ 1 vagrant vagrant 64 Jul 19 20:01 0 -> /dev/null standard in 
+  lrwx------ 1 vagrant vagrant 64 Jul 19 20:01 1 -> 'socket:[36698]' standard out
+  lrwx------ 1 vagrant vagrant 64 Jul 19 20:01 2 -> 'socket:[36698]' standard error
 
+- echo $$
+  - Current shell's process id
+- echo &
+- & sends the command to the backgroud
+- sleep 600  
+- vagrant@vagrant:/proc/6013$ echo "smcss" >> ../2231/fd/0
+  vagrant@vagrant:/proc/6013$ echo "smcss" >> /dev/pts/1
+- vagrant@vagrant:/proc/6013$ sudo cat ../2231/fdinfo/1
+  pos:    0
+  flags:  02002
+  mnt_id: 26
+  ino:    4
+- vagrant@vagrant:/proc/2231$ cat map
+- Thread infomation is in ./task
+  vagrant@vagrant:/proc/2231$ ls task/2231/
+  arch_status  cmdline             exe      loginuid   ns             patch_state  sessionid     statm
+  attr         comm                fd       maps       numa_maps      personality  setgroups     status
+  auxv         cpu_resctrl_groups  fdinfo   mem        oom_adj        projid_map   smaps         syscall
+  cgroup       cpuset              gid_map  mountinfo  oom_score      root         smaps_rollup  uid_map
+  children     cwd                 io       mounts     oom_score_adj  sched        stack         wchan
+  clear_refs   environ             limits   net        pagemap        schedstat    stat
+- vagrant@vagrant:/proc$ cat self/net/arp 
+  IP address       HW type     Flags       HW address            Mask     Device
+  10.0.2.3         0x1         0x2         52:54:00:12:35:03     *        eth0
+  10.0.2.2         0x1         0x2         52:54:00:12:35:02     *        eth0
+  vagrant@vagrant:/proc$ cat self/net/dev
+  Inter-|   Receive                                                |  Transmit
+   face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed
+       lo:    3611      36    0    0    0     0          0         0     3611      36    0    0    0     0       0          0
+         eth0: 4362193   37551    0    0    0     0          0         0  2865581   22357    0    0    0     0       0          0
