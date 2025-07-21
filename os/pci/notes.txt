@@ -14,6 +14,8 @@
   - Vendor and device ID
 - lspci -v
   - To see kernel module for each PICE device.
+- lspci -x
+  - To show the whole pci configuration space.
 - /sys/class/pci_bus
   - Linux kernel uses PCI enumeration to scan all buses.
   - A symblic for /sys/devices
@@ -25,7 +27,10 @@
 # Transaction types
 - I/O read or write, (only for x86, ARM only supports MMIO)
   used to transfer data via CPU I/O ports.
+  - Read and write from cpu ports one byte at a time.
+  - BAR = port number + reserved + type
 - Memory read or write, MMIO
+  - BAR = address + prefetechable + locatable + type
 - Configuration read or write
   - Configuration access mechanism, CAM, legacy, CPU IO ports
   - Enhanced configuration access mechanism, ECAM, MMIO
@@ -166,7 +171,7 @@
   - void pci_free_irq_vectors()
 
 ====
-# PCIE device driver skeleton
+# PCI device driver skeleton
 /* Sample Linux PCI device driver */
 
 #include <linux/init.h>
@@ -348,3 +353,75 @@ MODULE_VERSION("0.1");
 
 module_init(mypci_driver_init);
 module_exit(mypci_driver_exit);
+
+====
+- PCI Root Complex
+- 8 bus. (3 bits)
+- Each bus can have up to 32 devices. (5 bits)
+- Each devices can have up to 8 functions. (3 bits)
+
+- Type0 configuration request to discover other end-point pci devices
+- Read and wrtie of these request are done in ECAM.
+
+====
+# Root complex driver for PCI subsystem.
+- Root complex
+  - Configuration space
+    - Type0/1 64 bit standard headers
+  - IP registers, used to configure root complex IP
+    - Address translation unit/table:
+      - Translates CPU address to PCI address.
+      - When cpu accesses some address in root complex pci address space,
+        Address translation unit will translate that to ECAM address, 
+        which would be some address in PCI endpoint address space.  
+  - Configuration address space, used by CPU to address PCI address space
+    - PCI address space:
+      - End point device address space:
+        - Configuration space
+        - Memory space
+- In order for the host system to read a particular PCI end-point's 
+  configuration space. It has to be mapped to PCI address space.
+  - ECAM, Enhanced configuration access mechanism.
+    - Bus number + device number + function number
+  - PCI uses ECAM to allocate the end-point's configuration space to 
+    PCI address space in root complex.
+  - All PCI end-points devices address space would get mapped to root
+    complex configuration address space in order for cpu to access.
+  - Host write all one to endpoint's BAR to get the size.
+  - Host write cpu address value to endpoint's BAR 
+    using root complex address translation unit(ECAM)
+- PCI end-point write/read to host memory:
+  - Host system should make end-point to a bus master
+    - By setting a bit in PCI end-point's config space
+- Interrupt
+  - Legacy
+    - Assert and deassert INTx by writing to config space
+  - MSI
+    - Write message to some address in config space
+      - Root complex will signal the interrupt
+- Device tree is used for devices that are not enumerated dynamically,
+  like root complex.
+
+- drivers/pci/host
+  - Each platform's unique root complex driver.
+  - These drivers will be probed based on devices tree node.
+  - Will initialize the root complex IP,
+    clocks, program PHY layer, program reset lines, 
+    program the address translatio unit in root complex,
+    extract the io resource information and
+    memory resouce informationn from the ranges property,
+    and invoke an API to start PCI enumeration process.
+- pci root complex drier <-> pci core <-> pci device drvier
+- pci core uses pci root complex driver API to start PCI enumeration,
+  reading pci device's config space.
+- pci device drivers will register themselves with pci core.
+- pci core will scan the pci bus, and whenever it finds a device, it
+  will probe the corresponding pci device drivers.
+- These pci device drivers will have information abouut the pci device
+  and implement interrupt handlers and interact with 
+  domain specific upper lay (ethernet, USB).
+
+====
+# VFIO
+- Virtual function IO
+

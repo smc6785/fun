@@ -3045,3 +3045,40 @@ cat /proc/meminfo
    face |bytes    packets errs drop fifo frame compressed multicast|bytes    packets errs drop fifo colls carrier compressed
        lo:    3611      36    0    0    0     0          0         0     3611      36    0    0    0     0       0          0
          eth0: 4362193   37551    0    0    0     0          0         0  2865581   22357    0    0    0     0       0          0
+
+====
+# Kernel device driver
+- user space read/write -> /dev/my_dev -> 
+  kernel space type/major/minor -> device driver read/write
+- Implement a kernel char device driver:
+  - Allocate the device number (major/minor)
+    - register_chrdev_region
+    - alloc_chrdev_region
+  - Implement the file operation (open, read, write, ioctl, etc)
+  - Register the char driver in the kernel with cdev_init() and cdev_add()
+- less /proc/device and then do mknod to create a device file.
+
+- Talking to a MMIO device
+  - Request access to MMIO registers using request_mem_region()
+  - Map the registers' physical address to virtual address using ioremap()
+  - Kernel APIs to readl() and writel()
+  - cat /proc/iomem
+
+
+====
+# VFIO 
+- VFIO describes the device using VFIO device file descriptor
+  - Divided into regions
+  - Each region maps to a device resource
+    - MMIO BAR
+    - IO BAR
+    - PCI configuration space
+  - Region count and info discovered through ioctl
+    - ioctl( group_fd, VFIO_DEVICE_INFO, container_fd)
+- iommu
+  - Translation
+  - Isolation
+    - Per device translation
+    - Invalid accesses blocked 
+    - Peeer to peer DMA translation
+
