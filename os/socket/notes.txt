@@ -318,4 +318,37 @@ internet address representation in C
 
 - netstat -rn -f inet
 
+====
+# Network interface
+- https://www.youtube.com/watch?v=EnAZB8GI97c
+- eth0
+- enp0s2, position on the bus
+  - en, enthernet adapter
+  - p0s2, bus 0 slot 2
+- Send packers/ping out using eh0/enp0s2.
+- Bind(), nginx server to receive packets from eh0/ennp0se.
+
+- Not common: Add a second address to the same interface.
+- Common: have a second interface, another pci endpoint.
+- Ethernet/ATM/fiber channel/infiniband <-> Network interface/Adaptor <-> PC Host
+
+- A tunnel, an interface not backed by a actual piece of HW.
+  - Like VPN, user applcaition talks to a tunnel which then the piece of SW 
+    that is running the tunnel can encpyt and send to the outside world.
+
+- tun0 using NAT, network address translation, replace the source IP address.
+- IP_forward
+- tap, make a virtual interface pretend to be a enthernet interface with MAC address.
+- br0, virtual switch
+  - eht0 <-> br0 <-> tap0
+
+====
+# ethtool
+- ip a
+- ethtool eth0
+
+====
+# ethtool
+- ip a
+- ethtool eth0
 

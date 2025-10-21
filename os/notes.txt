@@ -3082,3 +3082,8 @@ cat /proc/meminfo
     - Invalid accesses blocked 
     - Peeer to peer DMA translation
 
+====
+vagrant@vagrant:~$ sudo bash -c " echo 0 > /proc/sys/kernel/randomize_va_space "vagrant@vagrant:~$ ./a.out
+0x7fffffffe5480x702570250x555555557db80x7ffff7fa6f100x7ffff7fc90400x7025702570257025vagrant@vagrant:~$ ./a.out
+0x7fffffffe5480x702570250x555555557db80x7ffff7fa6f100x7ffff7fc90400x7025702570257025vagrant@vagrant:~$ ./a.out
+
