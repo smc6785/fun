@@ -13,11 +13,11 @@ if waitkey(10)&& 0xFF == q""
 
 cv2 canny edge detection 
 
-dialation 扩张
+dialation 
 
 Erode 
 
-img cropped 剪裁
+img cropped 
 
 getPerspectiveTransform
 warpPerspective 

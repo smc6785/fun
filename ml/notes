@@ -1,8 +1,0 @@
-# tinygrad
-- Deep learning
-  - How weights are updated.
-  - How neurons are represented as tensors and matrix multiplication.
-- Compiler
-  - How to generate GPU code for any given tensor computation
-    and handle the relecent scheduling (when and how to run these
-    generateed code).
