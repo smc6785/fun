@@ -56,12 +56,10 @@ the implementation of requesting to connect is very simple, unlick listening and
 int connect(int sockfd, struct sockaddr* serv_addr, socklen_t addrlen);
 
 socket domain
-- PF_XXX, protocol family
-  - PF_INET, protocol family internet IPv4
-  - PF_INET6, protocol family internet IPv6
 - AF_XXX, address family(each address family supports multiple protocol families
   - AF_INET, address family internet IPv4
   - AF_INET6, address family internet IPv6
+- PF_XXX, protocol family, same as AF_XXX
 
 socket type
 - SOCK_STREAM, TCP(transmission control protocol, two way handshaking
@@ -73,23 +71,22 @@ socket protocol, sub protocol of the selected socket type
   cat /etc/protocols
 
 server socket workflow
-socker() -> bind() -> listen() -> accept()
+socket() -> bind() -> listen() -> accept()
 
-client socket workflow
-socker() -> connect() -> recv()
-
+client socket workflow socket() -> connect() -> recv()
 ===
 a TCP-based HTTP client written in C, transmission control protocol
 - find n http service which responds in the data you need
 - learn socket programming in C
 - create a TCP socket and send a HTTP request to that service you found in 1
-- read the response from the socket to qcquire your data
+- read the response from the socket to require your data
 
 ===
 internet address + port -> socket 
 
 - internet (logical) address
-  an internet protocol address (IP address or logical address) is a numerical label assigned to each device connected to a computer network that uses the internet protocol for communication
+  an internet protocol address (IP address or logical address) is a numerical label assigned 
+  to each device connected to a computer network that uses the internet protocol for communication
 
   classful address or IP address
   133.122.123.211, 4 bytes
@@ -97,7 +94,7 @@ internet address + port -> socket
     122.123.211 -> host id
   subnet mask decides the portion
 
-  classless IP networ
+  classless IP network
   CIDR Notation
 
 - port number
@@ -147,7 +144,7 @@ internet address representation in C
 - internet address representation
   - allowing any client to make connection requests
   - INADDR_ANY, ip address is not set, it can be any internet address
-      manily for server socket to accept any client's request
+      mainly for server socket to accept any client's request
 
       # server
       - SW, program that listens for requests and responds
@@ -167,13 +164,12 @@ internet address representation in C
         - internet service provider
         - backbone networks, tele communication companies
       
-      
       # IP, internet protocol
       - data sent in packets
       - each host and router hasss a unique 32-bit address, IPv4
         - 128-bit address, IPv6
       - router, routing table
-        = CIDR, classless inter-domain routing
+        - CIDR, classless inter-domain routing
         - BGP, border gateway protocol
       - modem, short for modulator and de-modulator
         - converts digital signals to analog signals and vice-versa
@@ -347,8 +343,4 @@ internet address representation in C
 - ip a
 - ethtool eth0
 
-====
-# ethtool
-- ip a
-- ethtool eth0
 

@@ -6,7 +6,7 @@
 
 #include <netinet/in.h>
 #include <unistd.h>
-#include<arpa/inet.h>
+#include <arpa/inet.h>
 int main(){
   char hello[256]= "client hello world";
 
