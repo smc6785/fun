@@ -93,4 +93,9 @@ cat /proc/sys/kernel/printk
 https://www.youtube.com/watch?v=_TmZ7cACfn0
 sudo demsg -l 7
 
+/etc/apt/sources.list
+sudo apt-get install linux-headers-$(uname -r)
+/usr/src/linux-headers-5.15.0-133-generic$
+
+
 #endif
