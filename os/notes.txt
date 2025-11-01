@@ -1427,6 +1427,15 @@ https://www.youtube.com/watch?v=pIUTaMKq0Xc&ab_channel=TheLinuxFoundation
 - git reset . // un stage files
 - git reset -- hard // un stage files and delete all files
 
+# git remote setup
+- git remote -v
+  - To see URLs for remote handles.
+- Generate keys
+  - ssh-keygen -t ed25519
+  - Add public key to github account.
+  - ssh -T git@github.com
+    - Test connection
+
 ===
 * screen
 - Ctrl + a
