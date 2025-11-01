@@ -1435,6 +1435,8 @@ https://www.youtube.com/watch?v=pIUTaMKq0Xc&ab_channel=TheLinuxFoundation
   - Add public key to github account.
   - ssh -T git@github.com
     - Test connection
+  - git remote set-url origin ssh://git@github.com/smc6785/fun.git
+  - git remote set-url origin ssh://git@github.com:22/smc6785/fun.git
 
 ===
 * screen
