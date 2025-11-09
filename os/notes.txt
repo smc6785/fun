@@ -3594,5 +3594,64 @@ qemu-system-arm -M connex -pflash flash.bin -nographic -serial /dev/null
 - cd boot/grub
 - grub-mkconfig > grub.cfg
    
+# learn gdb
+- -g, to add debug symbols.
+- -O0, turns off optimization.
 
+- b gdbtest.c:10
+- delete 1
+- info breakpoints
+- continue 10
+
+- bt
+- frame 1
+- print i
+- set var i=2
+- break gdbtest.c:8 if i==5
+
+- assert() triggers abort() fucntion and coredump
+  - #include <assert.h>
+    assert(i==1);
+- or just use abort()
+- coredumpctl -o smc6785_coredump dump gdbtest
+
+# load core dump to gdb
+- gdb gdbtest
+- target core smc6785_coredump
+
+- gcore smc6785_dump_2, save coredump in gdb.
+
+- objcopy --only-kepp-debug gdbtest gdbtest.dbg
+- symbol-file gdbtest.gdb
+
+# checkpoint
+- checkpoint
+- restart 1
+- info checkpoint
+
+# remote gdb
+- gdbserver localhost:123456 ./gdbtest
+- target remote 192.168.1.10:123456
+
+========
+# .PHONY in a makefile
+  - BY default, makefile targets are "file targets".
+    make assumes its target is a file 
+    - foo: bar
+       gcc foo -o bar
+  - Sometimes, you want makefile to run commands that is not a file.
+    like "clean", "all".
+  - These special targets are called phony.
+    They are not associated with any files.
+# $@ in makefile
+  - The name of the target being generated.
+# $< in makefile
+  - The first prerequisite, usually a source file.
+  - $^, the filenames of all the prerequisistes.
+  - gdbtest: gdbtest.cpp
+      g++ -o $@ $<
+========
+# /proc
+- cat /etc/mtab
+  - see all the mounted devices and filesystem
 
