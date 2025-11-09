@@ -3553,7 +3553,47 @@ arm-none-eabi-as -o add.o add.s
 arm-none-eabi-ld -T linker.ld -o add.elf add.o
 arm-none-eabi-objcopy -O binary add.elf add.bin
 
-
 dd if=/dev/zero of=flash.bin bs=4096 count=4096
 dd if=add.bin of=flash.bin bs=4096 conv=notrunc
 qemu-system-arm -M connex -pflash flash.bin -nographic -serial /dev/null
+
+====
+# Install to disk
+- qemu-img create temple.img 512M
+- qemu-system-x86_64 -cdrom TempleOS.ISO -m 512 -hda ./smc6785_temple.img
+
+- fdisk -l templeos.img
+- mount -o loop,offsett=32256 templeos.img ./mnt
+- umount ./mnt
+# run.sh
+- set -xe, enables error and tracing.
+  - -e, causes shell to exit when there is a non zero return vvalue.
+  - -x. enables trace mode, prints each command to stderr.
+ 
+====
+* Arch linux
+- curl https://mirrors.edge.kernel.org/archlinux/iso/2025.11.01/archlinux-2025.11.01-x86_64.iso -o archlinux.iso
+- qemu-img create -f qcow2 archlinuxarm.img 4G
+- qemu-system-x86_64 -cdrom archlinux.iso -boot order=d -drive file=archlinuxarm.img,format=qcow2 -m 4G -smp 8 -net user,hostfwd=tcp::10022-:22 -net nic
+- passwd, and then we can ssh root@localhost -p 10022
+- cat > /etc/hostname
+- vi /etc/hosts
+  - 127.0.1.1 smc
+  - ping smc
+
+- fdisk /dev/sda
+  - sd stands for scsi disk devices. Now it seems to refer removable devices
+  - /dev/sda1 384MB
+  - /dev/sda2 3.6GB
+- mkfs.ext4 /dev/sda2
+  - fisk /dev/sda, p t 1 L ef w
+- mkfs.fat -F32 /dev/sda1
+- mount /dev/sda2 /mnt
+- mount /dev/sda1 /mnt/boot
+- genfstab -L /mnt /mnt/boot >> /mnt/etc/fstab
+- arch-chroot /mnt
+- cd boot/grub
+- grub-mkconfig > grub.cfg
+   
+
+
