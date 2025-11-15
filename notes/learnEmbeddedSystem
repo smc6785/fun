@@ -2361,6 +2361,161 @@ embedded devices can contain some of the following types of software:
 	- the main OS in an embedded system can be a gemeral-purpose OS, like Linux, or a real-time OS, like VxWorks or FreeRTOS.
 	
 
+# In Order Execution
+- Executes instructions in sequential order.
+- All modern processors are pinpined, fetch/decode/branch prediction 
+    can still occur in an in-order machine 
+
+# Out of Order Execution
+- Executes instructions in non-sequential order.
+- A processor executes instructions in an order governed by
+    the availiablity of input data and execution units.
+- Out-of-order implementations tend to be more complex and more power hungry.
+
+# Precise exception
+- When the oldest instrcution ready to be retired is detect to
+  have casued an exception, The control logic
+    - Ensures architecutal state is precise (register file, PC, memory).
+    - Flushes all yyounger instruction in the pipeline.
+    - Saves PC and regisster (as specified by the ISA)
+    - Redirect the fetch engine to the appropriate exception handling routine.
+
+# Multi-cycle execution
+- Having multiple different functional units that take different number of cycles.
+- Can let independent instructions start execution on a different functional unit
+  before a previous long-latency instruction finishes execution.
+
+# Reorder Buffer (ROB)
+- A hardware struture that keeps information about all insturctions
+  that are decoded but not yet retired/commited.
+- Exists in micro-architecture.
+- Also enables register renaming,
+  because the same register in ROB can have different meanings.
+- In register file
+  - Value vaild bit
+  - Value
+  - Tag (pointer to ROB entry)
+- During decoding, allow ROB entry, checkif instruction can execute and 
+    source register, if so dispatch instruction to funtional unit.
+- Complete instructions out-of-order, but reorder them before making results visible to architectural state.
+  
+- When a insturction is decoded,
+    it reserves the next-sequential entry in reorder buffer.
+- When a insturction is completes,
+    it writes result into ROB entry.
+- When a insturction is oldest in ROB,
+    and it has completed without exceptions, its result moves to reg file or memory
+- In-order dispatch/execution, out of order completion, in order retirement.
+
+- The architectural state should be consistent(precise)
+  when an exception/interrupt is ready to be handled.
+  - All previous instructions should be completed retired.
+  - No later instruction should be retired.
+  - Retire = commit = finish execution and update architecutal state.
+
+# Dispatch
+- Act of sending an instruction to a functional unit.
+
+# Register Renaming
+- A technique that abstracts logical registers from physical register.
+
+# Superscalar Execution
+- Fetch, decode, execute, retire mulitple instructions per cycle
+- N-wide superscalar -> N instructions per cycle
+
+# Prefecthing
+- Fetch the data before it is needed by the program.
+  - If memory latency is high, we can reduce/eliminate some latency
+
+# Branch Prediction
+- The methods used to choose which speculative instructions to run.
+  - Static branch prediction
+    - Independent of the code running
+      - Assume branches are never taken.
+      - Assume branches are always taken.
+      - Assume forwards branches(if statement) are never taken, 
+          but backwards branches(loops) are always taken.
+  - Dynamic branch prediction
+    - Dependent of the code running
+      - (m,n) branch predictors
+        - 1-bit branch predictor
+          - Always predicts the lasst result.
+          - Alternatively, it changes its prediction 
+              everytime it mispredicts the result.
+        - 2-bite branche predictor
+          - Only changes prediction if it mispredicts twice in a row.
+          - Prevides better performance on nested loops.
+        - 3,4,5,6 ... bit predictor.
+        - Global branch predictors
+          - Branch results can also be correlated with other nearby branches.
+          - Keeping a global brannch history cna be beneficial.
+          - Works with local branch predictor
+        - In general a (m,n) branch predictor selects between 2^m n-bit branch predictors.
+          - m: The number of bits used to store the global branch history.
+               Which keeps track the outcomes(taken or not raken) of the last m branches executed.
+               This history is stored in GHR (global history register).
+          - n: The number of bits used for each prediction state in PHT (pattern history table)
+               Each entry in the PHT is an n-bit saturating counter that indicated the 
+                liklihood of a branch being taken or not taken.
+      - Tournament branch predictors
+      - Perceptron branch predictors
+- Speculation:
+  - Choosing to run an instruction that is not guaranteed to be needed.
+- When a wrong prediction occurs, flash the cpu pipeline.
+- Branch Target Buffer
+  - A table indexed by the current PC, which contains branch target addresses.
+
+====
+# CPU pipeline
+- Fetch
+    - Instruction cache
+      - Becasue the speed of CPU is faster than the speed of accessing memory.
+- Decode
+  - UOP, micro operation
+    - Low level operations a CPU performs.
+    - One instruction could be multiple UOPs.
+- Execute
+  - ALU, arithmetic logic unit
+    - One ALU which does one add at a time is called scalar execution.
+    - Multiple ALU execute in parallel is called superscalar execution.
+  - In order execution
+    - All UOPs are executed in program order.
+  - Out of order execution
+    - Register renaming keeps track the dependency between datas. 
+    - Register Allocation Table(RAT), architectural regs <-> physical regs
+    - Reorder buffer
+  - UOP scheduler
+  - Retirement
+- Write-back  
+- More cpu pipeline stages, faster each stage would be.
+  - Front end, includes fetch and decode.
+  - Back end, includes execute and write-back.
+  - Branch predictor before fetch.
+# CPU 
+- Processing unit
+  - Can consist of many functional units like ALU and so on.
+- Control unit
+  - Register contains the instruction
+  - Program counter
+- Von Neumann Model
+  - Memory is unified between instructions and data.
+  - The interpretation of a stored value depends on the control signals
+  - Sequential instruction processing
+====
+# BMC
+- Baseboard management controller
+  - Challenges of managing bare metal at scale.
+- A BMC is a SOC.
+  - Runs within a server, chassis, switch 
+      as a hardware sidecar with its own firmware.
+  - Provides out of band access.
+  - Hardware logs.
+  - Inventory information.
+  - Triggerb hardware actions/change.
+- Access
+  - IPMI, Intelligent Platform Management Interface
+  - SSH
+  - Web interface
 
 
 
