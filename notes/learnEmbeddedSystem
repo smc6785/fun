@@ -2517,6 +2517,21 @@ embedded devices can contain some of the following types of software:
   - SSH
   - Web interface
 
+# USB endpoint
+- An endpoint is a buffer on a USB device
+- The host can send and receive data to or from that buffer.
+- Endpoints can be cateforized into control and data endpoints
+  - Control transfers, endpoint0, bi-directional
+  - Interrupt transfers, polling rate
+  - Isochronous transfers, transmitting real-time information such as audio and video data
+  - Bulk transfers, interrupt transfers, but no defined polling rate
+    - bulk write and bulk read to endpoints
+
+ 
+ # device descriptor
+ - configguration descriptor
+ - interface descriptor
+ - endpoint descriptor
 
 
 
