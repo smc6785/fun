@@ -421,7 +421,21 @@ module_exit(mypci_driver_exit);
   and implement interrupt handlers and interact with 
   domain specific upper lay (ethernet, USB).
 
-====
+========
 # VFIO
 - Virtual function IO
+- A linux kernel subsystem that provides a framework for
+  exposing direct device acess to userspace app and virtual mahcine.
+- ARM MMU recap:
+  - EL0 user space   --(VA)--> stage 1 MMU                  
+                     --(IPA, intermediate PA)--> stage2 MMU --(PA)--> memory
+  - EL1 kernel space --(VA)--> stage 1 MMU (S1 page tables) 
+                     --(IPA)--> stage2 MMU --(PA)--> memory
+  - EL2 hypervisor   ----> stage 2 MMU (S2 page tbales) ----> memory
+
+- DMA
+  - Device -> IOMMU/SMMU <- IOTLBs
+                  |          |
+  - ( Physical memory (IOMMU page table))
+
 

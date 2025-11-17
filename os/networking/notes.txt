@@ -340,7 +340,98 @@ internet address representation in C
 
 ====
 # ethtool
-- ip a
 - ethtool eth0
+- ethtool -k eth0
+  - See featues represent hardware offload capabilities
 
+# network namespaces
+- a kernel feature that provides isolation of networking resources,
+  enabling the creation of independent network environments.
+- Each network namespace has its own interfaces, routing tables and
+  forwarding tables.
+- ip route
+- ip netns add red
+- ip netns add green
+- ip netns
+- ls /var/run/netns
+- ip netns exec red ip link
+- add vos, open vSwitch to connect two namespaces
+- ifup and if down
+
+- netstat
+  - netstat -tln
+    - t, tcp
+    - l, listen
+    - n, show ip and do not resolve hostname
+
+- ARP, address resolution protocol
+  - A host sends ARP request in a network.
+  - For discovering MAC address associated with an IP address
+- DHCP, dynamic host configuration protocol
+  - When a device is first connected to a network,
+    it sends a DHCP request with lease time and allocate a 
+    IP for this device.
+- DNS, domain name system
+  - A naming system for hostname and IPs
+ 
+- A switch in a network
+  - Host
+  - DNS server
+  - DHCP server
+  - Router -> ISP -> internet
+- Virutal netoworks using VLAN tags.
+- Switch based on MAC adresses
+- Router based on IP addresses.
+
+========
+# Ethernet driver
+- PHY
+- PCS, physical coding sublayer blcoks
+- MII, media-independent interface, interface to PHY
+- MAC, media access control, MAC block
+
+- struct net_device
+  - Represents a network interface, visiable with "ip link show"
+  - .probe() function of a driver usually registers via netdev_register()
+  - Driver specific data retrieved using netdev_priv(dev)
+  - User-visible right after register_netdev()
+ 
+- struct net_device_ops
+  - NDO, netowrk device operations
+  - ndo_start_xmit(), to transmit data, mandatory.
+    - Takes skb as a parameter. 
+  - netdev->netdev_ops = &my_netdev_ops
+
+- struct sk_buff
+  - skb, socket buffer
+  - Can be a simple packets or a fragmented packet 
+  - Containns a data section (payload + headers) and metadata.
+
+========
+# flow
+- Packets from the same emitter for the same consumer.
+- Flows are identified by data extracted from the headers.
+- L3 flow, Source and destination IP address, 2 tuple
+- L4 flow, src/dst IP + protocol + src/dst ports, 5 tuple
+
+# RPS
+- Receive packet steering
+- Interrupted CPU schedules processing on other CPUs.
+  - Key data is exacted from the headers and hashed.
+- CPU is chosen by masking out the first bits of the hash.
+- /sys/class/net/eth0/queues/rx-0/rps_cpus
+
+# RSS
+- Receive side scaling
+- NIC is configured to extract the header data and compute the hash.
+- The interrupt comes to the correct CPU.
+- Enable RSS, ethtool -K eth0 rx-hashing on
+- Configuring the indirection table, ethtool -X eth0 weight 1 2 2 1
+- Dumping the indirection tbale ethtool -x eth0
+
+# RFS
+- Receive flow steering
+  - RPS and RSS do not care about cache locality.
+    - RSS sneds a flow to cpu 1, but cpu2 consumes it
+      - RSS sneds a flow to cpu 1, but cpu2 consumes it.
 
