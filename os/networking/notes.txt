@@ -435,3 +435,25 @@ internet address representation in C
     - RSS sneds a flow to cpu 1, but cpu2 consumes it
       - RSS sneds a flow to cpu 1, but cpu2 consumes it.
 
+========
+# nc
+- netcat
+- nc -l -p 6785 -e /bin/sh
+  - listener
+- nc 192.168.1.1 6785
+  - client
+  - stdin -> network -> stdout
+- port scanning
+  - nc -n -v -w 2 -z 192.168.1.1 1-1000
+- port scanning
+  - nmap -sS 192.168.1.1
+  - nc -n -v -w 2 -z 192.168.1.1 1-1000
+    - -n, no DNS resolve
+    - -v, verbose
+    - -w, tiemout
+    - -z, zero IO mode
+- printf "GET / HTTP/1.0\r\n\r\n" | nc 192.168.1.1 80 | head
+
+========
+# socket
+- A way to speack to other programs using standard Unix file descriptors.
