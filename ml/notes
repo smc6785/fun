@@ -112,3 +112,13 @@ in lockstep, group of cores executing the same instruction
   - How to generate GPU code for any given tensor computation
     and handle the relecent scheduling (when and how to run these
     generateed code).
+
+========
+- git checkout -b first 1bb258350092defd802cf6fbb94b1e8de96935cc
+- black tensor.py
+- python moduel import directory
+  import sys
+    for i in sys.path:
+      print(i)
+
+

@@ -1403,29 +1403,18 @@ mknod /dev/lede c 244 0
 https://www.youtube.com/watch?v=pIUTaMKq0Xc&ab_channel=TheLinuxFoundation
 
 ========
-- git init
-- git status
-- git add file.js
-  - git add . // add all changes
 - git commit  -m "adding a new file"
-
-- git log
-  - history of commits
-
-- git check out xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-* git branch new_branch
-- git checkout new_branch
+- git log --graph --all
+- git checkout -b new_branch
 
 * merge to the master branche
-- git branch // ist all the branches
+- git branch // list all the branches
 - git merge new_branch
-
 * .gitignore
 
 - get add . // stage files
 - git reset . // un stage files
-- git reset -- hard // un stage files and delete all files
+- git reset --hard // un stage files and delete all files
 
 # git remote setup
 - git remote -v
