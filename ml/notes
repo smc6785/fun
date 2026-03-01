@@ -97,7 +97,7 @@ in lockstep, group of cores executing the same instruction
 ========
 # Pytorch
 - Eager mode
-  - Operators in a model are immeediately executed as they are encoutered.
+  - Operators in a model are imediately executed as they are encoutered.
   - Used for ML researchers.
 - Graph mode
   - Operators are first synthesized into a graph,

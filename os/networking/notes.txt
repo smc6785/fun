@@ -264,6 +264,8 @@ internet address representation in C
   - Ethernet type 
     - 0800: IP packet
     - 0860: APR
+- In a MAC address, the upper 24 bit is manufacturer ID.
+  the lower 24 bit is device IS.
 
 # PPP, point to point protocol
 - PPP is for large ISP servers
@@ -273,7 +275,7 @@ internet address representation in C
 # ICMP, internet control messgae protocol
 
 # ARP, address resoltion protocol
-- To find mac address of the router
+- To find mac address of the router from IP address
 
 # DNS servers
 - Root servers maintained by IANA, internet assigned numbers authority.
@@ -455,5 +457,7 @@ internet address representation in C
 - printf "GET / HTTP/1.0\r\n\r\n" | nc 192.168.1.1 80 | head
 
 ========
-# socket
-- A way to speack to other programs using standard Unix file descriptors.
+# sockets
+- A way to speack to other programs using standard Unix file descriptors, including IP packets.
+  - builds on top of TCP and UDP and uses port numbers
+  - udp port numbder 53, DNS
