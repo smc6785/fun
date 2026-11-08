@@ -16,8 +16,8 @@ MODULE_DEVICE_TABLE(pci, smc6785_ids);
 static int smc6785_probe(struct pci_dev *dev, const struct pci_device_id *id)
 {
   u16 vid, did;
-  u8 capability_ptr;
-  u32 bar0, saved_bar0;
+  u16 capability_ptr;
+  u16 bar0, saved_bar0;
 
   pci_read_config_word(dev, 0x0, &vid);
   pci_read_config_word(dev, 0x2, &did);
@@ -75,11 +75,13 @@ static struct pci_driver smc6785_driver = {
 
 static int __init init_hello(void)
 {
+    printk(KERN_INFO "smc6785 driver loaded successfully.\n");
     return pci_register_driver(&smc6785_driver);
 }
 
 static void __exit cleanup_hello(void)
 {
+    printk(KERN_INFO "smc6785 driver cleanup successfully.\n");
     pci_unregister_driver(&smc6785_driver);
 }
 
