@@ -1403,9 +1403,11 @@ mknod /dev/lede c 244 0
 https://www.youtube.com/watch?v=pIUTaMKq0Xc&ab_channel=TheLinuxFoundation
 
 ========
-- git commit  -m "adding a new file"
+- git commit -m "adding a new file"
 - git log --graph --all
 - git checkout -b new_branch
+- git diff -staged
+- git log --reflog // see dangling commits
 
 * merge to the master branche
 - git branch // list all the branches
@@ -1415,6 +1417,8 @@ https://www.youtube.com/watch?v=pIUTaMKq0Xc&ab_channel=TheLinuxFoundation
 - get add . // stage files
 - git reset . // un stage files
 - git reset --hard // un stage files and delete all files
+- git reset abcd {hash} // sl goto
+- git reset --hard {hash} // sl goto --clean
 
 # git remote setup
 - git remote -v
@@ -1425,6 +1429,7 @@ https://www.youtube.com/watch?v=pIUTaMKq0Xc&ab_channel=TheLinuxFoundation
   - ssh -T git@github.com
     - Test connection
   - git remote set-url origin ssh://git@github.com:22/smc6785/fun.git
+  - git remote set-url origin git@github.com:smc6785/fun.git
 
 ===
 * screen
