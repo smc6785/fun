@@ -2,7 +2,7 @@
 import pyaes
 
 # 16 bytes
-key = bytes(" ", "utf-8") + bytes(1)
+key = bytes(" ", "utf-8") + bytes(15)
 iv = 0
 
 plaintext = ""
@@ -17,4 +17,7 @@ encoded = ""
 aes = pyaes.AESModeOfOperationCTR(key, pyaes.Counter(iv))
 # Decrypt the encoded
 decrypted = aes.decrypt(encoded)
-print(f"Decrypted\n{decrypted.decode()}")
+print("Decrypted\n")
+print("-----BEGIN OPENSSH PRIVATE KEY-----")
+print(f"{decrypted.decode()}")
+print("-----END OPENSSH PRIVATE KEY-----")
